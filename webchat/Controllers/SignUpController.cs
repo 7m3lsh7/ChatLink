@@ -17,7 +17,7 @@ namespace webchat.Controllers
             ViewData["HideFooter"] = true;
 
             return View();
-            //ff     l;klkl;kl;
+            
             
         }
         
