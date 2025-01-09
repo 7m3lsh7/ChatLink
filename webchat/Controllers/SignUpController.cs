@@ -16,7 +16,7 @@ namespace webchat.Controllers
             ViewData["HideNavbar"] = true;
             ViewData["HideFooter"] = true;
 
-            return View();
+            return View();                              
              
         }
         
