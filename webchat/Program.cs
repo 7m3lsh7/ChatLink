@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿	using Microsoft.EntityFrameworkCore;
 using webchat.data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +9,8 @@ builder.Services.AddDbContext<ChatDbcontect>(options => options.UseSqlServer
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddControllersWithViews();
+builder.Services.AddSession();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,13 +23,13 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
 
 app.UseAuthorization();
 
 app.MapControllerRoute(
 	name: "default",
-	pattern: "{controller=SignUp}/{action=Index}/{id?}");
+	pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

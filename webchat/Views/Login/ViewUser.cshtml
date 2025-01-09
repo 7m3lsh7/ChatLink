@@ -1,0 +1,37 @@
+﻿@model IEnumerable<User>
+
+<table class="table m-auto w-75 mt-5">
+    <thead class="table table-bordered table-dark">
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">PasswordHash</th>
+            <th scope="col">ProfilePicture</th>
+            <th scope="col">CrearetedAt</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody class="table-light">
+        @foreach(var x in Model)
+        {
+          <tr>
+              <th scope="row">@x.Id</th>
+              <td>@x.Username</td>
+              <td>@x.Email</td>
+              <td>@x.PasswordHash</td>
+              <td>@x.ProfilePicture</td>
+              <td>@x.CrearetedAt</td>
+              <td>
+                    <a class="btn btn-outline-danger btn-sm" href="@Url.Action("Delete","Login",new{id=x.Id})">Delete</a>
+              </td>
+              </tr>
+        }
+    </tbody>
+</table>
+<style>
+    body{
+        background-image: url('../images/Screenshot .png')
+
+    }
+</style>

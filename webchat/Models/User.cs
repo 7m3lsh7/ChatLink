@@ -15,9 +15,7 @@ public class User
     [StringLength(255)]
     public string PasswordHash { get; set; }
 
-    public bool IsEmailVerified { get; set; } = false;
-
-    public string VerificationToken { get; set; }
+    
 
     [Required(ErrorMessage = "Please Enter Your Profile Picture")]
     public string ProfilePicture { get; set; }

@@ -25,7 +25,7 @@
                     <div class="collapse navbar-collapse pe-5 ps-5" id="navbarNav">
                         <ul class="navbar-nav">
                             <li class="nav-item pe-2 ps-2">
-                                <a class="nav-link active text-white" aria-current="page" href="./Index.html">Home</a>
+                                <a class="nav-link active text-white" aria-current="page" asp-action="Index" asp-controller="Home">Home</a>
                             </li>
                             <li class="nav-item pe-2 ps-2">
                                 <a class="nav-link text-white" href="./chat.html">Chat</a>
@@ -42,12 +42,11 @@
                         </ul>
                     </div>
                     <div class="Profile ps-5 pe-5">
-                        <div>
-                            <a class="nav-link text-white p-3" href="#">Felopater Remon</a>
-                        </div>
-                        <div class="profile-picture">
-                            <img src="https://via.placeholder.com/150" alt="Profile Picture">
-                        </div>
+                         <div class="Profile ps-5 pe-5">
+                              <button class="btn btn-signup me-2 text-white" onclick="window.location.href='/SignUp'">Sign Up</button>
+                                <button class="btn btn-login text-white" onclick="window.location.href='/Login'">Login</button>
+       
+                          </div>
                     </div>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>

@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -12,10 +12,12 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-
+                       
 body {
    
-    background-color: #1a1a1a;
+    background-color: #ffff;
     font-family: 'Kadwa', serif;
     color: #fff;
 }
+
+                                                
