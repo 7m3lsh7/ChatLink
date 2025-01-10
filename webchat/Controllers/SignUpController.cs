@@ -71,6 +71,15 @@ namespace webchat.Controllers
             _chatDbcontect.users.Add(user);
             await _chatDbcontect.SaveChangesAsync();
 
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.Now.AddDays(30) 
+            };
+
+            Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
+
             return RedirectToAction("Index");
         }
     }
