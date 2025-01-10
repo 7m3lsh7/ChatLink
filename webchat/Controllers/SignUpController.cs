@@ -16,7 +16,7 @@ namespace webchat.Controllers
         {
             _chatDbcontect = chatDbcontect;
         }
-
+                                                   
         public IActionResult Index()
         {
             ViewData["HideNavbar"] = true;
@@ -36,7 +36,7 @@ namespace webchat.Controllers
             HttpContext.Session.Set("UserStep1", user);
             return RedirectToAction("Addphoto");
         }
-
+                                                  
         public IActionResult Addphoto()
         {
             ViewData["HideNavbar"] = true;
@@ -75,3 +75,4 @@ namespace webchat.Controllers
         }
     }
 }
+                           
