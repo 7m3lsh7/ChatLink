@@ -45,10 +45,28 @@
                     </div>
                     <div class="Profile ps-5 pe-5">
                          <div class="Profile ps-5 pe-5">
-                              <button class="btn btn-signup me-2 text-white" onclick="window.location.href='/SignUp'">Sign Up</button>
-                                <button class="btn btn-login text-white" onclick="window.location.href='/Login'">Login</button>
-       
-                          </div>
+
+                              
+                                
+                                @if (ViewData["Username"] != null)
+                                {
+                                        <a class="nav-link text-white p-3" href="#">@ViewData["Username"]</a>
+
+                                    
+                                        <div class="profile-picture">
+                                            <img src="https://via.placeholder.com/150" alt="Profile Picture">
+                                        </div>
+                                    
+
+                                        <a class="nav-link text-danger" href="/Account/Logout">Logout</a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-signup me-2 text-white" onclick="window.location.href='/SignUp/Index'">Sign Up</button>
+                                    <button class="btn btn-login text-white" onclick="window.location.href='/Login/Index'">Login</button>
+
+                                }
+                           </div>
                     </div>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>

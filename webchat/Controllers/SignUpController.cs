@@ -80,7 +80,7 @@ namespace webchat.Controllers
 
             Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Cooky", "Home");
         }
     }
 }

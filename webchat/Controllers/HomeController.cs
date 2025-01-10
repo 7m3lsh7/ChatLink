@@ -12,8 +12,38 @@ namespace webchat.Controllers
             _chatDbcontect = chatDbcontect;
         }
 
+        public IActionResult Cooky()
+        {
+            var userIdCookie = Request.Cookies["UserId"];
+            if (userIdCookie != null)
+            {
+                var userId = int.Parse(userIdCookie);
+                var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
+
+                if (user != null)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
+
         public IActionResult Index()
         {
+
+            var userIdCookie = Request.Cookies["UserId"];
+            if (userIdCookie != null)
+            {
+                var userId = int.Parse(userIdCookie);
+                var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
+
+                if (user != null)
+                {
+                    ViewData["Username"] = user.Username;
+                }
+            }
+
             return View();
         }                        
     }                     
