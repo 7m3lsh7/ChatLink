@@ -41,6 +41,8 @@ namespace webchat.Controllers
                 if (user != null)
                 {
                     ViewData["Username"] = user.Username;
+                    ViewData["Photo"] = user.ProfilePicture;
+
                 }
             }
 

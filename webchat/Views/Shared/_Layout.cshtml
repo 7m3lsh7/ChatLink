@@ -22,7 +22,7 @@
             <div class="container-fluid">
                 <div class="center">
                     <div class="logo pe-5">
-                        <a class="navbar-brand text-white" href="./Index.html">Chatlink</a>
+                        <a class="navbar-brand text-white" asp-action="Index">Chatlink</a>
                     </div>
                     <div class="collapse navbar-collapse pe-5 ps-5" id="navbarNav">
                         <ul class="navbar-nav">
@@ -39,7 +39,7 @@
                                 <a class="nav-link text-white" href="#">Settings</a>
                             </li>
                             <li class="nav-item pe-2 ps-2">
-                                <a class="nav-link text-white" href="#">Logout</a>
+                                    <a class="nav-link text-danger" href="/Account/Logout">Logout</a>
                             </li>
                         </ul>
                     </div>
@@ -54,11 +54,11 @@
 
                                     
                                         <div class="profile-picture">
-                                            <img src="https://via.placeholder.com/150" alt="Profile Picture">
+                                            <img src="  @ViewData["Photo"]" alt="Profile Picture">
                                         </div>
                                     
 
-                                        <a class="nav-link text-danger" href="/Account/Logout">Logout</a>
+                                       
                                 }
                                 else
                                 {
