@@ -7,7 +7,7 @@ namespace webchat.Controllers
     {
 
         private readonly ChatDbcontect _chatDbcontect;
-        public HomeController(ChatDbcontect chatDbcontect)
+        public HomeController(ChatDbcontect chatDbcontect)                           
         {
             _chatDbcontect = chatDbcontect;
         }

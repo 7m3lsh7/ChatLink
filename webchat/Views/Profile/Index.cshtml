@@ -1,0 +1,271 @@
+﻿<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="navbar navbar-expand-lg color " style="height: 850px;width: 90px; ">
+            <div class="container-fluid">
+                <div class="navbar-column">
+                    <div class="profile-picture">
+                        <img src="https://via.placeholder.com/150" alt="Profile Picture">
+                    </div>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item pt-2 pb-2">
+                                <a class="nav-link active" aria-current="page" href="./Index.html">
+                                    <i class="fa-solid text-white fa-house"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item pt-2 pb-2">
+                                <a class="nav-link" href="./chat.html">
+                                    <i class="fa-solid text-white fa-bell"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item pt-2 pb-2">
+                                <a class="nav-link" href="#">
+                                    <i class="fa-solid text-white fa-message"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item pt-2 pb-2">
+                                <a class="nav-link">
+                                    <i class="fa-solid text-white fa-sliders"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="logout">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <i class="fa-solid text-white fa-right-from-bracket"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="col-md-10 profile-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" placeholder="Search">
+                </div>
+                <div class="icon-container">
+                    <i class="bi bi-bell"></i>
+                    <img src="https://via.placeholder.com/40" alt="Profile Picture">
+                </div>
+            </div>
+
+            <!-- Header -->
+            <div class="profile-header">
+                <h1>Welcome, Amanda</h1>
+            </div>
+
+            <!-- Profile Section -->
+            <div class="row">
+                <div class="col-lg-3 text-center">
+                    <img src="https://via.placeholder.com/120" class="profile-pic mb-3" alt="User Image">
+                    <h5>Alexa Rawles</h5>
+                    <p class="text-muted">alexarawles@gmail.com</p>
+                </div>
+                <div class="col-lg-9">
+                    <button class="edit-btn mb-3">Edit</button>
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="fullName" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="fullName" placeholder="Your Full Name">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="nickName" class="form-label">Nick Name</label>
+                                <input type="text" class="form-control" id="nickName" placeholder="Your Nick Name">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="gender" class="form-label">Gender</label>
+                                <select class="form-control" id="gender">
+                                    <option>Select Gender</option>
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="country" class="form-label">Country</label>
+                                <select class="form-control" id="country">
+                                    <option>Select Country</option>
+                                    <option>USA</option>
+                                    <option>UK</option>
+                                    <option>India</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="language" class="form-label">Language</label>
+                                <select class="form-control" id="language">
+                                    <option>Select Language</option>
+                                    <option>English</option>
+                                    <option>Spanish</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="timeZone" class="form-label">Time Zone</label>
+                                <select class="form-control" id="timeZone">
+                                    <option>Select Time Zone</option>
+                                    <option>GMT</option>
+                                    <option>EST</option>
+                                </select>
+                            </div>
+                        </div>
+                        <h5 class="mt-4">My Email Address</h5>
+                        <p class="text-muted">alexarawles@gmail.com</p>
+                        <button type="button" class="btn btn-primary">+ Add Email Address</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+body {
+    background-color: #1e1e1e;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.profile-header {
+    background: linear-gradient(to right, #3b0764, #7a4cce);
+    height: 250px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-sidebar {
+    background-color: #252525;
+    height: 200px;
+    padding-top: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-content {
+
+    padding: 50px;
+    margin-left: 60px;
+}
+
+.form-control, .btn {
+    border-radius: 15px;
+}
+.edit-btn {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+}
+.nav-link {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+.nav-link i {
+    font-size: 2rem;
+}
+.text-muted {
+    color: #aaa !important;
+}
+.profile-pic {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.sidebar-icon {
+    margin-bottom: 15px;
+}
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #d3d3d3;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+.top-bar .search-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+.top-bar .search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    margin-left: 10px;
+    color: #aaa;
+}
+.top-bar .icon-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.top-bar .icon-container img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.top-bar .icon-container i {
+    font-size: 1.5rem;
+    color: #555;
+    cursor: pointer;
+}
+
+:root {
+    --color: #3B1868;
+    --background-color: #4f037b39;
+}
+
+.color {
+    background-color: var(--color);
+    width: fit-content;
+    height: 100%;
+    display: inline-block;
+}
+.navbar .container-fluid .navbar-column {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+.navbar .container-fluid .navbar-column .logout {
+    padding-top: 100px;
+}
+.navbar .container-fluid .navbar-nav {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-top: 50px;
+}
+
+.profile-picture {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #ddd;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+</style>
