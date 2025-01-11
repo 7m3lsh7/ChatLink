@@ -1,11 +1,13 @@
-﻿<div class="container-fluid">
+﻿@model User
+
+<div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
         <nav class="navbar navbar-expand-lg color " style="height: 850px;width: 90px; ">
             <div class="container-fluid">
                 <div class="navbar-column">
                     <div class="profile-picture">
-                        <img src="https://via.placeholder.com/150" alt="Profile Picture">
+                        <img src="@Model.ProfilePicture" alt="Profile Picture">
                     </div>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -47,6 +49,7 @@
             </div>
         </nav>
 
+
         <!-- Main Content -->
         <div class="col-md-10 profile-content">
             <!-- Top Bar -->
@@ -57,71 +60,78 @@
                 </div>
                 <div class="icon-container">
                     <i class="bi bi-bell"></i>
-                    <img src="https://via.placeholder.com/40" alt="Profile Picture">
+                    <img src="@Model.ProfilePicture" alt="Profile Picture">
                 </div>
             </div>
 
             <!-- Header -->
             <div class="profile-header">
-                <h1>Welcome, Amanda</h1>
+                <h1>Welcome, @Model.Username</h1>
             </div>
 
             <!-- Profile Section -->
             <div class="row">
                 <div class="col-lg-3 text-center">
-                    <img src="https://via.placeholder.com/120" class="profile-pic mb-3" alt="User Image">
-                    <h5>Alexa Rawles</h5>
-                    <p class="text-muted">alexarawles@gmail.com</p>
+                    <img src="@Model.ProfilePicture" class="profile-pic mb-3" alt="User Image">
+                    <h5>@Model.Username</h5>
+                    <p class="text-muted">
+                        @if (!string.IsNullOrEmpty(Model.Email))
+                        {
+                            var emails = Model.Email.Split(',');
+                            foreach (var email in emails)
+                            {
+                                <span>@email</span>
+
+                                <br />
+                            }
+                        }
+                    </p>
                 </div>
                 <div class="col-lg-9">
-                    <button class="edit-btn mb-3">Edit</button>
+
+                    <a class="btn btn-dark" href="@Url.Action("Edit","Profile",new{id=Model.Id})">Edit</a>
+
                     <form>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="fullName" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" id="fullName" placeholder="Your Full Name">
+                                <input type="text" class="form-control" id="fullName" value="@Model.Username" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="nickName" class="form-label">Nick Name</label>
-                                <input type="text" class="form-control" id="nickName" placeholder="Your Nick Name">
+                                <input type="text" class="form-control" id="nickName" value="@Model.NickName" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="gender" class="form-label">Gender</label>
-                                <select class="form-control" id="gender">
-                                    <option>Select Gender</option>
-                                    <option>Male</option>
-                                    <option>Female</option>
-                                </select>
+                                <input type="text" class="form-control" id="gender" value="@Model.Gender" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="country" class="form-label">Country</label>
-                                <select class="form-control" id="country">
-                                    <option>Select Country</option>
-                                    <option>USA</option>
-                                    <option>UK</option>
-                                    <option>India</option>
-                                </select>
+                                <input type="text" class="form-control" id="country" value="@Model.Country" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="language" class="form-label">Language</label>
-                                <select class="form-control" id="language">
-                                    <option>Select Language</option>
-                                    <option>English</option>
-                                    <option>Spanish</option>
-                                </select>
+                                <input type="text" class="form-control" id="language" value="@Model.Language" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="timeZone" class="form-label">Time Zone</label>
-                                <select class="form-control" id="timeZone">
-                                    <option>Select Time Zone</option>
-                                    <option>GMT</option>
-                                    <option>EST</option>
-                                </select>
+                                <input type="text" class="form-control" id="timeZone" value="@Model.TimeZone" readonly>
                             </div>
                         </div>
                         <h5 class="mt-4">My Email Address</h5>
-                        <p class="text-muted">alexarawles@gmail.com</p>
-                        <button type="button" class="btn btn-primary">+ Add Email Address</button>
+                        <p class="text-muted">
+                            @if (!string.IsNullOrEmpty(Model.Email))
+                            {
+                                var emails = Model.Email.Split(',');
+                                foreach (var email in emails)
+                                {
+                                    <span>@email</span>
+
+                                    <br />
+                                }
+                            }
+                        </p>
+                        <a class="btn btn-primary" href="@Url.Action("AddEmail","Profile",new{id=Model.Id})">Add Your New Email</a>
                     </form>
                 </div>
             </div>
@@ -129,7 +139,54 @@
     </div>
 </div>
 
+<p> @Model.TimeZone:</p>
+<div id="clock" style="font-size: 1rem; font-weight: bold; position: fixed; bottom: 10px; right: 10px; text-align: right; background: rgba(0, 0, 0, 0.8); color: white; padding: 10px; border-radius: 8px;">
+</div>
+
+<script>
+    function startClock(timeZone) {
+        const clockElement = document.getElementById("clock");
+
+        function updateClock() {
+            const now = new Date();
+
+            const dateOptions = {
+                timeZone: timeZone,
+                year: 'numeric',
+                month: 'short',
+                day: '2-digit',
+            };
+
+            const timeOptions = {
+                timeZone: timeZone,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+            };
+
+            const dateFormatter = new Intl.DateTimeFormat('en-US', dateOptions);
+            const timeFormatter = new Intl.DateTimeFormat('en-US', timeOptions);
+
+            const formattedDate = dateFormatter.format(now);
+            const formattedTime = timeFormatter.format(now);
+
+            clockElement.innerHTML = `${formattedDate}<br>${formattedTime}`;
+        }
+
+        updateClock(); 
+        setInterval(updateClock, 1000); 
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        startClock("@Model.TimeZone");
+    });
+</script>
+
+
 <style>
+   
+
 body {
     background-color: #1e1e1e;
     color: #fff;
@@ -268,4 +325,5 @@ body {
     border: 2px solid #ddd;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+ 
 </style>

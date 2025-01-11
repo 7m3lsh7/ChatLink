@@ -56,6 +56,11 @@ namespace webchat.Controllers
             user.Username = userStep1.Username;
             user.Email = userStep1.Email;
             user.PasswordHash = userStep1.PasswordHash;
+            user.NickName = userStep1.NickName;
+            user.Country = userStep1.Country;
+            user.Gender = userStep1.Gender;
+            user.Language = userStep1.Language;
+            user.TimeZone = userStep1.TimeZone;
             user.CrearetedAt = DateTime.Now;
 
             if (ProfilePicture != null && ProfilePicture.Length > 0)
