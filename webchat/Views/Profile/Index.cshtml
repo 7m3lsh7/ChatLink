@@ -15,21 +15,17 @@
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav">
                             <li class="nav-item pt-2 pb-2">
-                                <a class="nav-link active" aria-current="page" href="./Index.html">
+                                <a class="nav-link active" aria-current="page" href="/Home/index">
                                     <i class="fa-solid text-white fa-house"></i>
                                 </a>
                             </li>
                             <li class="nav-item pt-2 pb-2">
-                                <a class="nav-link" href="./chat.html">
+                                <a class="nav-link" href="/Profile/index">
                                     <i class="fa-solid text-white fa-bell"></i>
                                 </a>
                             </li>
-                            <li class="nav-item pt-2 pb-2">
-                                <a class="nav-link" href="#">
-                                    <i class="fa-solid text-white fa-message"></i>
-                                </a>
-                            </li>
-                            <li class="nav-item pt-2 pb-2">
+                           
+                            <li class="nav-item pt-2 pb-2" href="/Profile/index">
                                 <a class="nav-link">
                                     <i class="fa-solid text-white fa-sliders"></i>
                                 </a>
@@ -39,8 +35,8 @@
                     <div class="logout">
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fa-solid text-white fa-right-from-bracket"></i>
+                                <a class="nav-link" href="/Account/Logout">
+                                    <i class="fa-solid text-danger fa-right-from-bracket"></i>
                                 </a>
                             </li>
                         </ul>
@@ -59,8 +55,7 @@
                     <input type="text" placeholder="Search">
                 </div>
                 <div class="icon-container">
-                    <i class="bi bi-bell"></i>
-                    <img src="@Model.ProfilePicture" alt="Profile Picture">
+                     <img src="@Model.ProfilePicture" alt="Profile Picture">
                 </div>
             </div>
 
@@ -69,131 +64,123 @@
                 <h1>Welcome, @Model.Username</h1>
             </div>
 
-            <!-- Profile Section -->
+
             <div class="row">
-                <div class="col-lg-3 text-center">
+                <div class="col-lg-3 text-center iamge">
                     <img src="@Model.ProfilePicture" class="profile-pic mb-3" alt="User Image">
                     <h5>@Model.Username</h5>
-                    <p class="text-muted">
-                        @if (!string.IsNullOrEmpty(Model.Email))
-                        {
-                            var emails = Model.Email.Split(',');
-                            foreach (var email in emails)
-                            {
-                                <span>@email</span>
-
-                                <br />
-                            }
-                        }
-                    </p>
                 </div>
                 <div class="col-lg-9">
+                    <form id="profileForm">
+                         <!-- Buttons for Edit/Save -->
+                        <button type="button" id="editButton" class="btn btn-dark">Edit</button>
+                        <button type="submit" id="saveButton" class="btn btn-success" style="display: none;">Save</button>
+                    
+                            <input type="hidden" name="Id" value="@Model.Id" />
 
-                    <a class="btn btn-dark" href="@Url.Action("Edit","Profile",new{id=Model.Id})">Edit</a>
-
-                    <form>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="fullName" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" id="fullName" value="@Model.Username" readonly>
+                                <label for="fullName" class="form-label">Full Name :</label>
+                                <input type="text" class="form-control" id="fullName" name="Username" value="@Model.Username" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="nickName" class="form-label">Nick Name</label>
-                                <input type="text" class="form-control" id="nickName" value="@Model.NickName" readonly>
+                                <label for="nickName" class="form-label">Nick Name :</label>
+                                <input type="text" class="form-control" id="nickName" name="NickName" value="@Model.NickName" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="gender" class="form-label">Gender</label>
-                                <input type="text" class="form-control" id="gender" value="@Model.Gender" readonly>
+                                <label for="gender" class="form-label">Gender :</label>
+                                <input type="text" class="form-control" id="gender" name="Gender" value="@Model.Gender" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="country" class="form-label">Country</label>
-                                <input type="text" class="form-control" id="country" value="@Model.Country" readonly>
+                                <label for="country" class="form-label">Country :</label>
+                                <input type="text" class="form-control" id="country" name="Country" value="@Model.Country" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="language" class="form-label">Language</label>
-                                <input type="text" class="form-control" id="language" value="@Model.Language" readonly>
+                                <label for="language" class="form-label">Language :</label>
+                                <input type="text" class="form-control" id="language" name="Language" value="@Model.Language" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="timeZone" class="form-label">Time Zone</label>
-                                <input type="text" class="form-control" id="timeZone" value="@Model.TimeZone" readonly>
+                                <label for="timeZone" class="form-label">Time Zone :</label>
+                                <input type="text" class="form-control" id="timeZone" name="TimeZone" value="@Model.TimeZone" readonly>
                             </div>
                         </div>
-                        <h5 class="mt-4">My Email Address</h5>
-                        <p class="text-muted">
-                            @if (!string.IsNullOrEmpty(Model.Email))
-                            {
-                                var emails = Model.Email.Split(',');
-                                foreach (var email in emails)
-                                {
-                                    <span>@email</span>
 
-                                    <br />
+                        <div>
+                            <h5 class="mt-4">My Email Address</h5>
+                            <p class="text-muted">
+                                @if (!string.IsNullOrEmpty(Model.Email))
+                                {
+                                    var emails = Model.Email.Split(',');
+                                    foreach (var email in emails)
+                                    {
+                                        <span>@email</span>
+
+                                        <br />
+                                    }
                                 }
-                            }
-                        </p>
-                        <a class="btn btn-primary" href="@Url.Action("AddEmail","Profile",new{id=Model.Id})">Add Your New Email</a>
-                    </form>
+                            </p>
+                            <a class="btn btn-primary mb-3" href="@Url.Action("AddEmail", "Profile", new { id = Model.Id })">Add Your New Email</a>
+                        </div>
+
+                       </form>
                 </div>
             </div>
+           
         </div>
     </div>
+   
 </div>
 
-<p> @Model.TimeZone:</p>
-<div id="clock" style="font-size: 1rem; font-weight: bold; position: fixed; bottom: 10px; right: 10px; text-align: right; background: rgba(0, 0, 0, 0.8); color: white; padding: 10px; border-radius: 8px;">
-</div>
 
 <script>
-    function startClock(timeZone) {
-        const clockElement = document.getElementById("clock");
+    const editButton = document.getElementById('editButton');
+    const saveButton = document.getElementById('saveButton');
+    const profileForm = document.getElementById('profileForm');
 
-        function updateClock() {
-            const now = new Date();
+    const editableFields = ['fullName', 'nickName'];
 
-            const dateOptions = {
-                timeZone: timeZone,
-                year: 'numeric',
-                month: 'short',
-                day: '2-digit',
-            };
+    const formInputs = Array.from(profileForm.querySelectorAll('input')).filter(input =>
+        editableFields.includes(input.id)
+    );
 
-            const timeOptions = {
-                timeZone: timeZone,
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false,
-            };
+    editButton.addEventListener('click', () => {
+        formInputs.forEach(input => input.removeAttribute('readonly'));
+        editButton.style.display = 'none';
+        saveButton.style.display = 'inline-block';
+    });
 
-            const dateFormatter = new Intl.DateTimeFormat('en-US', dateOptions);
-            const timeFormatter = new Intl.DateTimeFormat('en-US', timeOptions);
+    profileForm.addEventListener('submit', (e) => {
+        e.preventDefault();
 
-            const formattedDate = dateFormatter.format(now);
-            const formattedTime = timeFormatter.format(now);
+        const formData = new FormData(profileForm);
 
-            clockElement.innerHTML = `${formattedDate}<br>${formattedTime}`;
-        }
-
-        updateClock(); 
-        setInterval(updateClock, 1000); 
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        startClock("@Model.TimeZone");
+        fetch('/Profile/Edit', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                formInputs.forEach(input => input.setAttribute('readonly', true));
+                editButton.style.display = 'inline-block';
+                saveButton.style.display = 'none';
+            } else {
+                alert('Failed to update profile: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     });
 </script>
-
 
 <style>
    
 
 body {
     background-color: #1e1e1e;
-    color: #fff;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
+ }
 .profile-header {
     background: linear-gradient(to right, #3b0764, #7a4cce);
     height: 250px;
@@ -216,10 +203,14 @@ body {
 
 .profile-content {
 
-    padding: 50px;
+    padding-top: 50px;
     margin-left: 60px;
 }
 
+    .form-control {
+        background-color: #ff000000 !important;
+        opacity: 1;
+    }
 .form-control, .btn {
     border-radius: 15px;
 }
@@ -325,5 +316,22 @@ body {
     border: 2px solid #ddd;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+     .iamge img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .iamge img:active,
+        .iamge img.clicked {
+            transform: scale(4);  
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 10;  
+            position: relative;
+        }
+
  
 </style>

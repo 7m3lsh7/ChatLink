@@ -39,5 +39,5 @@ public class User
     [Required(ErrorMessage = "Please Enter Your Email")]
     [StringLength(255)]
     public string TimeZone { get; set; }
-         //oi
+         
 }

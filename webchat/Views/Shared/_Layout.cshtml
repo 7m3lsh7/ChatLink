@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -35,9 +36,7 @@
                             <li class="nav-item pe-2 ps-2">
                                 <a class="nav-link text-white" href="./chat.html">Chat</a>
                             </li>
-                            <li class="nav-item pe-2 ps-2">
-                                <a class="nav-link text-white" href="#">Friends</a>
-                            </li>
+                            
                             <li class="nav-item pe-2 ps-2">
                                 <a class="nav-link text-white" href="#">Settings</a>
                             </li>
@@ -57,7 +56,9 @@
 
                                     
                                         <div class="profile-picture">
-                                            <img src="  @ViewData["Photo"]" alt="Profile Picture">
+                                            <a href="/Profile/index">
+                                            <img src="@ViewData["Photo"]" alt="Profile Picture">
+                                            </a>
                                         </div>
                                     
 
@@ -74,14 +75,19 @@
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
+
                 </div>
             </div>
         </nav>
     }
+
     </header>
     <div >
-        <main role="main" class="pb-3">
+        <main role="main">
             @RenderBody()
+   
+    <div id="clock" style="font-size: 1rem; font-weight: bold; position: fixed; bottom: 10px; right: 10px; text-align: right; background: rgba(0, 0, 0, 0.8); color: white; padding: 10px; border-radius: 8px;">
+    </div>
         </main>
     </div>
 
@@ -93,6 +99,50 @@
     <script src="~/js/jquery-3.7.1.js"></script>
     <script src="~/js/popper.min.js"></script>
     <script src="~/js/all.min.js"></script>
+    <script src="~/js/time.js"></script>
+
+    <script>
+        function startClock(timeZone) {
+            const clockElement = document.getElementById("clock");
+
+            function updateClock() {
+                const now = new Date();
+
+                const dateOptions = {
+                    timeZone: timeZone,
+                    year: 'numeric',
+                    month: 'short',
+                    day: '2-digit',
+                };
+
+                const timeOptions = {
+                    timeZone: timeZone,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                };
+
+                const dateFormatter = new Intl.DateTimeFormat('en-US', dateOptions);
+                const timeFormatter = new Intl.DateTimeFormat('en-US', timeOptions);
+
+                const formattedDate = dateFormatter.format(now);
+                const formattedTime = timeFormatter.format(now);
+
+                clockElement.innerHTML = `${formattedDate}<br>${formattedTime}`;
+            }
+
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            startClock("@ViewData["time"]");
+        });
+
+
+    </script>
+
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

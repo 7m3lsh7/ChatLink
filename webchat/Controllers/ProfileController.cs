@@ -32,86 +32,66 @@ namespace webchat.Controllers
 
             return RedirectToAction("Index", "Login");
         }
-
-
-        public IActionResult Edit(int id) 
-        {
-
-            var response = _chatDbcontect.users.FirstOrDefault(u => u.Id == id);
-
-            if (response == null)
-            {
-                return NotFound();
-            }
-
-            return View(response);
-        }
-
+                
         [HttpPost]
-        public IActionResult Edit(User user, int id) 
+        public IActionResult Edit(User user, int id)
         {
             var response = _chatDbcontect.users.Find(id);
-
+            
             if (response == null)
             {
                 return NotFound();
             }
 
             else
-            { 
-                response.Email = user.Email;
-                response.Username = user.Username;
+            {
+                 response.Username = user.Username;
                 response.NickName = user.NickName;
-                response.Country = user.Country;
-                response.Language = user.Language;
-                response.PasswordHash = user.PasswordHash;
-                response.TimeZone = user.TimeZone;
-                response.Gender = user.Gender;
+              
                 _chatDbcontect.SaveChanges();
-                return RedirectToAction("Index","Profile");
+                return Json(new { success = true, message = "Profile updated successfully" });
             }
         }
 
-        public IActionResult AddEmail(int id)
+         public IActionResult AddEmail(int id)
         {
-            var response = _chatDbcontect.users.FirstOrDefault(u => u.Id == id);
+            var user = _chatDbcontect.users.Find(id);
 
-            if (response == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return View(response);
+            return View(user);
         }
 
         [HttpPost]
-        public IActionResult AddEmail(User user, int id)
+        public IActionResult SaveEmail(int id, string email)
         {
-            var response = _chatDbcontect.users.Find(id);
+            var user = _chatDbcontect.users.Find(id);
 
-            if (response == null)
+            if (user == null)
             {
                 return NotFound();
             }
-            else
+
+            if (!string.IsNullOrEmpty(email))
             {
                 if (!string.IsNullOrEmpty(user.Email))
                 {
-                    
-                    if (!string.IsNullOrEmpty(response.Email))
-                    {
-                        response.Email += "\n" + user.Email;
-                    }
-                    else
-                    {
-                        response.Email = user.Email; 
-                    }
+                    user.Email += "\n" + email;
+                }
+                else
+                {
+                    user.Email = email;
                 }
 
                 _chatDbcontect.SaveChanges();
-                return RedirectToAction("Index", "Profile"); 
             }
+
+            return RedirectToAction("Index", "Profile");
         }
+    
 
     }
 }
