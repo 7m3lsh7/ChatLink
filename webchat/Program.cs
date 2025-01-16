@@ -1,6 +1,6 @@
 ﻿	using Microsoft.EntityFrameworkCore;
 using webchat.data;
-
+ 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ChatDbcontect>(options => options.UseSqlServer
@@ -15,6 +15,7 @@ builder.Services.AddSession(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
@@ -34,6 +35,7 @@ app.UseSession();
 app.UseRouting();
 
 app.UseAuthorization();
+app.MapHub<ChatHub>("/ChatHub");
 
 app.MapControllerRoute(
 	name: "default",

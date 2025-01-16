@@ -34,7 +34,7 @@
                                     <a class="nav-link active text-white" aria-current="page" asp-action="Index" asp-controller="Profile">Show Profile</a>
                                 </li>
                             <li class="nav-item pe-2 ps-2">
-                                <a class="nav-link text-white" href="./chat.html">Chat</a>
+                                <a class="nav-link text-white" href="/Home/Chat">Chat</a>
                             </li>
                             
                             <li class="nav-item pe-2 ps-2">
@@ -100,6 +100,8 @@
     <script src="~/js/popper.min.js"></script>
     <script src="~/js/all.min.js"></script>
     <script src="~/js/time.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
      <script>
         function startClock(timeZone) {
             const clockElement = document.getElementById("clock");

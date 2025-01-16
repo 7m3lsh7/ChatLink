@@ -49,7 +49,28 @@ namespace webchat.Controllers
             }
 
             return View();
-        }                        
+        }    
+        
+        public IActionResult Chat()
+        {
+
+            var userIdCookie = Request.Cookies["UserId"];
+            if (userIdCookie != null)
+            {
+                var userId = int.Parse(userIdCookie);
+                var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
+
+                if (user != null)
+                {
+                    ViewData["time"] = user.TimeZone;
+                    ViewData["nickname"] = user.NickName;
+                    ViewData["Photo"] = user.ProfilePicture;
+
+                }
+            }
+            return View();
+
+        }
     }                     
 }
                     
