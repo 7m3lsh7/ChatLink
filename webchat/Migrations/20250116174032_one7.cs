@@ -5,7 +5,7 @@
 namespace webchat.Migrations
 {
     /// <inheritdoc />
-    public partial class sda : Migration
+    public partial class one7 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -22,6 +22,7 @@ namespace webchat.Controllers
 
                 if (user != null)
                 {
+                    
                     return RedirectToAction("Index");
                 }
             }
@@ -40,7 +41,8 @@ namespace webchat.Controllers
 
                 if (user != null)
                 {
-                    ViewData["Username"] = user.Username;
+                    ViewData["time"] = user.TimeZone;
+                    ViewData["nickname"] = user.NickName;
                     ViewData["Photo"] = user.ProfilePicture;
 
                 }

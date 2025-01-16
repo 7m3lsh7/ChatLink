@@ -18,14 +18,16 @@ namespace webchat.Controllers
             ViewData["HideFooter"] = true;
 
             var userIdCookie = Request.Cookies["UserId"];
-
-            if (userIdCookie != null)
+             if (userIdCookie != null)
             {
                 var userId = int.Parse(userIdCookie);
 
                 var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
+               
                 if (user != null)
                 {
+                    ViewData["time"] = user.TimeZone;
+
                     return View(user);
                 }
             }

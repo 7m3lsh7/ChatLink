@@ -25,9 +25,14 @@
                                 </a>
                             </li>
                            
-                            <li class="nav-item pt-2 pb-2" href="/Profile/index">
-                                <a class="nav-link">
+                            <li class="nav-item pt-2 pb-2" >
+                                <a class="nav-link" href="/Profile/index"   >
                                     <i class="fa-solid text-white fa-sliders"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item pt-2 pb-2">
+                                <a class="nav-link" href="/Profile/index">
+                                    <i class="fa-solid text-white fa-user"></i>
                                 </a>
                             </li>
                         </ul>
@@ -54,21 +59,21 @@
                     <i class="bi bi-search"></i>
                     <input type="text" placeholder="Search">
                 </div>
-                <div class="icon-container">
+                <div class="icon-container ms-3">
                      <img src="@Model.ProfilePicture" alt="Profile Picture">
                 </div>
             </div>
 
             <!-- Header -->
             <div class="profile-header">
-                <h1>Welcome, @Model.Username</h1>
+                <h1>Welcome, @Model.NickName</h1>
             </div>
 
 
             <div class="row">
                 <div class="col-lg-3 text-center iamge">
                     <img src="@Model.ProfilePicture" class="profile-pic mb-3" alt="User Image">
-                    <h5>@Model.Username</h5>
+                    <h5>@Model.NickName</h5>
                 </div>
                 <div class="col-lg-9">
                     <form id="profileForm">
@@ -78,7 +83,7 @@
                     
                             <input type="hidden" name="Id" value="@Model.Id" />
 
-                        <div class="row">
+                        <div class="row mt-3">
                             <div class="col-md-6 mb-3">
                                 <label for="fullName" class="form-label">Full Name :</label>
                                 <input type="text" class="form-control" id="fullName" name="Username" value="@Model.Username" readonly>
@@ -154,7 +159,7 @@
 
         const formData = new FormData(profileForm);
 
-        fetch('/Profile/Edit', { //55
+        fetch('/Profile/Edit', {  
             method: 'POST',
             body: formData
         })
@@ -172,6 +177,12 @@
         .catch(error => {
             console.error('Error:', error);
         });
+    });
+
+    const profilePicture = document.querySelector('.iamge img');
+
+    profilePicture.addEventListener('click', () => {
+        profilePicture.classList.toggle('clicked');
     });
 </script>
 

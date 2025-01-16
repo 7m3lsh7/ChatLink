@@ -25,9 +25,9 @@
                     <div class="logo pe-5">
                         <a class="navbar-brand text-white" asp-action="Index">Chatlink</a>
                     </div>
-                    <div class="collapse navbar-collapse pe-5 ps-5" id="navbarNav">
+                    <div class="collapse navbar-collapse " id="navbarNav">
                         <ul class="navbar-nav">
-                            <li class="nav-item pe-2 ps-2">
+                            <li class="nav-item pe-2 ">
                                 <a class="nav-link active text-white" aria-current="page" asp-action="Index" asp-controller="Home">Home</a>
                             </li>
                                 <li class="nav-item pe-2 ps-2">
@@ -38,21 +38,21 @@
                             </li>
                             
                             <li class="nav-item pe-2 ps-2">
-                                <a class="nav-link text-white" href="#">Settings</a>
+                                <a class="nav-link text-white" href="/Profile/index">Settings </a>
                             </li>
-                            <li class="nav-item pe-2 ps-2">
+                            <li class="nav-item      ps-2">
                                     <a class="nav-link text-danger" href="/Account/Logout">Logout</a>
                             </li>
                         </ul>
                     </div>
-                    <div class="Profile ps-5 pe-5">
+                    <div class="Profile ">
                          <div class="Profile ps-5 pe-5">
 
-                              
-                                
-                                @if (ViewData["Username"] != null)
+
+
+                                @if (ViewData["nickname"] != null)
                                 {
-                                        <a class="nav-link text-white p-3" href="#">@ViewData["Username"]</a>
+                                    <a class="nav-link text-white p-3" href="#">@ViewData["nickname"]</a>
 
                                     
                                         <div class="profile-picture">
@@ -100,8 +100,7 @@
     <script src="~/js/popper.min.js"></script>
     <script src="~/js/all.min.js"></script>
     <script src="~/js/time.js"></script>
-
-    <script>
+     <script>
         function startClock(timeZone) {
             const clockElement = document.getElementById("clock");
 
@@ -137,7 +136,8 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            startClock("@ViewData["time"]");
+          const timeZone = "@ViewData["time"]";
+            startClock(timeZone);
         });
 
 
