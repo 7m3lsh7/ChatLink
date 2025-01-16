@@ -1,6 +1,6 @@
 ﻿namespace webchat.Models
 {
-    public class ChatMessage
+    public class Chat
     {
         public int Id { get; set; }
         public int SenderId { get; set; }

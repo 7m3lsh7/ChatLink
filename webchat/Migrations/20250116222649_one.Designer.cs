@@ -12,7 +12,7 @@ using webchat.data;
 namespace webchat.Migrations
 {
     [DbContext(typeof(ChatDbcontect))]
-    [Migration("20250116221318_one")]
+    [Migration("20250116222649_one")]
     partial class one
     {
         /// <inheritdoc />
@@ -121,6 +121,32 @@ namespace webchat.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("admins");
+                });
+
+            modelBuilder.Entity("webchat.Models.Chat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ReceiverId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("chats");
                 });
 #pragma warning restore 612, 618
         }

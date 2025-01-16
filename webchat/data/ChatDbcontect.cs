@@ -11,6 +11,7 @@ namespace webchat.data
 
         public DbSet<Admin> admins { get; set; }
         public DbSet<User> users { get; set; }
+        public DbSet<Chat> chats { get; set; }
 
     }
 }
