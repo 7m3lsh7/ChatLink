@@ -7,6 +7,7 @@ using webchat.data;
 using webchat.Models;
 using Microsoft.AspNetCore.Http;
 using System.Net.Mail;
+using AspNetCore.ReCaptcha;
 
 namespace webchat.Controllers
 {
@@ -97,19 +98,20 @@ namespace webchat.Controllers
                 return RedirectToAction("Index");
             }
 
-        user.Username = userStep1.Username;
-        user.Email = userStep1.Email;
-        user.PasswordHash = userStep1.PasswordHash;
-        user.NickName = userStep1.NickName;
-        user.Country = userStep1.Country;
-        user.Gender = userStep1.Gender;
-        user.Language = userStep1.Language;
-        user.TimeZone = userStep1.TimeZone;
-        user.CrearetedAt = DateTime.Now;
-        user.VerificationCode = userStep1.VerificationCode;
-        user.VerificationCodeExpiry = userStep1.VerificationCodeExpiry;
-        user.IsVerified = false;
+            user.Username = userStep1.Username;
+            user.Email = userStep1.Email;
+            user.PasswordHash = userStep1.PasswordHash;
+            user.NickName = userStep1.NickName;
+            user.Country = userStep1.Country;
+            user.Gender = userStep1.Gender;
+            user.Language = userStep1.Language;
+            user.TimeZone = userStep1.TimeZone;
+            user.CrearetedAt = DateTime.Now;
+            user.VerificationCode = userStep1.VerificationCode;
+            user.VerificationCodeExpiry = userStep1.VerificationCodeExpiry;
+            user.IsVerified = false;
             user.IsAdmin = false;
+
             if (ProfilePicture != null && ProfilePicture.Length > 0)
             {
                 var filePath = Path.Combine("wwwroot/uploads", ProfilePicture.FileName);
@@ -124,7 +126,7 @@ namespace webchat.Controllers
             HttpContext.Session.Set("UserStep2", user);
             HttpContext.Session.SetString("SignUpStep", "VerifyEmail");
 
-            
+          
             return RedirectToAction("VerifyEmail");
         }
 
@@ -141,6 +143,7 @@ namespace webchat.Controllers
         }
 
         [HttpPost]
+        [ValidateReCaptcha]
         public IActionResult VerifyEmail(string code)
         {
             var userStep2 = HttpContext.Session.Get<User>("UserStep2");
@@ -150,19 +153,26 @@ namespace webchat.Controllers
             }
 
            
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "التحقق من reCAPTCHA فشل. يرجى المحاولة مرة أخرى.");
+                return View();
+            }
+
+            
             if (userStep2.VerificationCode == code && userStep2.VerificationCodeExpiry > DateTime.Now)
             {
                 userStep2.IsVerified = true; 
 
-               
+
                 _chatDbContext.users.Add(userStep2);
                 _chatDbContext.SaveChanges();
 
-               
-                HttpContext.Session.SetInt32("UserId", userStep2.Id);
-                HttpContext.Session.SetString("Username", userStep2.Username);
+              
+                HttpContext.Session.SetInt32("UserId", userStep2.Id); 
+                HttpContext.Session.SetString("Username", userStep2.Username); 
 
-                
+               
                 var cookieOptions = new CookieOptions
                 {
                     Expires = DateTime.Now.AddDays(30), 
@@ -172,7 +182,6 @@ namespace webchat.Controllers
                 Response.Cookies.Append("UserId", userStep2.Id.ToString(), cookieOptions);
                 Response.Cookies.Append("Username", userStep2.Username, cookieOptions);
 
-                
                 return RedirectToAction("Cooky", "Home");
             }
 
