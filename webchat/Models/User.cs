@@ -18,6 +18,8 @@ public class User
     [Required(ErrorMessage = "Please Enter Your Profile Picture")]
     public string ProfilePicture { get; set; }
 
+    public bool IsAdmin { get; set; }
+
     public DateTime CrearetedAt { get; set; }
 
     [Required(ErrorMessage = "Please Enter Your NickName")]

@@ -13,7 +13,7 @@ namespace webchat.Controllers
 
         public IActionResult Index()
         {
-            ViewData["HideNavbar"] = true;
+             ViewData["HideNavbar"] = true;
             ViewData["HideFooter"] = true;
 
             var userIdCookie = Request.Cookies["UserId"];
@@ -27,7 +27,7 @@ namespace webchat.Controllers
        [HttpPost]
        [ValidateAntiForgeryToken]
        public IActionResult Check(User user)
-        {
+       {
           var response = _chatDbcontect.users.FirstOrDefault(u => u.Email == user.Email && u.PasswordHash == user.PasswordHash);
             if (response == null)
             {
@@ -41,14 +41,24 @@ namespace webchat.Controllers
                     HttpOnly = true
                 };
                 Response.Cookies.Append("UserId", response.Id.ToString(), cookieOptions);
-
+                Response.Cookies.Append("IsAdmin", response.IsAdmin.ToString(), new CookieOptions
+                {
+                    HttpOnly = true,
+                    Expires = DateTimeOffset.Now.AddHours(1)
+                });
                 return RedirectToAction("Index", "Home"); 
             }
-        }
+
+       }
         
 
         public IActionResult ViewUser()
         {
+            var isAdminCookie = Request.Cookies["IsAdmin"];
+            if (string.IsNullOrEmpty(isAdminCookie) || isAdminCookie != "True")
+            {
+                return RedirectToAction("Index", "Login");
+            }
             var response = _chatDbcontect.users.ToList();
             return View(response);
         }

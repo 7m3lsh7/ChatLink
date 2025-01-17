@@ -108,6 +108,7 @@ public class SignUpController : Controller
         user.VerificationCode = userStep1.VerificationCode;
         user.VerificationCodeExpiry = userStep1.VerificationCodeExpiry;
         user.IsVerified = false;
+        user.IsAdmin = false;
 
        
 
