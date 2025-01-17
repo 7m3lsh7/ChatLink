@@ -168,11 +168,9 @@ namespace webchat.Controllers
                 _chatDbContext.users.Add(userStep2);
                 _chatDbContext.SaveChanges();
 
-              
                 HttpContext.Session.SetInt32("UserId", userStep2.Id); 
                 HttpContext.Session.SetString("Username", userStep2.Username); 
 
-               
                 var cookieOptions = new CookieOptions
                 {
                     Expires = DateTime.Now.AddDays(30), 
