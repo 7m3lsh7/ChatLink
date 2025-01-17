@@ -39,5 +39,12 @@ public class User
     [Required(ErrorMessage = "Please Enter Your Email")]
     [StringLength(255)]
     public string TimeZone { get; set; }
-         
+
+
+    public string VerificationCode { get; set; }
+
+    public DateTime? VerificationCodeExpiry { get; set; }
+
+    public bool IsVerified { get; set; }
+
 }

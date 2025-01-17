@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Verify Email";
+}
+
+<div class="login-container">
+    <div class="welcome-section">
+        <h1>Verify Your Email</h1>
+        <p>Enter the verification code sent to your email.</p>
+    </div>
+
+    <div class="login-section">
+        <form action="/SignUp/VerifyEmail" method="post">
+            <div class="mb-3">
+                <label for="code" class="form-label">Verification Code:</label>
+                <input type="text" id="code" name="code" class="form-control w" placeholder="Enter verification code" required>
+            </div>
+
+            <br>
+            <button type="submit" class="btn btn-login w-100">Verify</button>
+        </form>
+    </div>
+</div>
