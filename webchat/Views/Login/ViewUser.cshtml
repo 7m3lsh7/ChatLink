@@ -1,40 +1,55 @@
 ﻿@model IEnumerable<User>
-<table class="styled-table m-auto w-75 mt-5">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>PasswordHash</th>
-            <th>ProfilePicture</th>
-            <th>CreatedAt</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var x in Model)
-        {
+ 
+
+    <table class="styled-table m-auto  w-50  mt-5">
+        <thead>
             <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>PasswordHash</th>
+                <th>ProfilePicture</th>
+                <th>CreatedAt</th>
+                <th>IsAdmin</th>
+                <th>NickName</th>
+                <th>Gender</th>
+                <th>Country</th>
+                <th>Language</th>
+                <th>TimeZone</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var x in Model)
+            {
+                <tr>
                 <td>@x.Id</td>
                 <td>@x.Username</td>
                 <td>@x.Email</td>
                 <td>@x.PasswordHash</td>
                 <td>@x.ProfilePicture</td>
                 <td>@x.CrearetedAt</td>
-                <td>
-                    <a class="btn-delete" href="@Url.Action("Delete","Login",new{id=x.Id})">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                <td>@x.IsAdmin</td>
+                <td>@x.NickName</td>
+                <td>@x.Gender</td>
+                <td>@x.Country</td>
+                <td>@x.Language</td>
+                <td>@x.TimeZone</td>
+                    <td>
+                        <a class="btn-delete" href="@Url.Action("Delete","Login",new{id=x.Id})">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
+ 
 <style>
     
     body {
-        background: linear-gradient(135deg, #2b5876, #4e4376);
+        background-color: #4e4376;
         background-size: cover;
-         
+        width:2500px;
     }
 
  
@@ -42,7 +57,7 @@
         border-collapse: collapse;
         margin: 25px 0;
         font-size: 18px;
-        width: 100%;
+         
         background: #fff;
         color: #333;
         border-radius: 12px;
