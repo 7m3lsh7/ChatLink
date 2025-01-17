@@ -12,14 +12,14 @@ public class SignUpController : Controller
         _chatDbcontect = chatDbcontect;
     }
 
-    // دالة لإنشاء كود تحقق عشوائي
-    private string GenerateVerificationCode()
+      private string GenerateVerificationCode()
     {
         var random = new Random();
-        return random.Next(100000, 999999).ToString(); // كود مكون من 6 أرقام
+        return random.Next(100000, 999999).ToString();    
+    
     }
 
-    // دالة لإرسال البريد الإلكتروني
+   
     private void SendEmail(string toEmail, string subject, string body)
     {
         try
@@ -36,20 +36,21 @@ public class SignUpController : Controller
         }
         catch (Exception ex)
         {
-            // سجل الخطأ إذا لزم الأمر
+             
             Console.WriteLine($"Failed to send email: {ex.Message}");
         }
     }
 
-    // واجهة التسجيل
+  
     public IActionResult Index()
     {
+        HttpContext.Session.SetString("SignUpStep", "Index");
         ViewData["HideNavbar"] = true;
         ViewData["HideFooter"] = true;
         return View();
     }
 
-    // إضافة المستخدم وإرسال كود التحقق
+    
     [HttpPost]
     public IActionResult add(User user)
     {
@@ -59,31 +60,34 @@ public class SignUpController : Controller
             return View("Index");
         }
 
-        // إنشاء كود تحقق
+      
         var verificationCode = GenerateVerificationCode();
         user.VerificationCode = verificationCode;
-        user.VerificationCodeExpiry = DateTime.Now.AddMinutes(10); // صلاحية الكود لمدة 10 دقائق
+        user.VerificationCodeExpiry = DateTime.Now.AddMinutes(10);  
         user.IsVerified = false;
 
         HttpContext.Session.Set("UserStep1", user);
+        HttpContext.Session.SetString("SignUpStep", "Addphoto");
 
-        // إرسال كود التحقق إلى البريد الإلكتروني
-        var emailBody = $"Your verification code is: <strong>{verificationCode}</strong>";
+        var emailBody = $"Your verification code is:( {verificationCode} )";
         SendEmail(user.Email, "Verify your email", emailBody);
 
         return RedirectToAction("Addphoto");
     }
 
-    // واجهة إضافة الصورة
-    public IActionResult Addphoto()
+     public IActionResult Addphoto()
     {
+        if (HttpContext.Session.GetString("SignUpStep") != "Addphoto")
+        {
+            return RedirectToAction("Index"); 
+        }
+
         ViewData["HideNavbar"] = true;
         ViewData["HideFooter"] = true;
         return View();
     }
 
-    // إنهاء التسجيل وإضافة الصورة
-    [HttpPost]
+     [HttpPost]
     public async Task<IActionResult> Finish(User user, IFormFile ProfilePicture)
     {
         var userStep1 = HttpContext.Session.Get<User>("UserStep1");
@@ -127,20 +131,23 @@ public class SignUpController : Controller
         };
 
         Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
-
+        HttpContext.Session.SetString("SignUpStep", "VerifyEmail");
         return RedirectToAction("VerifyEmail");
     }
 
-    // واجهة إدخال كود التحقق
-    public IActionResult VerifyEmail()
+     public IActionResult VerifyEmail()
     {
+        if (HttpContext.Session.GetString("SignUpStep") != "VerifyEmail")
+        {
+            return RedirectToAction("Index");
+        }
+
         ViewData["HideNavbar"] = true;
         ViewData["HideFooter"] = true;
         return View();
     }
 
-    // التحقق من الكود
-    [HttpPost]
+     [HttpPost]
     public IActionResult VerifyEmail(string code)
     {
         var user = _chatDbcontect.users.FirstOrDefault(u => u.VerificationCode == code && u.VerificationCodeExpiry > DateTime.Now);
