@@ -1,37 +1,96 @@
 ﻿@model IEnumerable<User>
-
-<table class="table m-auto w-75 mt-5">
-    <thead class="table table-bordered table-dark">
+<table class="styled-table m-auto w-75 mt-5">
+    <thead>
         <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Username</th>
-            <th scope="col">Email</th>
-            <th scope="col">PasswordHash</th>
-            <th scope="col">ProfilePicture</th>
-            <th scope="col">CrearetedAt</th>
-            <th scope="col">Action</th>
+            <th>Id</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>PasswordHash</th>
+            <th>ProfilePicture</th>
+            <th>CreatedAt</th>
+            <th>Action</th>
         </tr>
     </thead>
-    <tbody class="table-light">
-        @foreach(var x in Model)
+    <tbody>
+        @foreach (var x in Model)
         {
-          <tr>
-              <th scope="row">@x.Id</th>
-              <td>@x.Username</td>
-              <td>@x.Email</td>
-              <td>@x.PasswordHash</td>
-              <td>@x.ProfilePicture</td>
-              <td>@x.CrearetedAt</td>
-              <td>
-                    <a class="btn btn-outline-danger btn-sm" href="@Url.Action("Delete","Login",new{id=x.Id})">Delete</a>
-              </td>
-              </tr>
+            <tr>
+                <td>@x.Id</td>
+                <td>@x.Username</td>
+                <td>@x.Email</td>
+                <td>@x.PasswordHash</td>
+                <td>@x.ProfilePicture</td>
+                <td>@x.CrearetedAt</td>
+                <td>
+                    <a class="btn-delete" href="@Url.Action("Delete","Login",new{id=x.Id})">Delete</a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
-<style>
-    body{
-        background-image: url('../images/Screenshot .png')
 
+<style>
+    
+    body {
+        background: linear-gradient(135deg, #2b5876, #4e4376);
+        background-size: cover;
+         
     }
+
+ 
+    .styled-table {
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 18px;
+        width: 100%;
+        background: #fff;
+        color: #333;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    }
+
+        .styled-table thead tr {
+            background: linear-gradient(90deg, #ff6f61, #de6262);
+            color: #ffffff;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+            transition: all 0.3s ease-in-out;
+        }
+
+            .styled-table tbody tr:nth-of-type(even) {
+                background: #f3f3f3;
+            }
+
+            .styled-table tbody tr:hover {
+                background: #ffebcc;
+                transform: scale(1.02);
+            }
+
+    
+    .btn-delete {
+        background: linear-gradient(90deg, #ff416c, #ff4b2b);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.3s ease-in-out;
+    }
+
+        .btn-delete:hover {
+            background: linear-gradient(90deg, #ff4b2b, #ff416c);
+            color: #000;
+            box-shadow: 0px 4px 10px rgba(255, 75, 43, 0.5);
+        }
 </style>
