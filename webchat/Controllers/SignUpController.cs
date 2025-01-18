@@ -111,6 +111,8 @@ namespace webchat.Controllers
             user.VerificationCodeExpiry = userStep1.VerificationCodeExpiry;
             user.IsVerified = false;
             user.IsAdmin = false;
+            user.ResetPasswordToken = "";
+            user.ResetPasswordExpiry = null; 
 
             if (ProfilePicture != null && ProfilePicture.Length > 0)
             {
