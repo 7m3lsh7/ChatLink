@@ -1,34 +1,344 @@
-﻿<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+﻿@model User
 
-<h1>Chat Room</h1>
-<div class="text-dark" id="messages"></div>
-<input type="text" id="user" placeholder="Your Name">
-<input type="text" id="message" placeholder="Your Message">
-<button id="sendButton">Send</button>
+<nav class="navbar navbar-expand-lg color " style=" width: 90px; ">
+    <div class="container-fluid">
+        <div class="navbar-column">
+            <div class="profile-picture">
+                <img src="@Model.ProfilePicture" alt="Profile Picture">
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item pt-2 pb-2">
+                        <a class="nav-link active" aria-current="page" href="/Home/index">
+                            <i class="fa-solid text-white fa-house"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item pt-2 pb-2">
+                        <a class="nav-link" href="/Profile/index">
+                            <i class="fa-solid text-white fa-user"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item pt-2 pb-2">
+                        <a class="nav-link" href="/Profile/index">
+                            <i class="fa-solid text-white fa-bell"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item pt-2 pb-2">
+                        <a class="nav-link" href="/Profile/Search">
+                            <i class="fa-solid text-white fa-magnifying-glass"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item pt-2 pb-2">
+                        <a class="nav-link" href="/Profile/index">
+                            <i class="fa-solid text-white fa-sliders"></i>
+                        </a>
+                    </li>
+                 
+                </ul>
+            </div>
+            <div class="logout">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Account/Logout">
+                            <i class="fa-solid text-danger fa-right-from-bracket"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
 
-<script>
-   
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/chatHub")
-        .build();
 
-    // استقبال الرسائل من الخادم
-    connection.on("ReceiveMessage", (user, message) => {
-        const msgDiv = document.getElementById("messages");
-        const newMessage = document.createElement("div");
-        newMessage.textContent = `${user}: ${message}`;
-        msgDiv.appendChild(newMessage);
-    });
+<div class="chat-container ">
+    <!-- Seen Messages -->
+    <div class="types-chat">
 
-    // بدء الاتصال
-    connection.start().catch(err => console.error(err.toString()));
 
-    // إرسال الرسالة عند الضغط على الزر
-    document.getElementById("sendButton").addEventListener("click", () => {
-        const user = document.getElementById("user").value;
-        const message = document.getElementById("message").value;
+        <div class="messages-section-seen">
+            <h5>Seen Messages</h5>
+            <div class="message-item">
+                <img src="https://via.placeholder.com/40" alt="User">
+                <div class="text-white">mena magdy<br>ALOoooooooo</div>
+            </div>
+            <div class="message-item">
+                <img src="https://via.placeholder.com/40" alt="User">
+                <div class="text-white">mena magdy<br>ALOoooooooo</div>
+            </div>
+        </div>
 
-        connection.invoke("SendMessage", user, message)
-            .catch(err => console.error(err.toString()));
-    });
-</script>
+        <!-- Unseen Messages -->
+        <div class="messages-section-unseen">
+            <h5 class="text-white">Unseen Messages</h5>
+            <div class="message-item">
+                <img src="https://via.placeholder.com/40" alt="User">
+                <div class="text-white">mena magdy<br>ALOoooooooo</div>
+            </div>
+            <div class="message-item">
+                <img src="https://via.placeholder.com/40" alt="User">
+                <div class="text-white">mena magdy<br>ALOoooooooo</div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Chat Box -->
+    <div class="chat-box">
+        <div class="chat-header">
+            <img src="https://via.placeholder.com/50" alt="User">
+            <div>
+                <strong class="text-white">Benny</strong><br>
+                <span style="color: #99aab5;">Online</span>
+            </div>
+        </div>
+
+        <div class="chat-messages">
+            <div class="message received">
+                <div class="bubble">Hi there, How are you?</div>
+            </div>
+            <div class="message sent">
+                <div class="bubble">I am great. Thanks!</div>
+            </div>
+            <div class="message received">
+                <div class="bubble">Can you send me my newest work schedule?</div>
+            </div>
+            <div class="message sent">
+                <div class="bubble">Okay, give me some time to make a schedule for you.</div>
+            </div>
+        </div>
+
+        <div class="chat-input">
+            <input type="text" placeholder="Enter Your Message">
+            <button>Send</button>
+        </div>
+    </div>
+</div>
+<style>
+    :root {
+        --primary-color: #6C63FF;  
+        --secondary-color: #2D2B8B;  
+        --background-gradient: linear-gradient(135deg, #6C63FF 0%, #B46FFF 100%);
+        --dark-bg: #2D2B8B;
+        --light-bg: #F3F3F3;
+        --accent-color: #FFD700;
+        --bubble-sent-color: #544cd5;
+        --bubble-received-color: #2320a1;
+        --input-bg: #FFFFFF;
+        --input-border-color: #BDBDBD;
+        --color: #3B1868;
+    }
+
+    body {
+        background: var(--background-gradient);
+        font-family: 'Kadwa', serif;
+        color: #FFF;
+        margin: 0;
+    }
+
+    .color {
+        background-color: var(--color);
+        width: fit-content;
+        height: 650px;
+        display: inline-block;
+    }
+
+     .navbar .container-fluid .navbar-column {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .navbar .container-fluid .navbar-column .logout {
+            padding-top: 100px;
+        }
+
+    .navbar .container-fluid .navbar-nav {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        margin-top: 50px;
+    }
+
+    .navbar .navbar-nav .nav-item:hover,
+    .navbar .navbar-nav .nav-item:focus {
+        background-color: var(--secondary-color);
+        color: #fff;
+        transform: scale(1.1);
+    }
+
+    .navbar .navbar-nav .nav-item:active {
+        background-color: var(--primary-color);
+        color: #fff;
+    }
+
+    .navbar .navbar-nav .nav-item.active {
+        background-color: #4A0072;
+        color: #fff;
+    }
+
+        .navbar .navbar-nav .nav-item:hover i,
+        .navbar .navbar-nav .nav-item:focus i,
+        .navbar .navbar-nav .nav-item:active i,
+        .navbar .navbar-nav .nav-item.active i {
+            color: var(--accent-color);
+        }
+
+     .profile-picture {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #ddd;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .chat-container {
+        display: inline-flex;
+         height: 600px;
+    }
+
+    .messages-section-seen,
+    .messages-section-unseen {
+        flex: 1;
+        background: var(--background-gradient);
+        border-radius: 15px;
+        padding: 0 20px;
+        margin-top: auto;
+    }
+
+    .messages-section-unseen {
+        margin-top: 50px;
+    }
+
+    .messages-section h5 {
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 20px;
+    }
+
+    .message-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--dark-bg);
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .message-item:hover {
+            background: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .message-item img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+        }
+
+    .chat-box {
+        flex: 2;
+        background-color: var(--primary-color);
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 700px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .chat-header {
+        background: var(--secondary-color);
+        border-radius: 15px 15px 0 0;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+        .chat-header img {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+        }
+
+    .types-chat {
+        width: 500px;
+        margin: 0 20px 20px 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .message {
+        margin-bottom: 15px;
+    }
+
+        .message.sent {
+            text-align: right;
+        }
+
+        .message .bubble {
+            display: inline-block;
+            padding: 15px 20px;
+            border-radius: 20px;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+
+        .message.sent .bubble {
+            background-color: var(--bubble-sent-color);
+            color: white;
+        }
+
+        .message.received .bubble {
+            background-color: var(--bubble-received-color);
+            color: white;
+        }
+
+    .chat-input {
+        display: flex;
+        padding: 12px;
+        gap: 12px;
+        background: var(--light-bg);
+        border-radius: 15px;
+    }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid var(--input-border-color);
+            background-color: var(--input-bg);
+            font-size: 16px;
+        }
+
+        .chat-input button {
+            padding: 12px 18px;
+            border-radius: 10px;
+            border: none;
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .chat-input button:hover {
+                background-color: var(--secondary-color);
+                transform: scale(1.05);
+            }
+</style>
+     

@@ -1,0 +1,161 @@
+﻿@model IEnumerable<webchat.Models.User>
+<div class="f">
+    <form method="get" action="/Profile/Search" class="search-form">
+        <button type="button" class="reset-button" onclick="window.location.href='/Profile/Search';">Reset</button>
+        <input type="text" name="username" placeholder="Search for users" class="search-input" />
+        <button type="submit" class="search-button">Search</button>
+    </form>
+    <ul class="user-list">
+        @if (!Model.Any())
+        {
+            <li class="no-users">No users found.</li>
+        }
+        else
+        {
+            @foreach (var user in Model)
+            {
+                <li class="user-item">
+                    <span class="user-name">@user.Username</span>
+                    <a href="/Chat/Index?receiverId=@user.Id" class="chat-link">Start Chat</a>
+                </li>
+            }
+        }
+    </ul>
+</div>
+
+
+
+<style>
+     
+    body {
+        background: linear-gradient(135deg, #2b5876, #4e4376);
+        font-family: 'Poppins', sans-serif;
+        min-height: 100vh;
+       
+      
+    }
+    .f{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        margin: 20px
+    }
+     
+    .search-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 30px;
+        gap: 10px;
+    }
+
+    .search-input {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 25px;
+        width: 300px;
+        font-size: 16px;
+        outline: none;
+        background: #ffffff;
+        color: #333;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .search-input:focus {
+            transform: scale(1.05);
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+    .search-button {
+        padding: 10px 25px;
+        background: linear-gradient(90deg, #00c6ff, #0072ff);
+        border: none;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+        .search-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 8px 20px rgba(0, 114, 255, 0.5);
+        }
+
+ 
+    .user-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .user-item {
+        background: #ffffff;
+        padding: 15px 20px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        color: #333;
+    }
+
+        .user-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+    .user-name {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .chat-link {
+        background: linear-gradient(90deg, #ff416c, #ff4b2b);
+        padding: 8px 15px;
+        border-radius: 25px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: bold;
+        text-decoration: none;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+        .chat-link:hover {
+            transform: scale(1.1);
+            background: linear-gradient(90deg, #ff4b2b, #ff416c);
+            box-shadow: 0px 8px 20px rgba(255, 75, 43, 0.5);
+        }
+
+    .reset-button {
+        padding: 10px 25px;
+        background: linear-gradient(90deg, #ff416c, #ff4b2b);
+        border: none;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+        .reset-button:hover {
+            transform: scale(1.1);
+            background: linear-gradient(90deg, #ff4b2b, #ff416c);
+            box-shadow: 0px 8px 20px rgba(255, 75, 43, 0.5);
+        }
+
+</style>

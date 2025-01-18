@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using webchat.data;
+using webchat.Models;
 
 namespace webchat.Controllers
 {
@@ -18,12 +20,12 @@ namespace webchat.Controllers
             ViewData["HideFooter"] = true;
 
             var userIdCookie = Request.Cookies["UserId"];
-             if (userIdCookie != null)
+            if (userIdCookie != null)
             {
                 var userId = int.Parse(userIdCookie);
 
                 var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
-               
+
                 if (user != null)
                 {
                     ViewData["time"] = user.TimeZone;
@@ -34,12 +36,12 @@ namespace webchat.Controllers
 
             return RedirectToAction("Index", "Login");
         }
-                
+
         [HttpPost]
         public IActionResult Edit(User user, int id)
         {
             var response = _chatDbcontect.users.Find(id);
-            
+
             if (response == null)
             {
                 return NotFound();
@@ -47,15 +49,15 @@ namespace webchat.Controllers
 
             else
             {
-                 response.Username = user.Username;
+                response.Username = user.Username;
                 response.NickName = user.NickName;
-              
+
                 _chatDbcontect.SaveChanges();
                 return Json(new { success = true, message = "Profile updated successfully" });
             }
         }
 
-         public IActionResult AddEmail(int id)
+        public IActionResult AddEmail(int id)
         {
             var user = _chatDbcontect.users.Find(id);
 
@@ -93,7 +95,30 @@ namespace webchat.Controllers
 
             return RedirectToAction("Index", "Profile");
         }
-    
+        [HttpGet]
+        public IActionResult Search(string username)
+        {
+            var userIdCookie = Request.Cookies["UserId"];
+            if (userIdCookie != null)
+            {
+                var userId = int.Parse(userIdCookie);
 
+                var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
+                if (user != null)
+                {
+                    ViewData["nickname"] = user.NickName;
+                    ViewData["Photo"] = user.ProfilePicture;
+                    ViewData["time"] = user.TimeZone;
+                }
+            }
+
+            var users = string.IsNullOrEmpty(username)
+               ? new List<User>()
+               : _chatDbcontect.users
+                     .Where(u => u.Username.Contains(username))
+                     .ToList();
+
+            return View(users);
+        }
     }
 }

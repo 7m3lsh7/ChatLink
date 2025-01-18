@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using webchat.data;
+using webchat.Models;
 
 namespace webchat.Controllers
 {
@@ -53,6 +54,8 @@ namespace webchat.Controllers
         
         public IActionResult Chat()
         {
+            ViewData["HideNavbar"] = true;
+            ViewData["HideFooter"] = true;
 
             var userIdCookie = Request.Cookies["UserId"];
             if (userIdCookie != null)
@@ -65,10 +68,11 @@ namespace webchat.Controllers
                     ViewData["time"] = user.TimeZone;
                     ViewData["nickname"] = user.NickName;
                     ViewData["Photo"] = user.ProfilePicture;
-
+                    return View(user);
                 }
             }
-            return View();
+            return RedirectToAction("Index", "Home");
+
 
         }
     }                     

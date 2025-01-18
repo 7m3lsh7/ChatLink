@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using webchat.data;
+using webchat.Models;
 
 namespace webchat.Controllers
 {
