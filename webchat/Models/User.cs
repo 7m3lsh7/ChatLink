@@ -50,5 +50,8 @@ namespace webchat.Models
 
         public bool IsVerified { get; set; }
 
+        public string ResetPasswordToken { get; set; } 
+
+        public DateTime? ResetPasswordExpiry { get; set; } 
     }
 }

@@ -6,35 +6,38 @@
         <p>Login to access your account</p>
         <img src="~/images/招聘矢量插画人物场景插画招聘1100924黑与白-01 copy 1.png" alt="Illustration" class="illustration">
     </div>
-        <div class="login-section">
-            <h1>Login</h1>
-            <p>Enter your account details</p>
+    <div class="login-section">
+        <h1>Login</h1>
+        <p>Enter your account details</p>
 
         <form asp-action="Check" asp-controller="Login" method="post">
-          <div class="mb-3">
+            <div class="mb-3">
                 <label for="Email" class="form-label">Email</label>
-                <input name="Email" type="text" id="Email" class="form-control" placeholder="Enter your Email ">
-                <span asp-validation-for="Email"></span>
-                </div>
-
-                <div class="mb-3">
-                <label for="PasswordHash" class="form-label">Password</label>
-                <input name="PasswordHash" type="password" id="PasswordHash" class="form-control" placeholder="Enter your password">
-                <span asp-validation-for="PasswordHash"></span>
-                </div>
-
-
-                <div class="mb-3 text-end">
-                    <a href="#" class="text-muted">Forgot Password?</a>
-                </div>
-
-                <button type="submit" class="btn btn-login w-100">Login</button>
-            </form>
-
-            <div class="signup-container">
-                <span>Don't have an account? </span>
-                <a href="/SignUp/index" class="signup-btn m-2">Sign up</a>
+                <input asp-for="Email" type="email" id="Email" class="form-control" placeholder="Enter your Email" required>
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
+
+            <div class="mb-3">
+                <label for="PasswordHash" class="form-label">Password</label>
+                <input asp-for="PasswordHash" type="password" id="PasswordHash" class="form-control" placeholder="Enter your password" required>
+                <span asp-validation-for="PasswordHash" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3 text-end">
+                <a asp-action="ForgotPassword" asp-controller="Login" class="text-muted">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-login w-100">Login</button>
+        </form>
+
+        <div class="signup-container">
+            <span>Don't have an account? </span>
+            <a href="/SignUp/index" class="signup-btn m-2">Sign up</a>
         </div>
-        
     </div>
+</div>
+
+<!-- Add Validation Scripts -->
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

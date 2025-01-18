@@ -1,57 +1,164 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using webchat.data;
 using webchat.Models;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using MailKit.Net.Smtp;
+using MimeKit;
+using System;
+using Microsoft.Extensions.Configuration;
 
 namespace webchat.Controllers
 {
     public class LoginController : Controller
     {
         private readonly ChatDbcontect _chatDbcontect;
-        public LoginController(ChatDbcontect chatDbcontect)
+        private readonly IConfiguration _configuration;
+
+        public LoginController(ChatDbcontect chatDbcontect, IConfiguration configuration)
         {
             _chatDbcontect = chatDbcontect;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
         {
-             ViewData["HideNavbar"] = true;
+            ViewData["HideNavbar"] = true;
             ViewData["HideFooter"] = true;
 
             var userIdCookie = Request.Cookies["UserId"];
             if (userIdCookie != null)
             {
-                return RedirectToAction("Index", "Home");  
+                return RedirectToAction("Index", "Home");
             }
             return View();
         }
 
-       [HttpPost]
-       [ValidateAntiForgeryToken]
-       public IActionResult Check(User user)
-       {
-          var response = _chatDbcontect.users.FirstOrDefault(u => u.Email == user.Email && u.PasswordHash == user.PasswordHash);
-            if (response == null)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Check(User user)
+        {
+            var dbUser = _chatDbcontect.users.FirstOrDefault(u => u.Email == user.Email);
+
+            if (dbUser == null || user.PasswordHash != dbUser.PasswordHash)
             {
-                return NotFound();
-            }
-            else
-            {
-                var cookieOptions = new CookieOptions
-                {
-                    Expires = DateTime.Now.AddDays(7), 
-                    HttpOnly = true
-                };
-                Response.Cookies.Append("UserId", response.Id.ToString(), cookieOptions);
-                Response.Cookies.Append("IsAdmin", response.IsAdmin.ToString(), new CookieOptions
-                {
-                    HttpOnly = true,
-                    Expires = DateTimeOffset.Now.AddHours(1)
-                });
-                return RedirectToAction("Index", "Home"); 
+                ViewBag.Message = "Incorrect email or password.";
+                return View("Index");
             }
 
-       }
-        
+            var cookieOptions = new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(7),
+                HttpOnly = true
+            };
+            Response.Cookies.Append("UserId", dbUser.Id.ToString(), cookieOptions);
+            Response.Cookies.Append("IsAdmin", dbUser.IsAdmin.ToString(), new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTimeOffset.Now.AddHours(1)
+            });
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            var user = await _chatDbcontect.users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+            {
+                ViewBag.Message = "Email not registered.";
+                return View();
+            }
+
+           
+            var token = Guid.NewGuid().ToString();
+            user.ResetPasswordToken = token;
+            user.ResetPasswordExpiry = DateTime.Now.AddHours(1); 
+            await _chatDbcontect.SaveChangesAsync();
+
+           
+            var resetLink = Url.Action("ResetPassword", "Login", new { token, email = user.Email }, Request.Scheme);
+            await SendEmailAsync(user.Email, "Reset password", $"Please click on the following link to reset your password: {resetLink}");
+
+            
+            return RedirectToAction("CheckEmailConfirmation");
+        }
+
+       
+        public IActionResult CheckEmailConfirmation()
+        {
+            return View();
+        }
+
+        public IActionResult ResetPassword(string token, string email)
+        {
+            var user = _chatDbcontect.users.FirstOrDefault(u => u.Email == email && u.ResetPasswordToken == token && u.ResetPasswordExpiry > DateTime.Now);
+            if (user == null)
+            {
+                ViewBag.Message = "الرابط غير صالح أو انتهت صلاحيته.";
+                return RedirectToAction("ForgotPassword");
+            }
+
+            ViewBag.Token = token;
+            ViewBag.Email = email;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ResetPassword(string token, string email, string newPassword, string confirmPassword)
+        {
+            if (newPassword != confirmPassword)
+            {
+                ViewBag.Message = "كلمة المرور غير متطابقة.";
+                return View();
+            }
+
+            var user = _chatDbcontect.users.FirstOrDefault(u => u.Email == email && u.ResetPasswordToken == token && u.ResetPasswordExpiry > DateTime.Now);
+            if (user == null)
+            {
+                ViewBag.Message = "الرابط غير صالح أو انتهت صلاحيته.";
+                return RedirectToAction("ForgotPassword");
+            }
+
+            
+            user.PasswordHash = newPassword;
+            user.ResetPasswordExpiry = null;
+            _chatDbcontect.SaveChanges();
+
+            ViewBag.Message = "تم إعادة تعيين كلمة المرور بنجاح.";
+            return RedirectToAction("Index");
+        }
+
+        private async Task SendEmailAsync(string email, string subject, string message)
+        {
+            try
+            {
+                var emailMessage = new MimeMessage();
+                emailMessage.From.Add(new MailboxAddress("WepChat Reset Password", "bm9412238@gmail.com"));
+                emailMessage.To.Add(new MailboxAddress("", email));
+                emailMessage.Subject = subject;
+                emailMessage.Body = new TextPart("plain") { Text = message };
+
+                using (var client = new SmtpClient())
+                {
+                    await client.ConnectAsync("smtp.gmail.com", 587, false);
+                    await client.AuthenticateAsync("bm9412238@gmail.com", "lvzg aqkt ttvk nngg");
+                    await client.SendAsync(emailMessage);
+                    await client.DisconnectAsync(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Sending email failed: " + ex.Message);
+            }
+        }
 
         public IActionResult ViewUser()
         {
@@ -63,7 +170,7 @@ namespace webchat.Controllers
             var response = _chatDbcontect.users.ToList();
             return View(response);
         }
-       
+
         public IActionResult Delete(int id)
         {
             var response = _chatDbcontect.users.Find(id);
@@ -71,6 +178,5 @@ namespace webchat.Controllers
             _chatDbcontect.SaveChanges();
             return RedirectToAction("ViewUser", "Login");
         }
-                  
-    }                      
+    }
 }
