@@ -22,7 +22,7 @@
                         </a>
                     </li>
                     <li class="nav-item pt-2 pb-2">
-                        <a class="nav-link" href="/Profile/index">
+                        <a class="nav-link" href="/Home/Chat">
                             <i class="fa-solid text-white fa-bell"></i>
                         </a>
                     </li>
@@ -36,7 +36,7 @@
                             <i class="fa-solid text-white fa-sliders"></i>
                         </a>
                     </li>
-                 
+
                 </ul>
             </div>
             <div class="logout">
@@ -54,67 +54,225 @@
 
 
 <div class="chat-container ">
-    <!-- Seen Messages -->
     <div class="types-chat">
 
+        <!-- Seen Messages -->
 
         <div class="messages-section-seen">
             <h5>Seen Messages</h5>
-            <div class="message-item">
-                <img src="https://via.placeholder.com/40" alt="User">
-                <div class="text-white">mena magdy<br>ALOoooooooo</div>
-            </div>
-            <div class="message-item">
-                <img src="https://via.placeholder.com/40" alt="User">
-                <div class="text-white">mena magdy<br>ALOoooooooo</div>
-            </div>
-        </div>
+            @if (ViewData["Users"] is List<webchat.Models.User> users)
+            {
+                foreach (var user in users)
+                {
+                    
+                        <!-- الرابط يغلف كامل العنصر لتمكين النقر في أي مكان -->
+                        <a href="@Url.Action("chat", "Home", new { receiverId = user.Id })" class="message-link">
+                        <div class="message-item">
+                            <img src="@user.ProfilePicture" alt="User">
+                            <div class="text-white">
+                                <strong>@user.NickName</strong><br>
+                                <!-- عرض آخر رسالة بين المستخدمين -->
+                                @if (ViewData["AllMessages"] is List<webchat.Models.Chat> allMessages)
+                                {
+                                    var lastMessage = allMessages
+                                    .Where(m => (m.SenderId == user.Id  || m.ReceiverId == user.Id ))
+                                    .OrderByDescending(m => m.Timestamp)
+                                    .FirstOrDefault();
+
+                                    if (lastMessage != null)
+                                    {
+                                        <div class="message-content">@lastMessage.Content</div>
+                                    }
+                                    else
+                                    {
+                                        <div>No messages yet</div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        </a>
+                 
+                }
+            }
+         </div>
 
         <!-- Unseen Messages -->
         <div class="messages-section-unseen">
             <h5 class="text-white">Unseen Messages</h5>
-            <div class="message-item">
-                <img src="https://via.placeholder.com/40" alt="User">
-                <div class="text-white">mena magdy<br>ALOoooooooo</div>
-            </div>
-            <div class="message-item">
-                <img src="https://via.placeholder.com/40" alt="User">
-                <div class="text-white">mena magdy<br>ALOoooooooo</div>
-            </div>
+            <input type="hidden" id="unseenMessagesData" value='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewData["UnseenMessages"]))' />
+            <div id="unseenMessagesContainer" class="unseen-messages"></div>
         </div>
-
+        <div id="notification" class="notification" style="display: none;">
+            New message received!
+        </div>
     </div>
     <!-- Chat Box -->
     <div class="chat-box">
         <div class="chat-header">
-            <img src="https://via.placeholder.com/50" alt="User">
+            <img src=" @ViewData["ReceiverPhoto"] " alt="User">
             <div>
-                <strong class="text-white">Benny</strong><br>
+                <strong class="text-white"> @ViewData["ReceiverName"]</strong><br>
                 <span style="color: #99aab5;">Online</span>
             </div>
         </div>
+        <input id="userId" type="hidden" value=" @ViewBag.SenderId " />
 
-        <div class="chat-messages">
-            <div class="message received">
-                <div class="bubble">Hi there, How are you?</div>
-            </div>
-            <div class="message sent">
-                <div class="bubble">I am great. Thanks!</div>
-            </div>
-            <div class="message received">
-                <div class="bubble">Can you send me my newest work schedule?</div>
-            </div>
-            <div class="message sent">
-                <div class="bubble">Okay, give me some time to make a schedule for you.</div>
-            </div>
+        <div id="chatContainer" class="chat-messages">
+            @if (@ViewData["Messages"] is List<webchat.Models.Chat> Content)
+            {
+                foreach (var chat in Content)
+                {
+                    <div class="message @(chat.SenderId == ViewBag.SenderId ? "sent" : "received")">
+                        <div class="bubble">@chat.Content</div><br />
+                        <p class="message-timestamp ">@chat.Timestamp.ToString("HH:mm")</p>
+                    </div>
+                    
+                }
+            }
         </div>
-
         <div class="chat-input">
-            <input type="text" placeholder="Enter Your Message">
-            <button>Send</button>
+            <input id="receiverId" type="hidden" value="@ViewBag.ReceiverId" />
+           
+
+            <input id="messageInput" type="text" placeholder="Type a message">
+            <button id="sendButton">Send</button>
         </div>
     </div>
+
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+    // إعداد اتصال SignalR
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chatHub")
+        .build();
+
+    connection.start()
+        .then(() => console.log("Connected to SignalR"))
+        .catch(err => console.error("SignalR connection error:", err));
+
+    // إرسال رسالة عند النقر على زر الإرسال
+    document.getElementById("sendButton").addEventListener("click", () => {
+        const receiverId = parseInt(document.getElementById("receiverId").value);
+        const message = document.getElementById("messageInput").value.trim();
+
+        if (message !== "") {
+            const userId = parseInt(document.getElementById("userId").value);
+            connection.invoke("SendMessage", userId, receiverId, message)
+                .then(() => {
+                    // إضافة الرسالة إلى واجهة المستخدم
+                    const msgDiv = document.createElement("div");
+                    msgDiv.className = "message sent";
+                    msgDiv.innerHTML = `<div class="bubble">${message}</div>`;
+                    document.getElementById("chatContainer").appendChild(msgDiv);
+
+                    // تفريغ حقل الإدخال
+                    document.getElementById("messageInput").value = "";
+                })
+                .catch(err => console.error(err));
+        }
+    });
+
+    // استقبال رسالة جديدة عبر SignalR
+    connection.on("ReceiveMessage", (senderId, message, senderName) => {
+        // إذا كان الشخص غير متصل أو في شات آخر، أضف الرسالة إلى صندوق الرسائل الغير مقروءة
+        const unseenMessagesContainer = document.getElementById("unseenMessagesContainer");
+
+        const msgDiv = document.createElement("div");
+        msgDiv.className = "message received";
+        msgDiv.innerHTML = `<div class="bubble">${message}</div>`;
+        msgDiv.setAttribute("data-sender-id", senderId);  // تخزين الـ senderId
+        msgDiv.setAttribute("data-message", message);
+        msgDiv.setAttribute("data-sender-name", senderName);
+        unseenMessagesContainer.appendChild(msgDiv);
+
+        // إظهار إشعار أن هناك رسالة جديدة
+        document.getElementById("notification").style.display = "block";
+    });
+
+    // تحميل الرسائل غير المقروءة عند تحميل الصفحة
+    document.addEventListener("DOMContentLoaded", function () {
+        const unseenMessages = JSON.parse(document.getElementById("unseenMessagesData").value);
+        const unseenMessagesContainer = document.getElementById("unseenMessagesContainer");
+
+        // عرض جميع الرسائل الغير مقروءة
+        if (unseenMessages && unseenMessages.length > 0) {
+            unseenMessages.forEach((message) => {
+                const messageElement = document.createElement("div");
+                messageElement.classList.add("unseen-message", "p-2", "mb-2", "bg-light", "rounded");
+                messageElement.innerHTML = `
+                    <p><strong>From:</strong> ${message.senderName}</p>
+                    <p>${message.content}</p>
+                    <small>${new Date(message.timestamp).toLocaleString()}</small>
+                `;
+
+                // عند النقر على الرسالة، تحديث حالتها إلى "مقروءة" وفتح الشات مع المرسل
+                messageElement.addEventListener("click", function () {
+                    markMessageAsRead(message.id);
+
+                    // إزالة الرسالة من قائمة الرسائل الغير مقروءة
+                    messageElement.remove();
+
+                    // إضافة الرسالة إلى الرسائل المقرؤة
+                    addToSeenMessages(message);
+
+                    // فتح الشات مع المرسل
+                    openChatWithSender(message.senderId);
+                });
+
+                unseenMessagesContainer.appendChild(messageElement);
+            });
+        } else {
+            unseenMessagesContainer.innerHTML = "<p>No unseen messages</p>";
+        }
+    });
+
+    // وظيفة لتحديث حالة الرسالة إلى "مقروءة" باستخدام طلب AJAX
+    function markMessageAsRead(messageId) {
+        fetch(`/Home/MarkAsRead/${messageId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector("input[name='__RequestVerificationToken']").value,
+            },
+        })
+            .then((response) => {
+                if (response.ok) {
+                    console.log("Message marked as read.");
+                } else {
+                    console.error("Failed to mark message as read.");
+                }
+            })
+            .catch((error) => console.error("Error:", error));
+    }
+
+    function openChatWithSender(senderId) {
+        // فتح الشات مع المرسل في جزء الشات
+        window.location.href = `/Home/Chat/${senderId}`;
+    }
+
+    function addToSeenMessages(message) {
+        const seenMessagesContainer = document.getElementById("seenMessagesContainer");
+
+        const messageElement = document.createElement("div");
+        messageElement.classList.add("seen-message", "p-2", "mb-2", "bg-light", "rounded");
+        messageElement.innerHTML = `
+            <p><strong>From:</strong> ${message.senderName}</p>
+            <p>${message.content}</p>
+            <small>${new Date(message.timestamp).toLocaleString()}</small>
+        `;
+
+        seenMessagesContainer.appendChild(messageElement);
+    }
+
+    // تنفيذ التحقق عند تحميل الصفحة
+    window.onload = function () {
+        checkReceiverSelected();
+    };
+</script>
+
+
+
 <style>
     :root {
         --primary-color: #6C63FF;  
@@ -137,10 +295,20 @@
         margin: 0;
     }
 
+    .message-timestamp {
+        font-size: 12px;
+        color: #99aab5;
+        margin-top: 5px;
+    }
+      a {
+       
+        text-decoration: none;  
+        color: inherit;  
+    }
     .color {
         background-color: var(--color);
         width: fit-content;
-        height: 650px;
+        height: 100%;
         display: inline-block;
     }
 
@@ -163,6 +331,14 @@
         margin-top: 50px;
     }
 
+    .nav-link {
+        font-size: 1.2rem;
+        margin: 10px 0;
+    }
+
+        .nav-link i {
+            font-size: 2rem;
+        }
     .navbar .navbar-nav .nav-item:hover,
     .navbar .navbar-nav .nav-item:focus {
         background-color: var(--secondary-color);

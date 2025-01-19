@@ -1,4 +1,4 @@
-﻿using AspNetCore.ReCaptcha;
+﻿	using AspNetCore.ReCaptcha;
 using Microsoft.EntityFrameworkCore;
 using webchat.data;
 
@@ -23,6 +23,7 @@ builder.Services.AddSignalR();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
