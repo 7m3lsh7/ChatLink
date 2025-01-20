@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webchat.data;
 
@@ -11,9 +12,11 @@ using webchat.data;
 namespace webchat.Migrations
 {
     [DbContext(typeof(ChatDbcontect))]
-    partial class ChatDbcontectModelSnapshot : ModelSnapshot
+    [Migration("20250120170129_felo")]
+    partial class felo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,6 +132,9 @@ namespace webchat.Migrations
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("LastActivity")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("NickName")
                         .IsRequired()

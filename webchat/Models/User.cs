@@ -52,6 +52,9 @@ namespace webchat.Models
 
         public string ResetPasswordToken { get; set; } 
 
-        public DateTime? ResetPasswordExpiry { get; set; } 
+        public DateTime? ResetPasswordExpiry { get; set; }
+
+        public bool IsOnline { get; set; }  // Tracks whether the user is online or offline
+ 
     }
 }

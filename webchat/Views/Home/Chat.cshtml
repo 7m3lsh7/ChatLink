@@ -1,4 +1,5 @@
 ﻿@model User
+<link rel="stylesheet" href="~/css/Chat.css" asp-append-version="true" />
 
 <nav class="navbar navbar-expand-lg color " style=" width: 90px; ">
     <div class="container-fluid">
@@ -94,13 +95,7 @@
             }
         </div>
 
-        <!-- Unseen Messages -->
-        <div class="messages-section-unseen">
-            <h5 class="text-white">Unseen Messages</h5>
-            <input type="hidden" id="unseenMessagesData" value='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewData["UnseenMessages"]))' />
-            <div id="unseenMessagesContainer" class="unseen-messages"></div>
-        </div>
-
+     
         <div id="notification" class="notification" style="display: none;">
             New message received!
         </div>
@@ -112,7 +107,16 @@
             <img src=" @ViewData["ReceiverPhoto"] " alt="User">
             <div>
                 <strong class="text-white"> @ViewData["ReceiverName"]</strong><br>
-                <span style="color: #99aab5;">Online</span>
+                <span id="userStatus_@ViewData["ReceiverId"]" class="status" style="color: #99aab5;">
+                    @if (Model.IsOnline)
+                    {
+                        <span>Online</span>
+                    }
+                    else
+                    {
+                        <span>Offline</span>
+                    }
+                </span>
             </div>
         </div>
         <input id="userId" type="hidden" value=" @ViewBag.SenderId " />
@@ -144,347 +148,113 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 
 <script>
-    // إعداد اتصال SignalR
+    // Initialize the SignalR connection
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/chatHub")
+        .withUrl("/chatHub")  // Specify the URL for the SignalR hub
         .build();
 
+    // Start the connection and handle success or failure
     connection.start()
-        .then(() => console.log("Connected to SignalR"))
-        .catch(err => console.error("SignalR connection error:", err));
+        .then(() => console.log("Connected to SignalR"))  // Log success message when connected
+        .catch(err => console.error("SignalR connection error:", err));  // Log error message if connection fails
 
-    // التحقق من اختيار المستخدم المستلم
+    // Function to check if a receiver has been selected
     function checkReceiverSelected() {
-        const receiverId =parseInt(     document.getElementById("receiverId").value);
-        const sendButton = document.getElementById("sendButton");
-        const messageInput = document.getElementById("messageInput");
+        const receiverId = parseInt(document.getElementById("receiverId").value);  // Get the receiver's ID
+        const sendButton = document.getElementById("sendButton");  // Get the send button element
+        const messageInput = document.getElementById("messageInput");  // Get the message input field element
 
+        // Enable or disable send button and message input based on receiver selection
         if (receiverId) {
-            sendButton.disabled = false;
-            messageInput.disabled = false;
+            sendButton.disabled = false;  // Enable the send button if a receiver is selected
+            messageInput.disabled = false;  // Enable message input if a receiver is selected
         } else {
-            sendButton.disabled = true;
-            messageInput.disabled = true;
+            sendButton.disabled = true;  // Disable the send button if no receiver is selected
+            messageInput.disabled = true;  // Disable message input if no receiver is selected
         }
     }
 
-    // إرسال رسالة عند النقر على زر الإرسال
+    // Add event listener to send message when the send button is clicked
     document.getElementById("sendButton").addEventListener("click", () => {
-        const receiverId = parseInt(document.getElementById("receiverId").value);
-        const message = document.getElementById("messageInput").value.trim();
+        const receiverId = parseInt(document.getElementById("receiverId").value);  // Get receiver's ID
+        const message = document.getElementById("messageInput").value.trim();  // Get the message content
 
-        if (message !== "") {
-            const userId = parseInt(document.getElementById("userId").value);
+        if (message !== "") {  // Check if the message is not empty
+            const userId = parseInt(document.getElementById("userId").value);  // Get sender's ID
+
+            // Invoke the 'SendMessage' method in the SignalR Hub
             connection.invoke("SendMessage", userId, receiverId, message)
                 .then(() => {
-                    // إضافة الرسالة إلى واجهة المستخدم
+                    // If the message is sent, add it to the chat UI
                     const msgDiv = document.createElement("div");
-                    msgDiv.className = "message sent";
-                    msgDiv.innerHTML = `<div class="bubble">${message}</div>`;
-                    document.getElementById("chatContainer").appendChild(msgDiv);
+                    msgDiv.className = "message sent";  // Apply 'sent' class to the message
+                    msgDiv.innerHTML = `<div class="bubble">${message}</div>`;  // Create a message bubble with the content
+                    document.getElementById("chatContainer").appendChild(msgDiv);  // Append the message to the chat container
 
-                    // تفريغ حقل الإدخال
+                    // Clear the message input field
                     document.getElementById("messageInput").value = "";
+
+                    // Scroll to the bottom of the chat to show the new message
+                    document.getElementById("chatContainer").scrollTop = document.getElementById("chatContainer").scrollHeight;
                 })
-                .catch(err => console.error(err));
+                .catch(err => console.error(err));  // Log error if message sending fails
         }
     });
 
-    // استقبال رسالة جديدة عبر SignalR
+    // Handle receiving a new message via SignalR
     connection.on("ReceiveMessage", (senderId, message, senderName) => {
-        const unseenMessagesContainer = document.getElementById("unseenMessagesContainer");
-
-        const msgDiv = document.createElement("div");
-        msgDiv.className = "message-item unseen";
-        msgDiv.innerHTML = `
-            <div>
-                <img src="" alt="User">
-                <div class="message-content">
-                    <strong>${senderName}</strong>
-                    <p>${message}</p>
-                </div>
-            </div>
+        const messageDiv = document.createElement("div");
+        messageDiv.className = "message received";  // Apply 'received' class to the incoming message
+        messageDiv.innerHTML = `
+            <div class="bubble">${message}</div>  // Display the received message inside a bubble
+            <p class="message-timestamp">${new Date().toLocaleTimeString()}</p>  // Show the message timestamp
         `;
+        document.getElementById("chatContainer").appendChild(messageDiv);  // Append the received message to the chat container
 
-        msgDiv.addEventListener("click", function () {
-            markMessageAsRead(senderId);
-            msgDiv.remove();
-            openChatWithSender(senderId);
-        });
+        // Scroll to the bottom of the chat to show the new message
+        document.getElementById("chatContainer").scrollTop = document.getElementById("chatContainer").scrollHeight;
 
-        unseenMessagesContainer.appendChild(msgDiv);
+        // Show a notification when a new message is received
         document.getElementById("notification").style.display = "block";
     });
 
-    function markMessageAsRead(messageId) {
-        fetch(`/Home/MarkAsRead/${messageId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-            .then(response => {
-                if (response.ok) {
-                    console.log("Message marked as read.");
-                }
-            })
-            .catch(err => console.error(err));
-    }
-
+    // Function to open the chat with a selected sender by redirecting to the chat page
     function openChatWithSender(senderId) {
-        window.location.href = `/Home/Chat/?receiverId=${senderId}`;
+        window.location.href = `/Home/Chat/?receiverId=${senderId}`;  // Redirect to the chat page with the selected sender
     }
 
+    // Call the checkReceiverSelected function when the page is loaded
     window.onload = function () {
         checkReceiverSelected();
+        scrollToBottom();  // Scroll to the bottom of the chat container when the page loads
     };
+
+    // Function to scroll to the bottom of the chat container
+    function scrollToBottom() {
+        const chatContainer = document.getElementById("chatContainer");
+        chatContainer.scrollTop = chatContainer.scrollHeight;  // Set the scroll position to the bottom
+    }
+
+    // Handle user online status via SignalR
+    connection.on("UserOnline", (userId) => {
+        updateUserStatus(userId, "Online");  // Update the user's status to 'Online'
+    });
+
+    // Handle user offline status via SignalR
+    connection.on("UserOffline", (userId) => {
+        updateUserStatus(userId, "Offline");  // Update the user's status to 'Offline'
+    });
+
+    // Function to update the user's online/offline status in the UI
+    function updateUserStatus(userId, status) {
+        const statusElement = document.getElementById(`userStatus_${userId}`);  // Get the user's status element
+        if (statusElement) {
+            statusElement.innerText = status;  // Update the status text
+        }
+    }
 </script>
 
 
 
 
-<style>
-    :root {
-        --primary-color: #6C63FF;  
-        --secondary-color: #2D2B8B;  
-        --background-gradient: linear-gradient(135deg, #6C63FF 0%, #B46FFF 100%);
-        --dark-bg: #2D2B8B;
-        --light-bg: #F3F3F3;
-        --accent-color: #FFD700;
-        --bubble-sent-color: #544cd5;
-        --bubble-received-color: #2320a1;
-        --input-bg: #FFFFFF;
-        --input-border-color: #BDBDBD;
-        --color: #3B1868;
-    }
 
-    body {
-        background: var(--background-gradient);
-        font-family: 'Kadwa', serif;
-        color: #FFF;
-        margin: 0;
-    }
-
-    .message-timestamp {
-        font-size: 12px;
-        color: #99aab5;
-        margin-top: 5px;
-    }
-      a {
-       
-        text-decoration: none;  
-        color: inherit;  
-    }
-    .color {
-        background-color: var(--color);
-        width: fit-content;
-        height: 100%;
-        display: inline-block;
-    }
-
-     .navbar .container-fluid .navbar-column {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-        .navbar .container-fluid .navbar-column .logout {
-            padding-top: 100px;
-        }
-
-    .navbar .container-fluid .navbar-nav {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        margin-top: 50px;
-    }
-
-    .nav-link {
-        font-size: 1.2rem;
-        margin: 10px 0;
-    }
-
-        .nav-link i {
-            font-size: 2rem;
-        }
-    .navbar .navbar-nav .nav-item:hover,
-    .navbar .navbar-nav .nav-item:focus {
-        background-color: var(--secondary-color);
-        color: #fff;
-        transform: scale(1.1);
-    }
-
-    .navbar .navbar-nav .nav-item:active {
-        background-color: var(--primary-color);
-        color: #fff;
-    }
-
-    .navbar .navbar-nav .nav-item.active {
-        background-color: #4A0072;
-        color: #fff;
-    }
-
-        .navbar .navbar-nav .nav-item:hover i,
-        .navbar .navbar-nav .nav-item:focus i,
-        .navbar .navbar-nav .nav-item:active i,
-        .navbar .navbar-nav .nav-item.active i {
-            color: var(--accent-color);
-        }
-
-     .profile-picture {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        overflow: hidden;
-        border: 2px solid #ddd;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    }
-
-    .chat-container {
-        display: inline-flex;
-         height: 600px;
-    }
-
-    .messages-section-seen,
-    .messages-section-unseen {
-        flex: 1;
-        background: var(--background-gradient);
-        border-radius: 15px;
-        padding: 0 20px;
-        margin-top: auto;
-    }
-
-    .messages-section-unseen {
-        margin-top: 50px;
-    }
-
-    .messages-section h5 {
-        text-align: center;
-        margin-bottom: 10px;
-        font-size: 20px;
-    }
-
-    .message-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        background: var(--dark-bg);
-        border-radius: 10px;
-        padding: 12px;
-        margin-bottom: 12px;
-        transition: all 0.3s ease;
-    }
-
-        .message-item:hover {
-            background: var(--primary-color);
-            transform: scale(1.05);
-        }
-
-        .message-item img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-        }
-
-    .chat-box {
-        flex: 2;
-        background-color: var(--primary-color);
-        border-radius: 15px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        width: 700px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .chat-header {
-        background: var(--secondary-color);
-        border-radius: 15px 15px 0 0;
-        padding: 20px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-        .chat-header img {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-        }
-
-    .types-chat {
-        width: 500px;
-        margin: 0 20px 20px 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .chat-messages {
-        flex: 1;
-        padding: 20px;
-        overflow-y: auto;
-    }
-
-    .message {
-        margin-bottom: 15px;
-    }
-
-        .message.sent {
-            text-align: right;
-        }
-
-        .message .bubble {
-            display: inline-block;
-            padding: 15px 20px;
-            border-radius: 20px;
-            max-width: 75%;
-            word-wrap: break-word;
-        }
-
-        .message.sent .bubble {
-            background-color: var(--bubble-sent-color);
-            color: white;
-        }
-
-        .message.received .bubble {
-            background-color: var(--bubble-received-color);
-            color: white;
-        }
-
-    .chat-input {
-        display: flex;
-        padding: 12px;
-        gap: 12px;
-        background: var(--light-bg);
-        border-radius: 15px;
-    }
-
-        .chat-input input {
-            flex: 1;
-            padding: 12px;
-            border-radius: 10px;
-            border: 2px solid var(--input-border-color);
-            background-color: var(--input-bg);
-            font-size: 16px;
-        }
-
-        .chat-input button {
-            padding: 12px 18px;
-            border-radius: 10px;
-            border: none;
-            background-color: var(--primary-color);
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-            .chat-input button:hover {
-                background-color: var(--secondary-color);
-                transform: scale(1.05);
-            }
-</style>
-     
