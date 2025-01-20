@@ -39,6 +39,8 @@ namespace webchat.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Check(User user)
         {
+            ViewData["HideNavbar"] = true;
+            ViewData["HideFooter"] = true;
             var dbUser = _chatDbcontect.users.FirstOrDefault(u => u.Email == user.Email);
 
             if (dbUser == null || user.PasswordHash != dbUser.PasswordHash)
@@ -64,6 +66,8 @@ namespace webchat.Controllers
 
         public IActionResult ForgotPassword()
         {
+            ViewData["HideNavbar"] = true;
+            ViewData["HideFooter"] = true;
             return View();
         }
 
@@ -94,11 +98,15 @@ namespace webchat.Controllers
        
         public IActionResult CheckEmailConfirmation()
         {
+            ViewData["HideNavbar"] = true;
+            ViewData["HideFooter"] = true;
             return View();
         }
 
         public IActionResult ResetPassword(string token, string email)
         {
+            ViewData["HideNavbar"] = true;
+            ViewData["HideFooter"] = true;
             var user = _chatDbcontect.users.FirstOrDefault(u => u.Email == email && u.ResetPasswordToken == token && u.ResetPasswordExpiry > DateTime.Now);
             if (user == null)
             {
@@ -114,6 +122,8 @@ namespace webchat.Controllers
         [HttpPost]
         public IActionResult ResetPassword(string token, string email, string newPassword, string confirmPassword)
         {
+            ViewData["HideNavbar"] = true;
+            ViewData["HideFooter"] = true;
             if (newPassword != confirmPassword)
             {
                 ViewBag.Message = "كلمة المرور غير متطابقة.";

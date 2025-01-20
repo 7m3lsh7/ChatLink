@@ -64,9 +64,8 @@
             {
                 foreach (var user in users)
                 {
-                    
-                        <!-- الرابط يغلف كامل العنصر لتمكين النقر في أي مكان -->
-                        <a href="@Url.Action("chat", "Home", new { receiverId = user.Id })" class="message-link">
+                    <!-- الرابط يغلف كامل العنصر لتمكين النقر في أي مكان -->
+                    <a href="@Url.Action("chat", "Home", new { receiverId = user.Id })" class="message-link">
                         <div class="message-item">
                             <img src="@user.ProfilePicture" alt="User">
                             <div class="text-white">
@@ -75,7 +74,7 @@
                                 @if (ViewData["AllMessages"] is List<webchat.Models.Chat> allMessages)
                                 {
                                     var lastMessage = allMessages
-                                    .Where(m => (m.SenderId == user.Id  || m.ReceiverId == user.Id ))
+                                    .Where(m => (m.SenderId == user.Id || m.ReceiverId == user.Id))
                                     .OrderByDescending(m => m.Timestamp)
                                     .FirstOrDefault();
 
@@ -90,11 +89,10 @@
                                 }
                             </div>
                         </div>
-                        </a>
-                 
+                    </a>
                 }
             }
-         </div>
+        </div>
 
         <!-- Unseen Messages -->
         <div class="messages-section-unseen">
@@ -102,9 +100,11 @@
             <input type="hidden" id="unseenMessagesData" value='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewData["UnseenMessages"]))' />
             <div id="unseenMessagesContainer" class="unseen-messages"></div>
         </div>
+
         <div id="notification" class="notification" style="display: none;">
             New message received!
         </div>
+
     </div>
     <!-- Chat Box -->
     <div class="chat-box">
@@ -140,7 +140,9 @@
     </div>
 
 </div>
+ 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
 <script>
     // إعداد اتصال SignalR
     const connection = new signalR.HubConnectionBuilder()
@@ -150,6 +152,21 @@
     connection.start()
         .then(() => console.log("Connected to SignalR"))
         .catch(err => console.error("SignalR connection error:", err));
+
+    // التحقق من اختيار المستخدم المستلم
+    function checkReceiverSelected() {
+        const receiverId =parseInt(     document.getElementById("receiverId").value);
+        const sendButton = document.getElementById("sendButton");
+        const messageInput = document.getElementById("messageInput");
+
+        if (receiverId) {
+            sendButton.disabled = false;
+            messageInput.disabled = false;
+        } else {
+            sendButton.disabled = true;
+            messageInput.disabled = true;
+        }
+    }
 
     // إرسال رسالة عند النقر على زر الإرسال
     document.getElementById("sendButton").addEventListener("click", () => {
@@ -175,101 +192,54 @@
 
     // استقبال رسالة جديدة عبر SignalR
     connection.on("ReceiveMessage", (senderId, message, senderName) => {
-        // إذا كان الشخص غير متصل أو في شات آخر، أضف الرسالة إلى صندوق الرسائل الغير مقروءة
         const unseenMessagesContainer = document.getElementById("unseenMessagesContainer");
 
         const msgDiv = document.createElement("div");
-        msgDiv.className = "message received";
-        msgDiv.innerHTML = `<div class="bubble">${message}</div>`;
-        msgDiv.setAttribute("data-sender-id", senderId);  // تخزين الـ senderId
-        msgDiv.setAttribute("data-message", message);
-        msgDiv.setAttribute("data-sender-name", senderName);
-        unseenMessagesContainer.appendChild(msgDiv);
+        msgDiv.className = "message-item unseen";
+        msgDiv.innerHTML = `
+            <div>
+                <img src="" alt="User">
+                <div class="message-content">
+                    <strong>${senderName}</strong>
+                    <p>${message}</p>
+                </div>
+            </div>
+        `;
 
-        // إظهار إشعار أن هناك رسالة جديدة
+        msgDiv.addEventListener("click", function () {
+            markMessageAsRead(senderId);
+            msgDiv.remove();
+            openChatWithSender(senderId);
+        });
+
+        unseenMessagesContainer.appendChild(msgDiv);
         document.getElementById("notification").style.display = "block";
     });
 
-    // تحميل الرسائل غير المقروءة عند تحميل الصفحة
-    document.addEventListener("DOMContentLoaded", function () {
-        const unseenMessages = JSON.parse(document.getElementById("unseenMessagesData").value);
-        const unseenMessagesContainer = document.getElementById("unseenMessagesContainer");
-
-        // عرض جميع الرسائل الغير مقروءة
-        if (unseenMessages && unseenMessages.length > 0) {
-            unseenMessages.forEach((message) => {
-                const messageElement = document.createElement("div");
-                messageElement.classList.add("unseen-message", "p-2", "mb-2", "bg-light", "rounded");
-                messageElement.innerHTML = `
-                    <p><strong>From:</strong> ${message.senderName}</p>
-                    <p>${message.content}</p>
-                    <small>${new Date(message.timestamp).toLocaleString()}</small>
-                `;
-
-                // عند النقر على الرسالة، تحديث حالتها إلى "مقروءة" وفتح الشات مع المرسل
-                messageElement.addEventListener("click", function () {
-                    markMessageAsRead(message.id);
-
-                    // إزالة الرسالة من قائمة الرسائل الغير مقروءة
-                    messageElement.remove();
-
-                    // إضافة الرسالة إلى الرسائل المقرؤة
-                    addToSeenMessages(message);
-
-                    // فتح الشات مع المرسل
-                    openChatWithSender(message.senderId);
-                });
-
-                unseenMessagesContainer.appendChild(messageElement);
-            });
-        } else {
-            unseenMessagesContainer.innerHTML = "<p>No unseen messages</p>";
-        }
-    });
-
-    // وظيفة لتحديث حالة الرسالة إلى "مقروءة" باستخدام طلب AJAX
     function markMessageAsRead(messageId) {
         fetch(`/Home/MarkAsRead/${messageId}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector("input[name='__RequestVerificationToken']").value,
             },
         })
-            .then((response) => {
+            .then(response => {
                 if (response.ok) {
                     console.log("Message marked as read.");
-                } else {
-                    console.error("Failed to mark message as read.");
                 }
             })
-            .catch((error) => console.error("Error:", error));
+            .catch(err => console.error(err));
     }
 
     function openChatWithSender(senderId) {
-        // فتح الشات مع المرسل في جزء الشات
-        window.location.href = `/Home/Chat/${senderId}`;
+        window.location.href = `/Home/Chat/?receiverId=${senderId}`;
     }
 
-    function addToSeenMessages(message) {
-        const seenMessagesContainer = document.getElementById("seenMessagesContainer");
-
-        const messageElement = document.createElement("div");
-        messageElement.classList.add("seen-message", "p-2", "mb-2", "bg-light", "rounded");
-        messageElement.innerHTML = `
-            <p><strong>From:</strong> ${message.senderName}</p>
-            <p>${message.content}</p>
-            <small>${new Date(message.timestamp).toLocaleString()}</small>
-        `;
-
-        seenMessagesContainer.appendChild(messageElement);
-    }
-
-    // تنفيذ التحقق عند تحميل الصفحة
     window.onload = function () {
         checkReceiverSelected();
     };
 </script>
+
 
 
 

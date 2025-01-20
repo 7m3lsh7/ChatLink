@@ -71,6 +71,16 @@ namespace webchat.Controllers
                 {
                     ViewData["ReceiverName"] = receiverUser.NickName;
                     ViewData["ReceiverPhoto"] = receiverUser.ProfilePicture;
+                    var unseenMessages = _chatDbcontect.chats
+                       .Where(c => c.ReceiverId == userId && !c.IsRead)
+                       .Select(c => new
+                       {
+                           Id = c.Id,
+                           SenderName = receiverUser.NickName,
+                           Content = c.Content,
+                           Timestamp = c.Timestamp
+                       })
+                       .ToList();
                 }
 
                     if (user != null)
@@ -103,16 +113,7 @@ namespace webchat.Controllers
                         .ToList();
                      ViewData["Messages"] = messages;
 
-                    var unseenMessages = _chatDbcontect.chats
-                        .Where(c => c.ReceiverId == userId && !c.IsRead)
-                        .Select(c => new
-                        {
-                            Id = c.Id,
-                            SenderName = ViewData["ReceiverName"],
-                            Content = c.Content,
-                            Timestamp = c.Timestamp
-                        })
-                        .ToList();
+                   
                     return View(user);
                 }
             }
