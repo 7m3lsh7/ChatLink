@@ -157,7 +157,7 @@ namespace webchat.Controllers
             try
             {
                 var emailMessage = new MimeMessage();
-                emailMessage.From.Add(new MailboxAddress("WepChat Reset Password", "bm9412238@gmail.com"));
+                emailMessage.From.Add(new MailboxAddress("WepChat Reset Password", "wepchat9412238@gmail.com"));
                 emailMessage.To.Add(new MailboxAddress("", email));
                 emailMessage.Subject = subject;
                 emailMessage.Body = new TextPart("plain") { Text = message };
@@ -165,7 +165,7 @@ namespace webchat.Controllers
                 using (var client = new SmtpClient())
                 {
                     await client.ConnectAsync("smtp.gmail.com", 587, false);
-                    await client.AuthenticateAsync("bm9412238@gmail.com", "lvzg aqkt ttvk nngg");
+                    await client.AuthenticateAsync("wepchat9412238@gmail.com", "hvst kokk dyws nksv");
                     await client.SendAsync(emailMessage);
                     await client.DisconnectAsync(true);
                 }
