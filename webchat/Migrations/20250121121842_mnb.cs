@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace webchat.Migrations
 {
     /// <inheritdoc />
-    public partial class one : Migration
+    public partial class mnb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,10 +35,11 @@ namespace webchat.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SenderId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReceiverId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SenderId = table.Column<int>(type: "int", nullable: false),
+                    ReceiverId = table.Column<int>(type: "int", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -53,7 +54,7 @@ namespace webchat.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsAdmin = table.Column<bool>(type: "bit", nullable: false),
                     CrearetedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -66,7 +67,8 @@ namespace webchat.Migrations
                     VerificationCodeExpiry = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsVerified = table.Column<bool>(type: "bit", nullable: false),
                     ResetPasswordToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ResetPasswordExpiry = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ResetPasswordExpiry = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsOnline = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
