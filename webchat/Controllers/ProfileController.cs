@@ -73,6 +73,8 @@ namespace webchat.Controllers
 
         public IActionResult AddEmail(int id)
         {
+            ViewData["HideNavbar"] = true;
+            ViewData["HideFooter"] = true;
             var user = _chatDbcontect.users.Find(id);
 
             if (user == null)
@@ -86,6 +88,8 @@ namespace webchat.Controllers
         [HttpPost]
         public IActionResult SaveEmail(int id, string email)
         {
+            ViewData["HideNavbar"] = true;
+            ViewData["HideFooter"] = true;
             var user = _chatDbcontect.users.Find(id);
 
             if (user == null)
