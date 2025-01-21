@@ -15,6 +15,8 @@
         
 
     <link rel="stylesheet" href="~/webchat.styles.css" asp-append-version="true" />
+    <script src="~/js/time.js"></script>
+
 </head>
 <body>
     <header>
@@ -32,7 +34,7 @@
                                 <a class="nav-link active text-white" aria-current="page" asp-action="Index" asp-controller="Home">Home</a>
                             </li>
                                 <li class="nav-item pe-2 ps-2">
-                                    <a class="nav-link active text-white" aria-current="page" asp-action="Index" asp-controller="Profile">Show Profile</a>
+                                    <a class="nav-link active text-white" aria-current="page" asp-action="Index" asp-controller="Profile">Profile</a>
                                 </li>
                             <li class="nav-item pe-2 ps-2">
                                 <a class="nav-link text-white" href="/Home/Chat">Chat</a>
@@ -91,6 +93,7 @@
    
     <div id="clock" style="font-size: 1rem; font-weight: bold; position: fixed; bottom: 10px; right: 10px; text-align: right; background: rgba(0, 0, 0, 0.8); color: white; padding: 10px; border-radius: 8px;">
     </div>
+
         </main>
     </div>
 
@@ -102,12 +105,11 @@
     <script src="~/js/jquery-3.7.1.js"></script>
     <script src="~/js/popper.min.js"></script>
     <script src="~/js/all.min.js"></script>
-    <script src="~/js/time.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 
-     <script>
-        function startClock(timeZone) {
+    <script>
+                function startClock(timeZone) {
             const clockElement = document.getElementById("clock");
 
             function updateClock() {
@@ -142,8 +144,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-          const timeZone = "@ViewData["time"]";
-            startClock(timeZone);
+            startClock('@ViewData["time"]');
         });
 
 

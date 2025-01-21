@@ -1,9 +1,8 @@
-﻿namespace webchat.wwwroot.css
-{
-    public class Profili
-    {
-    }
+﻿
 
+body {
+    background-color: #1e1e1e;
+}
 
 .profile-header {
     background: linear-gradient(to right, #3b0764, #7a4cce);
@@ -171,5 +170,3 @@
         z-index: 10;
         position: relative;
     }
-
-        }
