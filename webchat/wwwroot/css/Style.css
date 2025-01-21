@@ -78,3 +78,41 @@ footer {
     width:400px
 
 }
+
+/* Features Section */
+.Features h2 {
+    color: #1d3557;
+    font-weight: bold;
+}
+
+.Features img {
+    width: 80px;
+    height: 80px;
+}
+
+.Features h5 {
+    font-weight: bold;
+    color: #457b9d;
+}
+
+/* Call to Action */
+.CallToAction h2 {
+    font-weight: bold;
+}
+
+.CallToAction .btn {
+    background-color: #a8dadc;
+    color: #457b9d;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+    .CallToAction .btn:hover {
+        background-color: #1d3557;
+        color: #f1faee;
+    }
+
+/* Footer */
+footer a:hover {
+    text-decoration: underline;
+}
