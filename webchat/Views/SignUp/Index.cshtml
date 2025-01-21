@@ -14,14 +14,11 @@
         <p class="fs-5">Enter your account details</p>
 
         <!-- عرض رسائل الخطأ -->
-        @if (ViewData["ErrorMessage"] != null)
-        {
-            <div class="alert alert-danger" role="alert">
-                @ViewData["ErrorMessage"]
-            </div>
-        }
+        <div id="error-message" class="alert alert-danger d-none" role="alert">
+            Please fill out all required fields correctly!
+        </div>
 
-        <form action="/SignUp/add" method="post">
+        <form id="signup-form" action="/SignUp/add" method="post" novalidate>
             <div class="mb-3">
                 <label for="Email" class="form-label">Email :</label>
                 <input type="email" id="Email" name="Email" class="form-control w" placeholder="Enter your Email" required>
@@ -39,8 +36,8 @@
 
             <div class="col-md-6 mb-3">
                 <label for="gender" class="form-label">Gender :</label>
-                <select name="Gender" class="form-control w" id="gender">
-                    <option value="Select Gender">Select Gender</option>
+                <select name="Gender" class="form-control w" id="gender" required>
+                    <option value="">Select Gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                 </select>
@@ -48,8 +45,8 @@
 
             <div class="col-md-6 mb-3">
                 <label for="country" class="form-label">Country :</label>
-                <select name="Country" class="form-control w" id="country">
-                    <option value="Select Country">Select Country</option>
+                <select name="Country" class="form-control w" id="country" required>
+                    <option value="">Select Country</option>
                     <option value="USA">USA</option>
                     <option value="UK">UK</option>
                     <option value="India">India</option>
@@ -58,8 +55,8 @@
 
             <div class="col-md-6 mb-3">
                 <label for="language" class="form-label">Language :</label>
-                <select name="Language" class="form-control w" id="language">
-                    <option value="Select Language">Select Language</option>
+                <select name="Language" class="form-control w" id="language" required>
+                    <option value="">Select Language</option>
                     <option value="English">English</option>
                     <option value="Spanish">Spanish</option>
                 </select>
@@ -67,7 +64,8 @@
 
             <div class="form-group mb-3">
                 <label for="TimeZone" class="form-label">Time Zone :</label>
-                <select name="TimeZone" class="form-control w">
+                <select name="TimeZone" class="form-control w" required>
+                    <option value="">Select Time Zone</option>
                     <option value="UTC">UTC (Coordinated Universal Time)</option>
                     <option value="Europe/London">GMT (Greenwich Mean Time)</option>
                     <option value="Africa/Cairo">EET (Eastern European Time - Cairo)</option>
@@ -83,10 +81,19 @@
                 </select>
             </div>
 
-            <div class="mb-3">
+           <div class="mb-3">
                 <label for="PasswordHash" class="form-label">Password :</label>
-                <input type="password" id="PasswordHash" name="PasswordHash" class="form-control w" placeholder="Enter your password" required>
+                <input 
+                type="password" 
+                id="PasswordHash" 
+                name="PasswordHash" 
+                class="form-control w" 
+                placeholder="Enter your password" 
+                required
+                pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{9,}$"
+                title="Password must be at least 9 characters long and include both letters and numbers.">
             </div>
+
 
             <br>
             <button type="submit" class="btn btn-login w-100">Submit</button>
@@ -97,4 +104,29 @@
             <a href="/login/index" class="signup-btn m-2">Login</a>
         </div>
     </div>
+
 </div>
+<script>
+    document.getElementById('signup-form').addEventListener('submit', function (event) {
+        const form = event.target;
+        const passwordInput = document.getElementById('PasswordHash');
+        const errorMessage = document.getElementById('error-message');
+
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+            errorMessage.classList.remove('d-none'); 
+            errorMessage.innerHTML = "⚠️ Please make sure all fields are filled correctly!";
+        } 
+        else if (!passwordInput.value.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d{Script=Arabic}]{9,}$/)) {
+        event.preventDefault();
+        event.stopPropagation(); 
+        errorMessage.classList.remove('d-none'); 
+        errorMessage.innerHTML = "⚠️ Password must be at least 9 characters long and include both letters and numbers.";
+    } else {
+            errorMessage.classList.add('d-none'); 
+        }
+
+        form.classList.add('was-validated'); 
+    });
+</script>

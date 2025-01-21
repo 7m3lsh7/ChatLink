@@ -12,8 +12,8 @@ namespace webchat.Models
         [StringLength(255)]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Please Enter Your Password")]
-        [StringLength(255)]
+        [MinLength(9, ErrorMessage = "Password must be at least 9 characters long.")]
+        [RegularExpression("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{9,}$", ErrorMessage = "Password must include both letters and numbers.")]
         public string PasswordHash { get; set; }
 
         [Required(ErrorMessage = "Please Enter Your Profile Picture")]

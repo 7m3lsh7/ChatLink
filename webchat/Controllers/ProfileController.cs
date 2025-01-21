@@ -38,7 +38,7 @@ namespace webchat.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(User user, int id)
+        public IActionResult Edit(User user, int id, IFormFile ProfilePicture)
         {
             var response = _chatDbcontect.users.Find(id);
 
@@ -47,15 +47,29 @@ namespace webchat.Controllers
                 return NotFound();
             }
 
-            else
-            {
-                response.Username = user.Username;
-                response.NickName = user.NickName;
+            // تعديل بيانات المستخدم
+            response.Username = user.Username;
+            response.NickName = user.NickName;
+            response.TimeZone = user.TimeZone;
 
-                _chatDbcontect.SaveChanges();
-                return Json(new { success = true, message = "Profile updated successfully" });
+            // حفظ الصورة إذا تم رفعها
+            if (ProfilePicture != null && ProfilePicture.Length > 0)
+            {
+                var fileName = Path.GetFileName(ProfilePicture.FileName);
+                var filePath = Path.Combine("wwwroot/uploads", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    ProfilePicture.CopyTo(stream);
+                }
+
+                response.ProfilePicture = "/uploads/" + fileName;
             }
+
+            _chatDbcontect.SaveChanges();
+            return Json(new { success = true, message = "Profile updated successfully" });
         }
+
 
         public IActionResult AddEmail(int id)
         {

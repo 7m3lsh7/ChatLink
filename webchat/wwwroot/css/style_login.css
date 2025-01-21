@@ -65,6 +65,12 @@
         border-color: #6c63ff;
         box-shadow: none;
     }
+.error-message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
+    display: none; /* سيتم عرضها فقط عند وجود خطأ */
+}
 
     .form-control::placeholder {
         color: #6c6161;

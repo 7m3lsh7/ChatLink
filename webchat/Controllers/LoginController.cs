@@ -8,6 +8,7 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using System;
 using Microsoft.Extensions.Configuration;
+using System.Text.RegularExpressions;
 
 namespace webchat.Controllers
 {
@@ -49,6 +50,11 @@ namespace webchat.Controllers
                 return View("Index");
             }
 
+            if (!Regex.IsMatch(user.PasswordHash, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{9,}$"))
+            {
+                ViewBag.Message = "Password must include both letters and numbers and be at least 9 characters long.";
+                return View("Index");
+            }
             var cookieOptions = new CookieOptions
             {
                 Expires = DateTime.Now.AddDays(7),
