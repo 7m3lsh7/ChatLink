@@ -30,12 +30,12 @@ namespace webchat.Controllers
         {
             try
             {
-                MailMessage mail = new MailMessage("wepchat9412238@gmail.com", toEmail);
+                MailMessage mail = new MailMessage("webchat.eg@gmail.com", toEmail);
                 mail.Subject = subject;
                 mail.Body = body;
 
                 SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
-                smtp.Credentials = new System.Net.NetworkCredential("wepchat9412238@gmail.com", "hvst kokk dyws nksv");
+                smtp.Credentials = new System.Net.NetworkCredential("webchat.eg@gmail.com", "yjid fcne vdda arjq");
                 smtp.EnableSsl = true;
 
                 smtp.Send(mail);
