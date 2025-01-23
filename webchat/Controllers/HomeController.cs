@@ -18,6 +18,7 @@ namespace webchat.Controllers
         public IActionResult Cooky()
         {
             var userIdCookie = Request.Cookies["UserId"];
+            ViewData["UserID"] = userIdCookie;
             if (!string.IsNullOrEmpty(userIdCookie) && int.TryParse(userIdCookie, out int userId))
             {
                 var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
