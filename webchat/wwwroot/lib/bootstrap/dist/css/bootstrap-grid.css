@@ -44,7 +44,7 @@
   }
 }
 .row {
-  --bs-gutter-x: 1.5rem;
+ 
   --bs-gutter-y: 0;
   display: flex;
   flex-wrap: wrap;
@@ -252,7 +252,7 @@
 
 .g-4,
 .gx-4 {
-  --bs-gutter-x: 1.5rem;
+
 }
 
 .g-4,
@@ -465,7 +465,7 @@
 
   .g-sm-4,
 .gx-sm-4 {
-    --bs-gutter-x: 1.5rem;
+  
   }
 
   .g-sm-4,
@@ -678,7 +678,7 @@
 
   .g-md-4,
 .gx-md-4 {
-    --bs-gutter-x: 1.5rem;
+  
   }
 
   .g-md-4,
@@ -891,7 +891,7 @@
 
   .g-lg-4,
 .gx-lg-4 {
-    --bs-gutter-x: 1.5rem;
+  
   }
 
   .g-lg-4,
@@ -1104,7 +1104,7 @@
 
   .g-xl-4,
 .gx-xl-4 {
-    --bs-gutter-x: 1.5rem;
+  
   }
 
   .g-xl-4,
@@ -1317,7 +1317,7 @@
 
   .g-xxl-4,
 .gx-xxl-4 {
-    --bs-gutter-x: 1.5rem;
+  
   }
 
   .g-xxl-4,

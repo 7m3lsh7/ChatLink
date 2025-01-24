@@ -25,8 +25,8 @@ body {
 }
 
 .profile-content {
-    padding-top: 50px;
-    margin-left: 60px;
+   
+    margin: 15px;
 }
 
 .form-control {
@@ -46,11 +46,7 @@ body {
     border-radius: 20px;
 }
 
-.nav-link {
-    font-size: 1.2rem;
-    margin: 10px 0;
-}
-
+ 
     .nav-link i {
         font-size: 2rem;
     }
@@ -65,86 +61,8 @@ body {
     border-radius: 50%;
     object-fit: cover;
 }
-
-.sidebar-icon {
-    margin-bottom: 15px;
-}
-
-.top-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #d3d3d3;
-    padding: 10px 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-    .top-bar .search-box {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        background-color: #fff;
-        padding: 5px 10px;
-        border-radius: 10px;
-    }
-
-        .top-bar .search-box input {
-            border: none;
-            outline: none;
-            width: 100%;
-            margin-left: 10px;
-            color: #aaa;
-        }
-
-    .top-bar .icon-container {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-        .top-bar .icon-container img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-        }
-
-        .top-bar .icon-container i {
-            font-size: 1.5rem;
-            color: #555;
-            cursor: pointer;
-        }
-
-:root {
-    --color: #3B1868;
-    --background-color: #4f037b39;
-}
-
-.color {
-    background-color: var(--color);
-    width: fit-content;
-    height: 100%;
-    display: inline-block;
-}
-
-.navbar .container-fluid .navbar-column {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-}
-
-    .navbar .container-fluid .navbar-column .logout {
-        padding-top: 100px;
-    }
-
-    .navbar .container-fluid .navbar-column .collapse .navbar-nav {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        margin-top: 50px;
-    }
+ 
+ 
 
 .profile-picture {
     width: 50px;

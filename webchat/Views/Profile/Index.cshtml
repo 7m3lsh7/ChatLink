@@ -1,113 +1,61 @@
 ﻿@model User
 <link rel="stylesheet" href="~/css/Profile.css" asp-append-version="true" />
 
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <nav class="navbar navbar-expand-lg color " style="height: 850px;width: 90px; ">
-            <div class="container-fluid">
-                <div class="navbar-column">
-                    <div class="profile-picture">
-                        <img src="@Model.ProfilePicture" alt="Profile Picture">
+
+   
+
+            <!-- Main Content -->
+            <div class="  profile-content">
+                <!-- Top Bar -->
+                <!-- Header -->
+      
+                    <div class="  profile-header">
+                        <h1>Welcome, @Model.NickName</h1>
                     </div>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav">
-                            <li class="nav-item pt-2 pb-2">
-                                <a class="nav-link active" aria-current="page" href="/Home/index">
-                                    <i class="fa-solid text-white fa-house"></i>
-                                </a>
-                            </li>
-                            <li class="nav-item pt-2 pb-2">
-                                <a class="nav-link" href="/Profile/index">
-                                    <i class="fa-solid text-white fa-user"></i>
-                                </a>
-                            </li>
-                            <li class="nav-item pt-2 pb-2">
-                                <a class="nav-link" href="/Home/Chat">
-                                    <i class="fa-solid text-white fa-bell"></i>
-                                </a>
-                            </li>
-                            <li class="nav-item pt-2 pb-2">
-                                <a class="nav-link" href="/Profile/Search">
-                                    <i class="fa-solid text-white fa-magnifying-glass"></i>
-                                </a>
-                            </li>
-                            <li class="nav-item pt-2 pb-2" >
-                                <a class="nav-link" href="/Profile/index"   >
-                                    <i class="fa-solid text-white fa-sliders"></i>
-                                </a>
-                            </li>
-                         
-                        </ul>
+              
+                
+
+
+                <div class="row">
+                    <div class="col-lg-3 text-center iamge">
+                        <img src="@Model.ProfilePicture" class="profile-pic mb-3" alt="User Image">
+                        <h5>@Model.NickName</h5>
                     </div>
-                    <div class="logout">
-                        <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Account/Logout">
-                                    <i class="fa-solid text-danger fa-right-from-bracket"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </nav>
+                    <div class="col-lg-9">
+                        <form id="profileForm">
+                            <!-- Buttons for Edit/Save -->
+                            <button type="button" id="editButton" class="btn btn-dark">Edit</button>
+                            <button type="submit" id="saveButton" class="btn btn-success" style="display: none;">Save</button>
 
-
-        <!-- Main Content -->
-        <div class="col-md-10 profile-content">
-            <!-- Top Bar -->
-            
-
-            <!-- Header -->
-            <div class="profile-header">
-                <h1>Welcome, @Model.NickName</h1>
-            </div>
-
-
-            <div class="row">
-                <div class="col-lg-3 text-center iamge">
-                    <img src="@Model.ProfilePicture" class="profile-pic mb-3" alt="User Image">
-                    <h5>@Model.NickName</h5>
-                </div>
-                <div class="col-lg-9">
-                    <form id="profileForm">
-                         <!-- Buttons for Edit/Save -->
-                        <button type="button" id="editButton" class="btn btn-dark">Edit</button>
-                        <button type="submit" id="saveButton" class="btn btn-success" style="display: none;">Save</button>
-                    
                             <input type="hidden" name="Id" value="@Model.Id" />
 
-                        <div class="row mt-3">
-                            <div class="col-md-6 mb-3">
-                                <label for="fullName" class="form-label">Full Name :</label>
-                                <input type="text" class="form-control" id="fullName" name="Username" value="@Model.Username" readonly>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="nickName" class="form-label">Nick Name :</label>
-                                <input type="text" class="form-control" id="nickName" name="NickName" value="@Model.NickName" readonly>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="gender" class="form-label">Gender :</label>
-                                <input type="text" class="form-control" id="gender" name="Gender" value="@Model.Gender" readonly>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="country" class="form-label">Country :</label>
-                                <input type="text" class="form-control" id="country" name="Country" value="@Model.Country" readonly>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="language" class="form-label">Language :</label>
-                                <input type="text" class="form-control" id="language" name="Language" value="@Model.Language" readonly>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="timeZone" class="form-label">Time Zone :</label>
-                                <select class="form-control" id="timeZone" name="TimeZone" @if (Model.TimeZone != null)
-                                {
-                                    <text>value="@Model.TimeZone"</text>
-                                }>
+                            <div class="row mt-3">
+                                <div class="col-md-6 mb-3">
+                                    <label for="fullName" class="form-label">Full Name :</label>
+                                    <input type="text" class="form-control" id="fullName" name="Username" value="@Model.Username" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="nickName" class="form-label">Nick Name :</label>
+                                    <input type="text" class="form-control" id="nickName" name="NickName" value="@Model.NickName" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="gender" class="form-label">Gender :</label>
+                                    <input type="text" class="form-control" id="gender" name="Gender" value="@Model.Gender" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="country" class="form-label">Country :</label>
+                                    <input type="text" class="form-control" id="country" name="Country" value="@Model.Country" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="language" class="form-label">Language :</label>
+                                    <input type="text" class="form-control" id="language" name="Language" value="@Model.Language" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="timeZone" class="form-label">Time Zone :</label>
+                                    <select class="form-control" id="timeZone" name="TimeZone" @if (Model.TimeZone != null)
+                                    {
+                                        <text>value="@Model.TimeZone"</text>
+                                    }>
                                     <option value="UTC">UTC (Coordinated Universal Time)</option>
                                     <option value="Europe/London">GMT (Greenwich Mean Time)</option>
                                     <option value="Africa/Cairo">EET (Eastern European Time - Cairo)</option>
@@ -122,37 +70,35 @@
                                     <option value="Australia/Sydney">Australian Eastern Time (AET - Sydney)</option>
                                     <!-- Add more time zones as needed -->
                                  </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="profilePicture" class="form-label">Profile Picture :</label>
-                            <input type="file" class="form-control" id="profilePicture" name="ProfilePicture" accept="image/*">
-                        </div>
-                        <div>
-                            <h5 class="mt-4">My Email Address</h5>
-                            <p class="text-muted">
-                                @if (!string.IsNullOrEmpty(Model.Email))
-                                {
-                                    var emails = Model.Email.Split(',');
-                                    foreach (var email in emails)
+                            <div class="col-md-6 mb-3">
+                                <label for="profilePicture" class="form-label">Profile Picture :</label>
+                                <input type="file" class="form-control" id="profilePicture" name="ProfilePicture" accept="image/*">
+                            </div>
+                            <div>
+                                <h5 class="mt-4">My Email Address</h5>
+                                <p class="text-muted">
+                                    @if (!string.IsNullOrEmpty(Model.Email))
                                     {
-                                        <span>@email</span>
+                                        var emails = Model.Email.Split(',');
+                                        foreach (var email in emails)
+                                        {
+                                            <span>@email</span>
 
-                                        <br />
+                                            <br />
+                                        }
                                     }
-                                }
-                            </p>
-                            <a class="btn btn-primary mb-3" href="@Url.Action("AddEmail", "Profile", new { id = Model.Id })">Add Your New Email</a>
-                        </div>
+                                </p>
+                                <a class="btn btn-primary mb-3" href="@Url.Action("AddEmail", "Profile", new { id = Model.Id })">Add Your New Email</a>
+                            </div>
 
-                       </form>
+                        </form>
+                    </div>
                 </div>
+
             </div>
-           
-        </div>
-    </div>
-   
-</div>
+    
 
 
 <script>
@@ -213,5 +159,17 @@
     profilePicture.addEventListener('click', () => {
         profilePicture.classList.toggle('clicked');
     });
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+
+            if (navbarToggler && navbarCollapse.classList.contains('show')) {
+                navbarToggler.click(); // Simulates a toggle button click
+            }
+        });
+    });
+
 </script>
 
