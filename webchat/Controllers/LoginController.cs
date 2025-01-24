@@ -179,6 +179,7 @@ namespace webchat.Controllers
         public IActionResult ViewUser()
         {
             var isAdminCookie = Request.Cookies["IsAdmin"];
+            ViewData["IsAdmin"] = isAdminCookie;
             if (string.IsNullOrEmpty(isAdminCookie) || isAdminCookie != "True")
             {
                 return RedirectToAction("Index", "Login");
