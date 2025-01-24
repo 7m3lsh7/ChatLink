@@ -29,9 +29,13 @@ namespace webchat.Controllers
             ViewData["HideFooter"] = true;
 
             var userIdCookie = Request.Cookies["UserId"];
-            if (userIdCookie != null)
+            if (!string.IsNullOrEmpty(userIdCookie) && int.TryParse(userIdCookie, out int userId))
             {
-                return RedirectToAction("Index", "Home");
+                var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
+                if (user != null)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
             return View();
         }
@@ -42,7 +46,14 @@ namespace webchat.Controllers
         {
             ViewData["HideNavbar"] = true;
             ViewData["HideFooter"] = true;
-            var dbUser = _chatDbcontect.users.FirstOrDefault(u => u.Email == user.Email);
+
+            if (string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.PasswordHash))
+            {
+                ViewBag.Message = "Email and Password are required.";
+                return View("Index");
+            }
+
+            var dbUser = await _chatDbcontect.users.FirstOrDefaultAsync(u => u.Email == user.Email);
 
             if (dbUser == null || user.PasswordHash != dbUser.PasswordHash)
             {
@@ -61,6 +72,7 @@ namespace webchat.Controllers
                 Expires = DateTime.Now.AddDays(7),
                 HttpOnly = true
             };
+
             Response.Cookies.Append("UserId", dbUser.Id.ToString(), cookieOptions);
             Response.Cookies.Append("IsAdmin", dbUser.IsAdmin.ToString(), new CookieOptions
             {
@@ -68,7 +80,6 @@ namespace webchat.Controllers
                 Expires = DateTimeOffset.Now.AddHours(1)
             });
 
-            
             await SendLoginNotificationAsync(dbUser.Email, dbUser.Username);
 
             return RedirectToAction("Index", "Home");
@@ -78,7 +89,7 @@ namespace webchat.Controllers
         {
             try
             {
-                var deviceInfo = GetDeviceInfo(); 
+                var deviceInfo = GetDeviceInfo();
                 var loginTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC");
 
                 var emailMessage = new MimeMessage();
@@ -153,6 +164,12 @@ namespace webchat.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(string email)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                ViewBag.Message = "Email is required.";
+                return View();
+            }
+
             var user = await _chatDbcontect.users.FirstOrDefaultAsync(u => u.Email == email);
             if (user == null)
             {
@@ -199,6 +216,7 @@ namespace webchat.Controllers
         {
             ViewData["HideNavbar"] = true;
             ViewData["HideFooter"] = true;
+
             if (newPassword != confirmPassword)
             {
                 ViewBag.Message = "Passwords do not match.";
@@ -240,27 +258,30 @@ namespace webchat.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception("Sending email failed: " + ex.Message);
+                Console.WriteLine($"Failed to send email: {ex.Message}");
             }
         }
 
         public IActionResult ViewUser()
         {
             var isAdminCookie = Request.Cookies["IsAdmin"];
-            ViewData["IsAdmin"] = isAdminCookie;
             if (string.IsNullOrEmpty(isAdminCookie) || isAdminCookie != "True")
             {
                 return RedirectToAction("Index", "Login");
             }
+
             var response = _chatDbcontect.users.ToList();
             return View(response);
         }
 
         public IActionResult Delete(int id)
         {
-            var response = _chatDbcontect.users.Find(id);
-            _chatDbcontect.users.Remove(response);
-            _chatDbcontect.SaveChanges();
+            var user = _chatDbcontect.users.Find(id);
+            if (user != null)
+            {
+                _chatDbcontect.users.Remove(user);
+                _chatDbcontect.SaveChanges();
+            }
             return RedirectToAction("ViewUser", "Login");
         }
     }
