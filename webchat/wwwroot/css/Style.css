@@ -38,21 +38,33 @@
     height: 100%;
     object-fit: cover;
 }
-
 .Header {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: var(--background-color);
-    height: 300px;
+    height: 500px;
+    overflow: hidden;
 }
+
+    .Header .video-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1; /* Place the video behind other content */
+    }
 
     .Header .main-text {
         display: flex;
         flex-direction: column;
         align-items: center;
         padding: 50px;
+        color: #fff; /* Ensure text is readable on top of the video */
+        z-index: 1; /* Place the text on top of the video */
     }
 
     .Header .main-button .button {
@@ -64,6 +76,7 @@
         align-items: center;
         justify-content: center;
         display: flex;
+        z-index: 1; /* Place the button on top of the video */
     }
 
 footer {
