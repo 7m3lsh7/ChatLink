@@ -23,16 +23,28 @@ namespace webchat.Controllers
         private string GenerateVerificationCode()
         {
             var random = new Random();
-            return random.Next(100000, 999999).ToString(); 
+            return random.Next(100000, 999999).ToString();
         }
 
         private void SendEmail(string toEmail, string subject, string body)
         {
             try
             {
+                string htmlBody = $@"
+                    <html>
+                    <body>
+                        <h1>Hello!</h1>
+                        <p>Thank you for registering on our website. Please use the following code to verify your email:</p>
+                        <h2>{body}</h2>
+                        <p>If you did not request this code, please ignore this message.</p>
+                        <p>Best regards,<br/>The Support Team</p>
+                    </body>
+                    </html>";
+
                 MailMessage mail = new MailMessage("ChatLink.eg@gmail.com", toEmail);
                 mail.Subject = subject;
-                mail.Body = body;
+                mail.Body = htmlBody;
+                mail.IsBodyHtml = true; 
 
                 SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
                 smtp.Credentials = new System.Net.NetworkCredential("ChatLink.eg@gmail.com", "ffhm glyt bcup ddke");
@@ -43,6 +55,39 @@ namespace webchat.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Failed to send email: {ex.Message}");
+            }
+        }
+
+        private void SendWelcomeEmail(string toEmail, string username)
+        {
+            try
+            {
+                string subject = "Welcome to Our Website!";
+                string body = $@"
+                    <html>
+                    <body>
+                        <h1>Hello {username}!</h1>
+                        <p>Thank you for registering on our website. We are excited to have you on board.</p>
+                        <p>You can now enjoy all the features of our platform.</p>
+                        <p>If you have any questions, feel free to contact us.</p>
+                        <p>Best regards,<br/>The Support Team</p>
+                    </body>
+                    </html>";
+
+                MailMessage mail = new MailMessage("ChatLink.eg@gmail.com", toEmail);
+                mail.Subject = subject;
+                mail.Body = body;
+                mail.IsBodyHtml = true; 
+
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                smtp.Credentials = new System.Net.NetworkCredential("ChatLink.eg@gmail.com", "ffhm glyt bcup ddke");
+                smtp.EnableSsl = true;
+
+                smtp.Send(mail);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to send welcome email: {ex.Message}");
             }
         }
 
@@ -59,7 +104,7 @@ namespace webchat.Controllers
         {
             if (_chatDbContext.users.Any(u => u.Email == user.Email))
             {
-                ModelState.AddModelError("Email", "هذا البريد الإلكتروني مسجل بالفعل.");
+                ModelState.AddModelError("Email", "This email is already registered.");
                 return View("Index");
             }
 
@@ -71,7 +116,7 @@ namespace webchat.Controllers
             HttpContext.Session.Set("UserStep1", user);
             HttpContext.Session.SetString("SignUpStep", "Addphoto");
 
-            var emailBody = $"Your verification code is:( {verificationCode} )";
+            var emailBody = $"Your verification code is: {verificationCode}";
             SendEmail(user.Email, "Verify your email", emailBody);
 
             return RedirectToAction("Addphoto");
@@ -112,7 +157,7 @@ namespace webchat.Controllers
             user.IsVerified = false;
             user.IsAdmin = false;
             user.ResetPasswordToken = "";
-            user.ResetPasswordExpiry = null; 
+            user.ResetPasswordExpiry = null;
 
             if (ProfilePicture != null && ProfilePicture.Length > 0)
             {
@@ -124,11 +169,9 @@ namespace webchat.Controllers
                 user.ProfilePicture = $"/uploads/{ProfilePicture.FileName}";
             }
 
-           
             HttpContext.Session.Set("UserStep2", user);
             HttpContext.Session.SetString("SignUpStep", "VerifyEmail");
 
-          
             return RedirectToAction("VerifyEmail");
         }
 
@@ -154,38 +197,38 @@ namespace webchat.Controllers
                 return RedirectToAction("Index");
             }
 
-           
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "التحقق من reCAPTCHA فشل. يرجى المحاولة مرة أخرى.");
+                ModelState.AddModelError("", "reCAPTCHA verification failed. Please try again.");
                 return View();
             }
 
-            
             if (userStep2.VerificationCode == code && userStep2.VerificationCodeExpiry > DateTime.Now)
             {
-                userStep2.IsVerified = true; 
-
+                userStep2.IsVerified = true;
 
                 _chatDbContext.users.Add(userStep2);
                 _chatDbContext.SaveChanges();
 
-                HttpContext.Session.SetInt32("UserId", userStep2.Id); 
-                HttpContext.Session.SetString("Username", userStep2.Username); 
+                HttpContext.Session.SetInt32("UserId", userStep2.Id);
+                HttpContext.Session.SetString("Username", userStep2.Username);
 
                 var cookieOptions = new CookieOptions
                 {
-                    Expires = DateTime.Now.AddDays(30), 
-                    IsEssential = true 
+                    Expires = DateTime.Now.AddDays(30),
+                    IsEssential = true
                 };
 
                 Response.Cookies.Append("UserId", userStep2.Id.ToString(), cookieOptions);
                 Response.Cookies.Append("Username", userStep2.Username, cookieOptions);
 
+                
+                SendWelcomeEmail(userStep2.Email, userStep2.Username);
+
                 return RedirectToAction("Cooky", "Home");
             }
 
-            ModelState.AddModelError("Code", "الكود غير صحيح أو منتهي الصلاحية.");
+            ModelState.AddModelError("Code", "The code is incorrect or has expired.");
             return View();
         }
     }
