@@ -68,7 +68,7 @@ namespace webchat.Controllers
                 Expires = DateTimeOffset.Now.AddHours(1)
             });
 
-            // إرسال رسالة إشعار بتسجيل الدخول
+            
             await SendLoginNotificationAsync(dbUser.Email, dbUser.Username);
 
             return RedirectToAction("Index", "Home");
@@ -78,7 +78,7 @@ namespace webchat.Controllers
         {
             try
             {
-                var deviceInfo = GetDeviceInfo(); // الحصول على معلومات الجهاز
+                var deviceInfo = GetDeviceInfo(); 
                 var loginTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC");
 
                 var emailMessage = new MimeMessage();
