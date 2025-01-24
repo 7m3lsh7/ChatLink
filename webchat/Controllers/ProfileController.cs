@@ -16,8 +16,7 @@ namespace webchat.Controllers
 
         public IActionResult Index()
         {
-            ViewData["HideNavbar"] = true;
-            ViewData["HideFooter"] = true;
+    
 
             var userIdCookie = Request.Cookies["UserId"];
             if (userIdCookie != null)
@@ -29,6 +28,9 @@ namespace webchat.Controllers
                 if (user != null)
                 {
                     ViewData["time"] = user.TimeZone;
+                    ViewData["nickname"] = user.NickName;
+                    ViewData["Photo"] = user.ProfilePicture;
+
 
                     return View(user);
                 }

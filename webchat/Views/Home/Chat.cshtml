@@ -1,149 +1,99 @@
 ﻿@model User
 <link rel="stylesheet" href="~/css/Chat.css" asp-append-version="true" />
 
-<nav class="navbar navbar-expand-lg color " style=" width: 90px; ">
-    <div class="container-fluid">
-        <div class="navbar-column">
-            <div class="profile-picture">
-                <img src="@Model.ProfilePicture" alt="Profile Picture">
-            </div>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item pt-2 pb-2">
-                        <a class="nav-link active" aria-current="page" href="/Home/index">
-                            <i class="fa-solid text-white fa-house"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item pt-2 pb-2">
-                        <a class="nav-link" href="/Profile/index">
-                            <i class="fa-solid text-white fa-user"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item pt-2 pb-2">
-                        <a class="nav-link" href="/Home/Chat">
-                            <i class="fa-solid text-white fa-bell"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item pt-2 pb-2">
-                        <a class="nav-link" href="/Profile/Search">
-                            <i class="fa-solid text-white fa-magnifying-glass"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item pt-2 pb-2">
-                        <a class="nav-link" href="/Profile/index">
-                            <i class="fa-solid text-white fa-sliders"></i>
-                        </a>
-                    </li>
+<div class="row">
+    <div class="chat-container justify-content-center mb-5 mt-5 d-flex flex-wrap ">
+        <div class="types-chat col-md-6">
 
-                </ul>
-            </div>
-            <div class="logout">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Account/Logout">
-                            <i class="fa-solid text-danger fa-right-from-bracket"></i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</nav>
+            <!-- Seen Messages -->
 
-
-<div class="chat-container ">
-    <div class="types-chat">
-
-        <!-- Seen Messages -->
-
-        <div class="messages-section-seen">
-            <h5>Seen Messages</h5>
-            @if (ViewData["Users"] is List<webchat.Models.User> users)
-            {
-                foreach (var user in users)
+            <div class="messages-section-seen">
+                <h5>Seen Messages</h5>
+                @if (ViewData["Users"] is List<webchat.Models.User> users)
                 {
-                    <!-- الرابط يغلف كامل العنصر لتمكين النقر في أي مكان -->
-                    <a href="@Url.Action("chat", "Home", new { receiverId = user.Id })" class="message-link">
-                        <div class="message-item">
-                            <img src="@user.ProfilePicture" alt="User">
-                            <div class="text-white">
-                                <strong>@user.NickName</strong><br>
-                                <!-- عرض آخر رسالة بين المستخدمين -->
-                                @if (ViewData["AllMessages"] is List<webchat.Models.Chat> allMessages)
-                                {
-                                    var lastMessage = allMessages
-                                    .Where(m => (m.SenderId == user.Id || m.ReceiverId == user.Id))
-                                    .OrderByDescending(m => m.Timestamp)
-                                    .FirstOrDefault();
+                    foreach (var user in users)
+                    {
+                        <!-- الرابط يغلف كامل العنصر لتمكين النقر في أي مكان -->
+                        <a href="@Url.Action("chat", "Home", new { receiverId = user.Id })" class="message-link">
+                            <div class="message-item">
+                                <img src="@user.ProfilePicture" alt="User">
+                                <div class="text-white">
+                                    <strong>@user.NickName</strong><br>
+                                    <!-- عرض آخر رسالة بين المستخدمين -->
+                                    @if (ViewData["AllMessages"] is List<webchat.Models.Chat> allMessages)
+                                    {
+                                        var lastMessage = allMessages
+                                        .Where(m => (m.SenderId == user.Id || m.ReceiverId == user.Id))
+                                        .OrderByDescending(m => m.Timestamp)
+                                        .FirstOrDefault();
 
-                                    if (lastMessage != null)
-                                    {
-                                        <div class="message-content">@lastMessage.Content</div>
+                                        if (lastMessage != null)
+                                        {
+                                            <div class="message-content">@lastMessage.Content</div>
+                                        }
+                                        else
+                                        {
+                                            <div>No messages yet</div>
+                                        }
                                     }
-                                    else
-                                    {
-                                        <div>No messages yet</div>
-                                    }
-                                }
+                                </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    }
                 }
-            }
-        </div>
+            </div>
 
-     
-        <div id="notification" class="notification" style="display: none;">
-            New message received!
-        </div>
 
-    </div>
-    <!-- Chat Box -->
-    <div class="chat-box">
-        <div class="chat-header">
-            <img src=" @ViewData["ReceiverPhoto"] " alt="User">
-            <div>
-                <strong class="text-white"> @ViewData["ReceiverName"]</strong><br>
-                <span id="userStatus_@ViewData["ReceiverId"]" class="status" style="color: #99aab5;">
-                    @if (Model.IsOnline)
+            <div id="notification" class="notification" style="display: none;">
+                New message received!
+            </div>
+
+        </div>
+        <!-- Chat Box -->
+        <div class="chat-box  col-md-6">
+            <div class="chat-header">
+                <img src=" @ViewData["ReceiverPhoto"] " alt="User">
+                <div>
+                    <strong class="text-white"> @ViewData["ReceiverName"]</strong><br>
+                    <span id="userStatus_@ViewData["ReceiverId"]" class="status" style="color: #99aab5;">
+                        @if (Model.IsOnline)
+                        {
+                            <span>Online</span>
+                        }
+                        else
+                        {
+                            <span>Offline</span>
+                        }
+                    </span>
+                </div>
+            </div>
+            <input id="userId" type="hidden" value=" @ViewBag.SenderId " />
+
+            <div id="chatContainer" class="chat-messages">
+                @if (@ViewData["Messages"] is List<webchat.Models.Chat> Content)
+                {
+                    foreach (var chat in Content)
                     {
-                        <span>Online</span>
+                        <div class="message @(chat.SenderId == ViewBag.SenderId ? "sent" : "received")">
+                            <div class="bubble">@chat.Content</div><br />
+                            <p class="message-timestamp ">@chat.Timestamp.ToString("HH:mm")</p>
+                        </div>
+
                     }
-                    else
-                    {
-                        <span>Offline</span>
-                    }
-                </span>
+                }
+            </div>
+            <div class="chat-input">
+                <input id="receiverId" type="hidden" value="@ViewBag.ReceiverId" />
+
+
+                <input id="messageInput" type="text" placeholder="Type a message">
+                <button id="sendButton">Send</button>
             </div>
         </div>
-        <input id="userId" type="hidden" value=" @ViewBag.SenderId " />
 
-        <div id="chatContainer" class="chat-messages">
-            @if (@ViewData["Messages"] is List<webchat.Models.Chat> Content)
-            {
-                foreach (var chat in Content)
-                {
-                    <div class="message @(chat.SenderId == ViewBag.SenderId ? "sent" : "received")">
-                        <div class="bubble">@chat.Content</div><br />
-                        <p class="message-timestamp ">@chat.Timestamp.ToString("HH:mm")</p>
-                    </div>
-                    
-                }
-            }
-        </div>
-        <div class="chat-input">
-            <input id="receiverId" type="hidden" value="@ViewBag.ReceiverId" />
-           
-
-            <input id="messageInput" type="text" placeholder="Type a message">
-            <button id="sendButton">Send</button>
-        </div>
     </div>
-
 </div>
+
  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 

@@ -3,7 +3,50 @@
     --background-color: #4f037b39;
 }
 
+.navbar-toggler {
+    border-color: none;
+    padding: 0.5rem;
+    background-color: var(--color);
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
+.navbar-toggler-icon {
+    border-color: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 24px;
+    height: 20px;
+    cursor: pointer;
+}
+
+    .navbar-toggler-icon::before,
+    .navbar-toggler-icon::after,
+    .navbar-toggler-icon div {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 3px;
+        border-color: none;
+        background-color: #fff; /* White color for the bars */
+        border-radius: 10px; /* Rounded edges for a modern look */
+        transition: all 0.3s ease; /* Smooth animations */
+    }
+
+
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon div {
+    opacity: 0;
+}
 
 .color {
     background-color: var(--color);
