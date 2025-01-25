@@ -23,39 +23,40 @@
     </ul>
 </div>
 
-
-
 <style>
-     
     body {
         background: linear-gradient(135deg, #2b5876, #4e4376);
         font-family: 'Poppins', sans-serif;
         min-height: 100vh;
-       
-      
+        margin: 0;
+        padding: 0;
     }
-    .f{
+
+    .f {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         color: #ffffff;
-        margin: 20px
+        margin: 20px;
     }
-     
+
     .search-form {
         display: flex;
         justify-content: center;
         align-items: center;
         margin-bottom: 30px;
         gap: 10px;
+        width: 100%;
+        max-width: 600px;
     }
 
     .search-input {
         padding: 10px 20px;
         border: none;
         border-radius: 25px;
-        width: 300px;
+        width: 100%;
+        max-width: 300px;
         font-size: 16px;
         outline: none;
         background: #ffffff;
@@ -69,9 +70,9 @@
             box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
         }
 
-    .search-button {
+    .search-button,
+    .reset-button {
         padding: 10px 25px;
-        background: linear-gradient(90deg, #00c6ff, #0072ff);
         border: none;
         border-radius: 25px;
         font-size: 16px;
@@ -82,12 +83,25 @@
         box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
     }
 
+    .search-button {
+        background: linear-gradient(90deg, #00c6ff, #0072ff);
+    }
+
         .search-button:hover {
             transform: scale(1.1);
             box-shadow: 0px 8px 20px rgba(0, 114, 255, 0.5);
         }
 
- 
+    .reset-button {
+        background: linear-gradient(90deg, #ff416c, #ff4b2b);
+    }
+
+        .reset-button:hover {
+            transform: scale(1.1);
+            background: linear-gradient(90deg, #ff4b2b, #ff416c);
+            box-shadow: 0px 8px 20px rgba(255, 75, 43, 0.5);
+        }
+
     .user-list {
         list-style: none;
         padding: 0;
@@ -139,23 +153,51 @@
             box-shadow: 0px 8px 20px rgba(255, 75, 43, 0.5);
         }
 
-    .reset-button {
-        padding: 10px 25px;
-        background: linear-gradient(90deg, #ff416c, #ff4b2b);
-        border: none;
-        border-radius: 25px;
-        font-size: 16px;
-        font-weight: bold;
-        color: #fff;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-    }
-
-        .reset-button:hover {
-            transform: scale(1.1);
-            background: linear-gradient(90deg, #ff4b2b, #ff416c);
-            box-shadow: 0px 8px 20px rgba(255, 75, 43, 0.5);
+    @@media (max-width: 768px) {
+        .search-form {
+            flex-direction: column;
+            gap: 15px;
         }
 
+        .search-input {
+            max-width: 100%;
+        }
+
+        .search-button,
+        .reset-button {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .user-list {
+            max-width: 100%;
+        }
+
+        .user-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 10px;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .search-input {
+            font-size: 14px;
+        }
+
+        .search-button,
+        .reset-button {
+            font-size: 14px;
+            padding: 8px 20px;
+        }
+
+        .user-name {
+            font-size: 16px;
+        }
+
+        .chat-link {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+    }
 </style>

@@ -35,11 +35,11 @@ namespace webchat.Models
         [StringLength(255)]
         public string Country { get; set; }
 
-        [Required(ErrorMessage = "Please Enter Your Email")]
+        [Required(ErrorMessage = "Please Enter Your Language")]
         [StringLength(255)]
         public string Language { get; set; }
 
-        [Required(ErrorMessage = "Please Enter Your Email")]
+        [Required(ErrorMessage = "Please Enter Your TimeZone")]
         [StringLength(255)]
         public string TimeZone { get; set; }
 
