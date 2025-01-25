@@ -1,0 +1,87 @@
+﻿
+.ContactUs {
+    background-color: #1e1e1e;
+    color: #fff;
+}
+
+    .ContactUs h2 {
+        color: #fff;
+        font-size: 2.5rem;
+    }
+
+    .ContactUs p {
+        color: #ccc;
+        font-size: 1.2rem;
+    }
+
+.contact-form, .contact-info {
+    background-color: #222;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    border: 2px solid #5a2a8a;
+}
+
+    .contact-form h4, .contact-info h4 {
+        color: #fff;
+        margin-bottom: 20px;
+    }
+
+    .contact-info p {
+        color: #ccc;
+        margin-bottom: 10px;
+    }
+
+.map {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.form-control {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+    margin-bottom: 15px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .form-control:focus {
+        background-color: #444;
+        color: #fff;
+        border-color: #3b1868;
+        box-shadow: 0 0 8px rgba(59, 24, 104, 0.6);
+    }
+
+.btn-primary {
+    background-color: #3b1868;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #5a2a8a;
+    }
+
+    .btn-primary:active {
+        background-color: #fff !important;
+        color: #3b1868 !important;
+    }
+
+.breadcrumb {
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    font-size: 18px;
+}
+
+.breadcrumb-item a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: #ccc;
+}

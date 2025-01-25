@@ -17,6 +17,8 @@ namespace webchat.Controllers
 
         public IActionResult Index()
         {
+            HttpContext.Session.SetString("ContactUs", "Index");
+
             var userIdCookie = Request.Cookies["UserId"];
             ViewData["UserID"] = userIdCookie;
 
@@ -67,12 +69,18 @@ namespace webchat.Controllers
             SendEmailToCompany(model);
 
             SaveContactFormData(model);
+            HttpContext.Session.SetString("ContactUs", "ThankYou");
 
             return RedirectToAction("ThankYou");
         }
 
         public IActionResult ThankYou()
         {
+            if (HttpContext.Session.GetString("ContactUs") != "ThankYou")
+            {
+                return RedirectToAction("Index");
+            }
+
             var userIdCookie = Request.Cookies["UserId"];
             ViewData["UserID"] = userIdCookie;
 

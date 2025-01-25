@@ -264,7 +264,28 @@ namespace webchat.Controllers
 
         public IActionResult ViewUser()
         {
+            var userIdCookie = Request.Cookies["UserId"];
+            ViewData["UserID"] = userIdCookie;
+
+            if (!string.IsNullOrEmpty(userIdCookie) && int.TryParse(userIdCookie, out int userId))
+            {
+                var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
+
+                if (user != null)
+                {
+                    ViewData["time"] = user.TimeZone;
+                    ViewData["nickname"] = user.NickName;
+                    ViewData["Photo"] = user.ProfilePicture;
+                    ViewData["Admin"] = user.IsAdmin;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Invalid or missing UserId cookie: {userIdCookie}");
+            }
+
             var isAdminCookie = Request.Cookies["IsAdmin"];
+            ViewData["IsAdmin"] = isAdminCookie;
             if (string.IsNullOrEmpty(isAdminCookie) || isAdminCookie != "True")
             {
                 return RedirectToAction("Index", "Login");
