@@ -161,8 +161,8 @@
         const messageDiv = document.createElement("div");
         messageDiv.className = "message received";  // Apply 'received' class to the incoming message
         messageDiv.innerHTML = `
-            <div class="bubble">${message}</div>  // Display the received message inside a bubble
-            <p class="message-timestamp">${new Date().toLocaleTimeString()}</p>  // Show the message timestamp
+            <div class="bubble">${message}</div>  
+            <p class="message-timestamp">${new Date().toLocaleTimeString()}</p>  
         `;
         document.getElementById("chatContainer").appendChild(messageDiv);  // Append the received message to the chat container
 

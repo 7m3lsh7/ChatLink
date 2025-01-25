@@ -13,9 +13,7 @@
     --input-border-color: #BDBDBD;
     --color: #3B1868;
 }
-.hidden {
-    display: none;
-}
+ 
 body {
     background: var(--background-gradient);
      color: #FFF;
@@ -40,13 +38,13 @@ a {
 
 }
 
-.messages-section-seen,
-.messages-section-unseen {
+.messages-section-seen {
     flex: 1;
     background: var(--background-gradient);
     border-radius: 15px;
     padding: 0 20px;
     margin-top: auto;
+    height:600px
 }
 
 .messages-section-unseen {
@@ -80,6 +78,9 @@ a {
         height: 45px;
         border-radius: 50%;
     }
+[hidden] {
+    display: none !important;
+}
 
 .chat-box {
  
@@ -89,8 +90,9 @@ a {
     flex-direction: column;
     justify-content: space-between;
     width: 700px;
+    height:600px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    margin:20px;
+    margin:20px
 }
 
 .chat-header {
@@ -111,10 +113,11 @@ a {
 
 .types-chat {
     width: 500px;
-    margin: 0 20px 20px 20px;
+    margin: 20px 20px 20px 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    height: 600px;
 }
 
 .chat-messages {
