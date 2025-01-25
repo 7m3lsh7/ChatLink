@@ -155,7 +155,7 @@ namespace webchat.Controllers
             user.VerificationCode = userStep1.VerificationCode;
             user.VerificationCodeExpiry = userStep1.VerificationCodeExpiry;
             user.IsVerified = false;
-            user.IsAdmin = false;
+            user.IsAdmin = "false";
             user.ResetPasswordToken = "";
             user.ResetPasswordExpiry = null;
 

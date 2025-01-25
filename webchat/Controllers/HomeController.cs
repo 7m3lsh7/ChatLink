@@ -41,7 +41,8 @@ namespace webchat.Controllers
         {
             var userIdCookie = Request.Cookies["UserId"];
             ViewData["UserID"] = userIdCookie;
-
+            var isAdminCookie = Request.Cookies["IsAdmin"];
+            ViewData["IsAdmin"] = isAdminCookie;
             if (!string.IsNullOrEmpty(userIdCookie) && int.TryParse(userIdCookie, out int userId))
             {
                 var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);

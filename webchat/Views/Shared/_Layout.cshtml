@@ -49,13 +49,13 @@
                                 <li class="nav-item pe-2 ps-2">
                                     <a class="nav-link text-white" href="/Profile/Search">Search</a>
                                 </li>
-                                @if (@ViewData["IsAdmin"] == "true")
+
+                                @if (ViewData["IsAdmin"] != null && ViewData["IsAdmin"].ToString().Trim().Equals("true", StringComparison.OrdinalIgnoreCase))
                                 {
                                     <li class="nav-item pe-2 ps-2">
                                         <a class="nav-link text-white" href="/Login/ViewUser">Dashboard</a>
                                     </li>
                                 }
-                             
 
                             <li class="nav-item pe-2 ps-2">
                                     <a class="nav-link text-white" href="/ContactUs/index">Contact Us </a>

@@ -19,7 +19,7 @@ namespace webchat.Models
         [Required(ErrorMessage = "Please Enter Your Profile Picture")]
         public string ProfilePicture { get; set; }
 
-        public bool IsAdmin { get; set; }
+        public string IsAdmin { get; set; }
 
         public DateTime CrearetedAt { get; set; }
 

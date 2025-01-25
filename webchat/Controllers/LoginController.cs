@@ -285,11 +285,13 @@ namespace webchat.Controllers
             }
 
             var isAdminCookie = Request.Cookies["IsAdmin"];
-            ViewData["IsAdmin"] = isAdminCookie;
-            if (string.IsNullOrEmpty(isAdminCookie) || isAdminCookie != "True")
+            if (string.IsNullOrEmpty(isAdminCookie) ||
+                !isAdminCookie.Trim().Equals("true", StringComparison.OrdinalIgnoreCase))
             {
                 return RedirectToAction("Index", "Login");
             }
+
+            ViewData["IsAdmin"] = isAdminCookie;
 
             var response = _chatDbcontect.users.ToList();
             return View(response);
