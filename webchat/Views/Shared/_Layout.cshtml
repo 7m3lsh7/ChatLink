@@ -20,7 +20,8 @@
 </head>
 <body>
     <header>
-    
+           @if (ViewData["HideNavbar"] == null || !(bool)ViewData["HideNavbar"])
+    {
         <nav class="navbar navbar-expand-lg color">
             <div class="container-fluid">
                 <div class="center">
@@ -100,7 +101,7 @@
             </div>
         </nav>
       
-
+}
     </header>
     <div >
         <main role="main">
@@ -113,6 +114,9 @@
       
            
         </main>
+
+        @if (ViewData["HideFooter"] == null || !(bool)ViewData["HideFooter"])
+    {
         <footer class="text-center bg-dark text-white ">
             <p>&copy; 2025 ChatLink. All rights reserved.</p>
             <div class="d-flex justify-content-center">
@@ -121,6 +125,7 @@
 
             </div>
         </footer>
+    }
     </div>
 
    

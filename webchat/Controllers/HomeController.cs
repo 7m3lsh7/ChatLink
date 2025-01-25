@@ -63,8 +63,7 @@ namespace webchat.Controllers
         // Action method to handle the chat page between users
         public IActionResult Chat(int receiverId)
         {
-            ViewData["HideNavbar"] = true;
-            ViewData["HideFooter"] = true;
+           
             ViewBag.ReceiverId = receiverId;
 
             var userIdCookie = Request.Cookies["UserId"];
