@@ -1,0 +1,156 @@
+﻿@model webchat.Models.ContactModel
+
+<div class="Header">
+    <video class="video-background" autoplay muted loop playsinline>
+        <source src="~/images/chatlink.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="main-text">
+        <h1>Contact Us</h1>
+        <nav aria-label="breadcrumb" style="margin-top: 15px;">
+            <ol class="breadcrumb" style="background-color: transparent; padding: 0; margin: 0;">
+                <li class="breadcrumb-item"><a href="/" style="color: #fff; text-decoration: none;">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page" style="color: #3b1868;">Contact Us</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="ContactUs py-5" style="background-color: #1e1e1e; color: #fff;">
+    <div class="container">
+        <h2 class="text-center mb-4">Round-the-clock Service</h2>
+        <p class="text-center mb-5">We're here to help! Reach out to us for any questions or support.</p>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="contact-form" style="background-color: #222; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); border: 2px solid #5a2a8a;">
+                    <h4 style="color: #fff; margin-bottom: 20px;">Get in Touch</h4>
+                    <form asp-action="Submit" method="post">
+                        <div class="form-group">
+                            <label asp-for="Name" style="color: #fff;">Name</label>
+                            <input asp-for="Name" class="form-control" placeholder="Enter your name" style="background-color: #333; color: #fff; border: 1px solid #555;">
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Mobile" style="color: #fff;">Mobile Number</label>
+                            <input asp-for="Mobile" class="form-control" placeholder="Enter your mobile number" style="background-color: #333; color: #fff; border: 1px solid #555;">
+                            <span asp-validation-for="Mobile" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email" style="color: #fff;">Mail ID</label>
+                            <input asp-for="Email" class="form-control" placeholder="Enter your email" style="background-color: #333; color: #fff; border: 1px solid #555;">
+                            <span asp-validation-for="Email" class="text-danger"></span> 
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AdditionalInfo" style="color: #fff;">Additional Information</label>
+                            <textarea asp-for="AdditionalInfo" class="form-control" rows="5" placeholder="Enter additional information" style="background-color: #333; color: #fff; border: 1px solid #555;"></textarea>
+                            <span asp-validation-for="AdditionalInfo" class="text-danger"></span> 
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="background-color: #3b1868; border: none;">Submit</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="contact-info" style="background-color: #222; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); border: 2px solid #5a2a8a;">
+                    <h4 style="color: #fff;">Our Office</h4>
+                    <p><strong style="color: #fff;">Address:</strong> 123 ChatLink Street, Cairo, Egypt</p>
+                    <p><strong style="color: #fff;">Phone:</strong> +20 123 456 7890</p>
+                    <p><strong style="color: #fff;">Email:</strong> ChatLink.eg@gmail.com</p>
+                </div>
+                <div class="map mt-4" style="border-radius: 8px; overflow: hidden;">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3458.2832264543363!2d30.934544524118174!3d29.913747374989637!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14585567bdbd1139%3A0x10815c4d843b6c7e!2z2YXYr9ix2LPYqSDYp9mK2YHYpyDYp9mE2K_ZiNmE2YrYqSDZhNmE2KrZg9mG2YjZhNmI2KzZitinINin2YTYqti32KjZitmC2YrYqQ!5e0!3m2!1sar!2seg!4v1737827783186!5m2!1sar!2seg" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .ContactUs {
+        background-color: #1e1e1e;
+        color: #fff;
+    }
+
+        .ContactUs h2 {
+            color: #fff;
+            font-size: 2.5rem;
+        }
+
+        .ContactUs p {
+            color: #ccc;
+            font-size: 1.2rem;
+        }
+
+    .contact-form, .contact-info {
+        background-color: #222;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        border: 2px solid #5a2a8a;
+    }
+
+        .contact-form h4, .contact-info h4 {
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .contact-info p {
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+
+    .map {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .form-control {
+        background-color: #333;
+        color: #fff;
+        border: 1px solid #555;
+        margin-bottom: 15px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .form-control:focus {
+            background-color: #444;
+            color: #fff;
+            border-color: #3b1868;
+            box-shadow: 0 0 8px rgba(59, 24, 104, 0.6);
+        }
+
+    .btn-primary {
+        background-color: #3b1868;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1rem;
+        color: #fff;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #5a2a8a;
+        }
+
+        .btn-primary:active {
+            background-color: #fff !important;
+            color: #3b1868 !important;
+        }
+
+    .breadcrumb {
+        background-color: transparent;
+        padding: 0;
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .breadcrumb-item a {
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .breadcrumb-item.active {
+        color: #ccc;
+    }
+</style>
