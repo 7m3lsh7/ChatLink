@@ -8,7 +8,7 @@
             <!-- Seen Messages -->
 
             <div class="messages-section-seen">
-                <h5>Seen Messages</h5>
+                <h5 class="mt-3">Seen Messages</h5>
                 @if (ViewData["Users"] is List<webchat.Models.User> users)
                 {
                     foreach (var user in users)
@@ -49,47 +49,50 @@
             </div>
 
         </div>
-        <!-- Chat Box -->
-        <div class="chat-box  col-md-6">
-            <div class="chat-header">
-                <img src=" @ViewData["ReceiverPhoto"] " alt="User">
-                <div>
-                    <strong class="text-white"> @ViewData["ReceiverName"]</strong><br>
-                    <span id="userStatus_@ViewData["ReceiverId"]" class="status" style="color: #99aab5;">
-                        @if (Model.IsOnline)
+  
+
+            <!-- Chat Box -->
+        <div id="chatBox" class="chat-box  col-md-6 " hidden>
+                <div class="chat-header">
+                    <img src=" @ViewData["ReceiverPhoto"] " alt="User">
+                    <div>
+                        <strong class="text-white"> @ViewData["ReceiverName"]</strong><br>
+                        <span id="userStatus_@ViewData["ReceiverId"]" class="status" style="color: #99aab5;">
+                            @if (Model.IsOnline)
+                            {
+                                <span>Online</span>
+                            }
+                            else
+                            {
+                                <span>Offline</span>
+                            }
+                        </span>
+                    </div>
+                </div>
+                <input id="userId" type="hidden" value=" @ViewBag.SenderId " />
+
+                <div id="chatContainer" class="chat-messages">
+                    @if (@ViewData["Messages"] is List<webchat.Models.Chat> Content)
+                    {
+                        foreach (var chat in Content)
                         {
-                            <span>Online</span>
+                            <div class="message @(chat.SenderId == ViewBag.SenderId ? "sent" : "received")">
+                                <div class="bubble">@chat.Content</div><br />
+                                <p class="message-timestamp ">@chat.Timestamp.ToString("HH:mm")</p>
+                            </div>
+
                         }
-                        else
-                        {
-                            <span>Offline</span>
-                        }
-                    </span>
+                    }
+                </div>
+                <div class="chat-input">
+                    <input id="receiverId" type="hidden" value="@ViewBag.ReceiverId" />
+
+
+                    <input id="messageInput" type="text" placeholder="Type a message">
+                    <button id="sendButton">Send</button>
                 </div>
             </div>
-            <input id="userId" type="hidden" value=" @ViewBag.SenderId " />
-
-            <div id="chatContainer" class="chat-messages">
-                @if (@ViewData["Messages"] is List<webchat.Models.Chat> Content)
-                {
-                    foreach (var chat in Content)
-                    {
-                        <div class="message @(chat.SenderId == ViewBag.SenderId ? "sent" : "received")">
-                            <div class="bubble">@chat.Content</div><br />
-                            <p class="message-timestamp ">@chat.Timestamp.ToString("HH:mm")</p>
-                        </div>
-
-                    }
-                }
-            </div>
-            <div class="chat-input">
-                <input id="receiverId" type="hidden" value="@ViewBag.ReceiverId" />
-
-
-                <input id="messageInput" type="text" placeholder="Type a message">
-                <button id="sendButton">Send</button>
-            </div>
-        </div>
+        
 
     </div>
 </div>
@@ -113,14 +116,16 @@
         const receiverId = parseInt(document.getElementById("receiverId").value);  // Get the receiver's ID
         const sendButton = document.getElementById("sendButton");  // Get the send button element
         const messageInput = document.getElementById("messageInput");  // Get the message input field element
-
+        const chatBox = document.getElementById("chatBox");
         // Enable or disable send button and message input based on receiver selection
         if (receiverId) {
+            chatBox.hidden = false;
             sendButton.disabled = false;  // Enable the send button if a receiver is selected
             messageInput.disabled = false;  // Enable message input if a receiver is selected
         } else {
             sendButton.disabled = true;  // Disable the send button if no receiver is selected
-            messageInput.disabled = true;  // Disable message input if no receiver is selected
+            messageInput.disabled = true; // Disable message input if no receiver is selected
+            chatBox.hidden = true;
         }
     }
 

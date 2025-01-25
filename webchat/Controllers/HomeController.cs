@@ -18,7 +18,6 @@ namespace webchat.Controllers
         public IActionResult Cooky()
         {
             var userIdCookie = Request.Cookies["UserId"];
-            ViewData["UserID"] = userIdCookie;
             if (!string.IsNullOrEmpty(userIdCookie) && int.TryParse(userIdCookie, out int userId))
             {
                 var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
@@ -41,6 +40,8 @@ namespace webchat.Controllers
         public IActionResult Index()
         {
             var userIdCookie = Request.Cookies["UserId"];
+            ViewData["UserID"] = userIdCookie;
+
             if (!string.IsNullOrEmpty(userIdCookie) && int.TryParse(userIdCookie, out int userId))
             {
                 var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
@@ -63,10 +64,13 @@ namespace webchat.Controllers
         // Action method to handle the chat page between users
         public IActionResult Chat(int receiverId)
         {
-           
-            ViewBag.ReceiverId = receiverId;
-
+              
+                ViewBag.ReceiverId = receiverId;
+                 
+            
             var userIdCookie = Request.Cookies["UserId"];
+            ViewData["UserID"] = userIdCookie;
+
             if (!string.IsNullOrEmpty(userIdCookie) && int.TryParse(userIdCookie, out int userId))
             {
                 var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);

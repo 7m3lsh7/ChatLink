@@ -19,6 +19,8 @@ namespace webchat.Controllers
     
 
             var userIdCookie = Request.Cookies["UserId"];
+            ViewData["UserID"] = userIdCookie;
+
             if (userIdCookie != null)
             {
                 var userId = int.Parse(userIdCookie);
@@ -119,6 +121,8 @@ namespace webchat.Controllers
         public IActionResult Search(string username)
         {
             var userIdCookie = Request.Cookies["UserId"];
+            ViewData["UserID"] = userIdCookie;
+
             if (userIdCookie != null)
             {
                 var userId = int.Parse(userIdCookie);

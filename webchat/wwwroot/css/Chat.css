@@ -13,11 +13,12 @@
     --input-border-color: #BDBDBD;
     --color: #3B1868;
 }
-
+.hidden {
+    display: none;
+}
 body {
     background: var(--background-gradient);
-    font-family: 'Kadwa', serif;
-    color: #FFF;
+     color: #FFF;
     margin: 0;
 }
 
