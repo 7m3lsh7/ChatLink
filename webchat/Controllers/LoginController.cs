@@ -105,7 +105,7 @@ namespace webchat.Controllers
                         <p><strong>Device:</strong> {deviceInfo}</p>
                         <p><strong>Time:</strong> {loginTime}</p>
                         <p>If this was you, you can ignore this message. If you don't recognize this activity, please contact us immediately.</p>
-                        <p>Stay safe,<br/>The WebChat Team</p>
+                        <p>Stay safe,<br/>The Chatlink Team</p>
                     </body>
                     </html>";
 
