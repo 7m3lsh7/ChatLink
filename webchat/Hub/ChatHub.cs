@@ -95,8 +95,25 @@ public class ChatHub : Hub
         {
             // Get the receiver's email from the database based on their user ID
             var receiverEmail = GetUserEmail(receiverId);
-            var subject = "You have a new message";  // Email subject
-            var body = $"You have received a new message: {message}";  // Email body content
+            var subject = "📩 You have a new message waiting for you!"; // Email subject
+            var body = $@"
+                        Hello,
+
+                        You have received a new message on ChatLink! 🎉
+
+                        Here are the details:
+                        - Message Content: {message}
+                        - Sent At: {DateTime.Now.ToString("f")} 
+
+                        To view and respond to the message, click the link below:
+                        [Go to Your Messages](https://yourchatlink.com/messages)
+
+                        Don't miss out on the conversation! Stay connected and enjoy using ChatLink.
+
+                        Best Regards,  
+                        The ChatLink Team 🚀  
+                        https://yourchatlink.com
+                    "; // Email body content
 
             // Retrieve SMTP settings from configuration
             var smtpHost = _configuration["SmtpSettings:Host"];

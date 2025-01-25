@@ -52,24 +52,27 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="timeZone" class="form-label">Time Zone :</label>
-                                    <select class="form-control" id="timeZone" name="TimeZone" @if (Model.TimeZone != null)
-                                    {
-                                        <text>value="@Model.TimeZone"</text>
-                                    }>
-                                    <option value="UTC">UTC (Coordinated Universal Time)</option>
-                                    <option value="Europe/London">GMT (Greenwich Mean Time)</option>
-                                    <option value="Africa/Cairo">EET (Eastern European Time - Cairo)</option>
-                                    <option value="Pacific/Auckland">Pacific/Auckland (New Zealand Time)</option>
-                                    <option value="America/New_York">Eastern Standard Time (EST)</option>
-                                    <option value="America/Los_Angeles">Pacific Standard Time (PST)</option>
-                                    <option value="America/Chicago">Central Standard Time (CST)</option>
-                                    <option value="Europe/Berlin">Central European Time (CET)</option>
-                                    <option value="Asia/Dubai">Arabian Standard Time (AST - Dubai)</option>
-                                    <option value="Asia/Tokyo">Japan Standard Time (JST)</option>
-                                    <option value="Asia/Kolkata">Indian Standard Time (IST)</option>
-                                    <option value="Australia/Sydney">Australian Eastern Time (AET - Sydney)</option>
-                                    <!-- Add more time zones as needed -->
-                                 </select>
+                                     <select class="form-control" id="timeZone" name="TimeZone" >
+                                        @if (Model.TimeZone != null)
+                                        {
+                                            <option value="@Model.TimeZone">@Model.TimeZone</option>
+                                        }
+                            
+
+                                        <option value="UTC">UTC (Coordinated Universal Time)</option>
+                                        <option value="Europe/London">GMT (Greenwich Mean Time)</option>
+                                        <option value="Africa/Cairo">EET (Eastern European Time - Cairo)</option>
+                                        <option value="Pacific/Auckland">Pacific/Auckland (New Zealand Time)</option>
+                                        <option value="America/New_York">Eastern Standard Time (EST)</option>
+                                        <option value="America/Los_Angeles">Pacific Standard Time (PST)</option>
+                                        <option value="America/Chicago">Central Standard Time (CST)</option>
+                                        <option value="Europe/Berlin">Central European Time (CET)</option>
+                                        <option value="Asia/Dubai">Arabian Standard Time (AST - Dubai)</option>
+                                        <option value="Asia/Tokyo">Japan Standard Time (JST)</option>
+                                        <option value="Asia/Kolkata">Indian Standard Time (IST)</option>
+                                        <option value="Australia/Sydney">Australian Eastern Time (AET - Sydney)</option>
+                                        <!-- Add more time zones as needed -->
+                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
