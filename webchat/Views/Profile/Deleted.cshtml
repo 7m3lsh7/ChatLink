@@ -1,0 +1,128 @@
+﻿
+
+<div class="robot">🤖<span>X X</span></div>
+<h1>Oops! Your Account is Gone 😢</h1>
+<p>We're sorry to see you go! Your account has been permanently deleted. If you ever change your mind, you can always create a new one. We hope to see you again soon.</p>
+<a href="/" class="btn">Return to Homepage</a>
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        text-align: center;
+        background-color: #121212;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
+    }
+
+    .robot {
+        font-size: 100px;
+        margin-bottom: 20px;
+        position: relative;
+        animation: float 3s ease-in-out infinite;
+    }
+
+        .robot span {
+            color: red;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: blink 1.5s infinite;
+        }
+
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        animation: fadeIn 2s ease-in;
+    }
+
+    p {
+        font-size: 1.2rem;
+        max-width: 600px;
+        animation: fadeIn 3s ease-in;
+    }
+
+    .btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 1rem;
+        color: white;
+        background: red;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+        text-decoration: none;
+        animation: fadeIn 4s ease-in;
+    }
+
+        .btn:hover {
+            background: darkred;
+        }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    @@keyframes blink {
+        0%, 50%, 100% {
+            opacity: 1;
+        }
+
+        25%, 75% {
+            opacity: 0;
+        }
+    }
+
+    @@keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #ff0;
+        border-radius: 50%;
+        animation: confetti 5s linear infinite;
+    }
+
+    @@keyframes confetti {
+        0% {
+            transform: translateY(0) rotate(0deg);
+        }
+
+        100% {
+            transform: translateY(100vh) rotate(720deg);
+        }
+    }
+</style>
+
+    <script>
+        // Add dynamic robot movement
+        const robot = document.querySelector('.robot');
+        robot.addEventListener('mouseover', () => {
+            robot.style.animation = 'none';
+            robot.offsetHeight; // Trigger reflow
+            robot.style.animation = null;
+        });
+    </script>

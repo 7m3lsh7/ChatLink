@@ -19,7 +19,7 @@
                 <!-- Buttons for Edit/Save -->
                 <button type="button" id="editButton" class="btn btn-dark">Edit</button>
                 <button type="submit" id="saveButton" class="btn btn-success" style="display: none;">Save</button>
-
+                <button type="button" id="deleteAccountBtn" class="btn btn-danger float-end">Delete Account</button>
                 <input type="hidden" name="Id" value="@Model.Id" />
 
                 <div class="row mt-3">
@@ -92,6 +92,28 @@
 
 </div>
 
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">⚠ Confirm Account Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-danger">Are you sure you want to delete your account? This action is irreversible!</p>
+                <input type="password" id="passwordInput" class="form-control" placeholder="Enter your password">
+                <input type="text" id="confirmDeleteInput" class="form-control mt-2" placeholder='Type "DELETE" to confirm'>
+                <p id="errorMessage" class="text-danger mt-2" style="display:none;">❌ Incorrect password or confirmation text.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button id="confirmDeleteBtn" class="btn btn-danger" disabled>Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     const editButton = document.getElementById('editButton');
     const saveButton = document.getElementById('saveButton');
@@ -162,4 +184,44 @@
         });
     });
 
+    document.getElementById('deleteAccountBtn').addEventListener('click', function () {
+        new bootstrap.Modal(document.getElementById('deleteAccountModal')).show();
+    });
+
+    const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+    const passwordInput = document.getElementById("passwordInput");
+    const confirmDeleteInput = document.getElementById("confirmDeleteInput");
+    const errorMessage = document.getElementById("errorMessage");
+
+    function validateDeleteInputs() {
+        if (passwordInput.value.length > 0 && confirmDeleteInput.value === "DELETE") {
+            confirmDeleteBtn.removeAttribute("disabled");
+        } else {
+            confirmDeleteBtn.setAttribute("disabled", "true");
+        }
+    }
+
+    passwordInput.addEventListener("input", validateDeleteInputs);
+    confirmDeleteInput.addEventListener("input", validateDeleteInputs);
+
+    confirmDeleteBtn.addEventListener("click", function () {
+        confirmDeleteBtn.innerHTML = "Deleting...";
+        confirmDeleteBtn.disabled = true;
+
+        fetch('/Profile/DeleteAccount', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: passwordInput.value })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirectUrl; // Redirect to the "Deleted" page
+            } else {
+                errorMessage.style.display = "block";
+                confirmDeleteBtn.innerHTML = "Delete";
+                confirmDeleteBtn.disabled = false;
+            }
+        });
+    });
 </script>

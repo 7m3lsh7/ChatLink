@@ -28,19 +28,22 @@
 </div>
 
 @section Scripts {
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
 }
+
 <script>
     function onSubmit(token) {
-        document.getElementById("demo-form").submit();
+      document.getElementById("demo-form").submit();
     }
 </script>
-<script src="https://www.google.com/recaptcha/api.js?render=6LfcLsQqAAAAAMknUpDdt1Xe3xr4dvZ2el7lPx3m"></script>
+
+<script src="https://www.google.com/recaptcha/api.js?render=6LccB8cqAAAAALYc9EoxeWcaS7Yp0RvYdq9sRmHw"></script>
+
 <script>
     function onClick(e) {
         e.preventDefault();
         grecaptcha.ready(function () {
-            grecaptcha.execute('6Lcv7LoqAAAAALiL1eMxRJmI5ZXFKa_ghW__LhU_', { action: 'submit' }).then(function (token) {
+            grecaptcha.execute('6LccB8cqAAAAALYc9EoxeWcaS7Yp0RvYdq9sRmHw', { action: 'submit' }).then(function (token) {
                 // Add your logic to submit to your backend server here.
             });
         });

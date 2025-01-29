@@ -1,4 +1,4 @@
-﻿	using AspNetCore.ReCaptcha;
+﻿using AspNetCore.ReCaptcha;
 using Microsoft.EntityFrameworkCore;
 using webchat.data;
 

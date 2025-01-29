@@ -12,6 +12,6 @@ namespace webchat.data
         public DbSet<User> users { get; set; }
         public DbSet<Chat> chats { get; set; }
         public DbSet<ContactModel> contacts { get; set; }
-
+        public DbSet<DeleteAccountModel> deleteAccounts { get; set; }
     }
 }
