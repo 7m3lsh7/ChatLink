@@ -1,114 +1,102 @@
 ﻿@model User
 <link rel="stylesheet" href="~/css/Profile.css" asp-append-version="true" />
 
+<!-- Main Content -->
+<div class="profile-content">
+    <!-- Top Bar -->
+    <!-- Header -->
+    <div class="profile-header">
+        <h1>Welcome, @Model.NickName</h1>
+    </div>
 
-   
+    <div class="row">
+        <div class="col-lg-3 text-center iamge">
+            <img src="@Model.ProfilePicture" class="profile-pic mb-3" alt="User Image">
+            <h5>@Model.NickName</h5>
+        </div>
+        <div class="col-lg-9">
+            <form id="profileForm">
+                <!-- Buttons for Edit/Save -->
+                <button type="button" id="editButton" class="btn btn-dark">Edit</button>
+                <button type="submit" id="saveButton" class="btn btn-success" style="display: none;">Save</button>
 
-            <!-- Main Content -->
-            <div class="  profile-content">
-                <!-- Top Bar -->
-                <!-- Header -->
-      
-                    <div class="  profile-header">
-                        <h1>Welcome, @Model.NickName</h1>
+                <input type="hidden" name="Id" value="@Model.Id" />
+
+                <div class="row mt-3">
+                    <div class="col-md-6 mb-3">
+                        <label for="fullName" class="form-label">Full Name :</label>
+                        <input type="text" class="form-control" id="fullName" name="Username" value="@Model.Username" readonly>
                     </div>
-              
-                
-
-
-                <div class="row">
-                    <div class="col-lg-3 text-center iamge">
-                        <img src="@Model.ProfilePicture" class="profile-pic mb-3" alt="User Image">
-                        <h5>@Model.NickName</h5>
+                    <div class="col-md-6 mb-3">
+                        <label for="nickName" class="form-label">Nick Name :</label>
+                        <input type="text" class="form-control" id="nickName" name="NickName" value="@Model.NickName" readonly>
                     </div>
-                    <div class="col-lg-9">
-                        <form id="profileForm">
-                            <!-- Buttons for Edit/Save -->
-                            <button type="button" id="editButton" class="btn btn-dark">Edit</button>
-                            <button type="submit" id="saveButton" class="btn btn-success" style="display: none;">Save</button>
+                    <div class="col-md-6 mb-3">
+                        <label for="gender" class="form-label">Gender :</label>
+                        <input type="text" class="form-control" id="gender" name="Gender" value="@Model.Gender" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="country" class="form-label">Country :</label>
+                        <input type="text" class="form-control" id="country" name="Country" value="@Model.Country" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="language" class="form-label">Language :</label>
+                        <input type="text" class="form-control" id="language" name="Language" value="@Model.Language" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="timeZone" class="form-label">Time Zone :</label>
+                        <select class="form-control" id="timeZone" name="TimeZone" disabled>
+                            @if (Model.TimeZone != null)
+                            {
+                                <option value="@Model.TimeZone">@Model.TimeZone</option>
+                            }
 
-                            <input type="hidden" name="Id" value="@Model.Id" />
-
-                            <div class="row mt-3">
-                                <div class="col-md-6 mb-3">
-                                    <label for="fullName" class="form-label">Full Name :</label>
-                                    <input type="text" class="form-control" id="fullName" name="Username" value="@Model.Username" readonly>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="nickName" class="form-label">Nick Name :</label>
-                                    <input type="text" class="form-control" id="nickName" name="NickName" value="@Model.NickName" readonly>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="gender" class="form-label">Gender :</label>
-                                    <input type="text" class="form-control" id="gender" name="Gender" value="@Model.Gender" readonly>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="country" class="form-label">Country :</label>
-                                    <input type="text" class="form-control" id="country" name="Country" value="@Model.Country" readonly>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="language" class="form-label">Language :</label>
-                                    <input type="text" class="form-control" id="language" name="Language" value="@Model.Language" readonly>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="timeZone" class="form-label">Time Zone :</label>
-                                     <select class="form-control" id="timeZone" name="TimeZone" >
-                                        @if (Model.TimeZone != null)
-                                        {
-                                            <option value="@Model.TimeZone">@Model.TimeZone</option>
-                                        }
-                            
-
-                                        <option value="UTC">UTC (Coordinated Universal Time)</option>
-                                        <option value="Europe/London">GMT (Greenwich Mean Time)</option>
-                                        <option value="Africa/Cairo">EET (Eastern European Time - Cairo)</option>
-                                        <option value="Pacific/Auckland">Pacific/Auckland (New Zealand Time)</option>
-                                        <option value="America/New_York">Eastern Standard Time (EST)</option>
-                                        <option value="America/Los_Angeles">Pacific Standard Time (PST)</option>
-                                        <option value="America/Chicago">Central Standard Time (CST)</option>
-                                        <option value="Europe/Berlin">Central European Time (CET)</option>
-                                        <option value="Asia/Dubai">Arabian Standard Time (AST - Dubai)</option>
-                                        <option value="Asia/Tokyo">Japan Standard Time (JST)</option>
-                                        <option value="Asia/Kolkata">Indian Standard Time (IST)</option>
-                                        <option value="Australia/Sydney">Australian Eastern Time (AET - Sydney)</option>
-                                        <!-- Add more time zones as needed -->
-                                     </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="profilePicture" class="form-label">Profile Picture :</label>
-                                <input type="file" class="form-control" id="profilePicture" name="ProfilePicture" accept="image/*">
-                            </div>
-                            <div>
-                                <h5 class="mt-4">My Email Address</h5>
-                                <p class="text-muted">
-                                    @if (!string.IsNullOrEmpty(Model.Email))
-                                    {
-                                        var emails = Model.Email.Split(',');
-                                        foreach (var email in emails)
-                                        {
-                                            <span>@email</span>
-
-                                            <br />
-                                        }
-                                    }
-                                </p>
-                                <a class="btn btn-primary mb-3" href="@Url.Action("AddEmail", "Profile", new { id = Model.Id })">Add Your New Email</a>
-                            </div>
-
-                        </form>
+                            <option value="UTC">UTC (Coordinated Universal Time)</option>
+                            <option value="Europe/London">GMT (Greenwich Mean Time)</option>
+                            <option value="Africa/Cairo">EET (Eastern European Time - Cairo)</option>
+                            <option value="Pacific/Auckland">Pacific/Auckland (New Zealand Time)</option>
+                            <option value="America/New_York">Eastern Standard Time (EST)</option>
+                            <option value="America/Los_Angeles">Pacific Standard Time (PST)</option>
+                            <option value="America/Chicago">Central Standard Time (CST)</option>
+                            <option value="Europe/Berlin">Central European Time (CET)</option>
+                            <option value="Asia/Dubai">Arabian Standard Time (AST - Dubai)</option>
+                            <option value="Asia/Tokyo">Japan Standard Time (JST)</option>
+                            <option value="Asia/Kolkata">Indian Standard Time (IST)</option>
+                            <option value="Australia/Sydney">Australian Eastern Time (AET - Sydney)</option>
+                        </select>
                     </div>
                 </div>
+                <div class="col-md-6 mb-3">
+                    <label for="profilePicture" class="form-label">Profile Picture :</label>
+                    <input type="file" class="form-control" id="profilePicture" name="ProfilePicture" accept="image/*" disabled>
+                </div>
+                <div>
+                    <h5 class="mt-4">My Email Address</h5>
+                    <p class="text-muted">
+                        @if (!string.IsNullOrEmpty(Model.Email))
+                        {
+                            var emails = Model.Email.Split(',');
+                            foreach (var email in emails)
+                            {
+                                <span>@email</span>
+                                <br />
+                            }
+                        }
+                    </p>
+                    <a class="btn btn-primary mb-3" href="@Url.Action("AddEmail", "Profile", new { id = Model.Id })">Add Your New Email</a>
+                </div>
 
-            </div>
-    
+            </form>
+        </div>
+    </div>
 
+</div>
 
 <script>
     const editButton = document.getElementById('editButton');
     const saveButton = document.getElementById('saveButton');
     const profileForm = document.getElementById('profileForm');
-        const profilePictureInput = document.getElementById('profilePicture');
+    const profilePictureInput = document.getElementById('profilePicture');
     const timeZoneSelect = document.getElementById('timeZone');
 
     const editableFields = ['fullName', 'nickName'];
@@ -119,13 +107,13 @@
 
     editButton.addEventListener('click', () => {
         formInputs.forEach(input => input.removeAttribute('readonly'));
-          profilePictureInput.removeAttribute('disabled');
+        profilePictureInput.removeAttribute('disabled');
         timeZoneSelect.removeAttribute('disabled');
         editButton.style.display = 'none';
         saveButton.style.display = 'inline-block';
     });
 
-       profileForm.addEventListener('submit', (e) => {
+    profileForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
         const formData = new FormData(profileForm);
@@ -143,7 +131,7 @@
         .then(data => {
             if (data.success) {
                 alert(data.message);
-                 formInputs.forEach(input => input.setAttribute('readonly', true));
+                formInputs.forEach(input => input.setAttribute('readonly', true));
                 profilePictureInput.setAttribute('disabled', true);
                 timeZoneSelect.setAttribute('disabled', true);
                 editButton.style.display = 'inline-block';
@@ -163,7 +151,7 @@
         profilePicture.classList.toggle('clicked');
     });
 
-        document.querySelectorAll('.nav-link').forEach(link => {
+    document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => {
             const navbarToggler = document.querySelector('.navbar-toggler');
             const navbarCollapse = document.querySelector('.navbar-collapse');
@@ -175,4 +163,3 @@
     });
 
 </script>
-
