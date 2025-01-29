@@ -1,12 +1,11 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="A modern and secure web chat platform built with ASP.NET Core. Enjoy real-time communication, user-friendly design, and seamless performance." />
     <meta name="keywords" content="web chat, real-time chat, ASP.NET Core chat, secure chat, messaging platform, real-time communication, chat application" />
-    
+
     <meta name="author" content="ChatLink" />
     <meta name="robots" content="index, follow" />
     <title>@ViewData["Title"] ChatLink</title>
@@ -15,130 +14,141 @@
     <link rel="stylesheet" href="~/css/Style.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Style_Signup.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/ContactUs.css" asp-append-version="true" />
-
-   <link rel="stylesheet" href="~/css/all.min.css"/>
-
+    <link rel="stylesheet" href="~/css/all.min.css" />
     @await Html.PartialAsync("_Favicons")
-
-
-
     <link rel="stylesheet" href="~/webchat.styles.css" asp-append-version="true" />
     <script src="~/js/time.js"></script>
+    <style>
+       
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #6f42c1;
+            z-index: 1000;
+            text-align: center;
+        }
 
+      
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+        }
+
+            #loading img {
+                width: 150px;
+                height: 150px;
+            }
+
+        #loading-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
+  
+    <div id="loading-overlay">
+     
+        <div id="loading">
+            <img src="~/favicon.svg" alt="Loading..." />
+            <div id="loading-text">Loading...</div>
+        </div>
+    </div>
+
     <header>
-           @if (ViewData["HideNavbar"] == null || !(bool)ViewData["HideNavbar"])
-    {
-        <nav class="navbar navbar-expand-lg color">
-            <div class="container-fluid">
-                <div class="center">
-                    <div class="d-flex align-items-center pe-5">
+        @if (ViewData["HideNavbar"] == null || !(bool)ViewData["HideNavbar"])
+        {
+            <nav class="navbar navbar-expand-lg color">
+                <div class="container-fluid">
+                    <div class="center">
+                        <div class="d-flex align-items-center pe-5">
                             <div class="logo">
-
                                 <img src="~/images/webchat-high-resolution-logo (1).png" alt="Logo Picture">
-
-
                             </div>
-                    </div>
-                 
-                    <div class="collapse navbar-collapse " id="navbarNav">
-                        <ul class="navbar-nav">
-                            <li class="nav-item pe-2 ">
-                                <a class="nav-link active text-white" aria-current="page" asp-action="Index" asp-controller="Home">Home</a>
-                            </li>
+                        </div>
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav">
+                                <li class="nav-item pe-2">
+                                    <a class="nav-link active text-white" aria-current="page" asp-action="Index" asp-controller="Home">Home</a>
+                                </li>
                                 <li class="nav-item pe-2 ps-2">
                                     <a class="nav-link active text-white" aria-current="page" asp-action="Index" asp-controller="Profile">Profile</a>
                                 </li>
-                            <li class="nav-item pe-2 ps-2">
-                                <a class="nav-link text-white" href="/Home/Chat">Chat</a>
-                            </li>
+                                <li class="nav-item pe-2 ps-2">
+                                    <a class="nav-link text-white" href="/Home/Chat">Chat</a>
+                                </li>
                                 <li class="nav-item pe-2 ps-2">
                                     <a class="nav-link text-white" href="/Profile/Search">Search</a>
                                 </li>
-
                                 @if (ViewData["IsAdmin"] != null && ViewData["IsAdmin"].ToString().Trim().Equals("true", StringComparison.OrdinalIgnoreCase))
                                 {
                                     <li class="nav-item pe-2 ps-2">
                                         <a class="nav-link text-white" href="/Login/ViewUser">Dashboard</a>
                                     </li>
                                 }
-
-                            <li class="nav-item pe-2 ps-2">
-                                    <a class="nav-link text-white" href="/ContactUs/index">Contact Us </a>
-                            </li>
-                            @if(@ViewData["UserID"] != null){
+                                <li class="nav-item pe-2 ps-2">
+                                    <a class="nav-link text-white" href="/ContactUs/index">Contact Us</a>
+                                </li>
+                                @if (@ViewData["UserID"] != null)
+                                {
                                     <li class="nav-item ps-2">
                                         <a class="nav-link text-danger" href="/Account/Logout">Logout</a>
                                     </li>
-                            }
-                         
-                        </ul>
-                    </div>
-                    <div class="Profile ">
-                         <div class="Profile ps-5 pe-5">
-
-
-
+                                }
+                            </ul>
+                        </div>
+                        <div class="Profile">
+                            <div class="Profile ps-5 pe-5">
                                 @if (ViewData["nickname"] != null)
                                 {
                                     <a class="nav-link text-white p-3" href="#">@ViewData["nickname"]</a>
-
-                                    
-                                        <div class="profile-picture">
-                                            <a href="/Profile/index">
+                                    <div class="profile-picture">
+                                        <a href="/Profile/index">
                                             <img src="@ViewData["Photo"]" alt="Profile Picture">
-                                            </a>
-                                        </div>
-                                    
-
-                                       
+                                        </a>
+                                    </div>
                                 }
                                 else
                                 {
                                     <button class="btn btn-signup me-2 text-white" onclick="window.location.href='/SignUp/Index'">Sign Up</button>
                                     <button class="btn btn-login text-white" onclick="window.location.href='/Login/Index'">Login</button>
-
                                 }
-                           </div>
+                            </div>
+                        </div>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
                     </div>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
                 </div>
-            </div>
-        </nav>
-      
-}
+            </nav>
+        }
     </header>
-    <div >
+    <div>
         <main role="main">
             @RenderBody()
-
-       
-
-                <div id="clock" style="font-size: 1rem; font-weight: bold; position: fixed; bottom: 10px; right: 10px; text-align: right; background: rgba(0, 0, 0, 0.8); color: white; padding: 10px; border-radius: 8px;">
-                </div>
-      
-           
+            <div id="clock" style="font-size: 1rem; font-weight: bold; position: fixed; bottom: 10px; right: 10px; text-align: right; background: rgba(0, 0, 0, 0.8); color: white; padding: 10px; border-radius: 8px;"></div>
         </main>
-
         @if (ViewData["HideFooter"] == null || !(bool)ViewData["HideFooter"])
-    {
-        <footer class="text-center bg-dark text-white ">
-            <p>&copy; 2025 ChatLink. All rights reserved.</p>
-            <div class="d-flex justify-content-center">
-                <p class="text-white mx-2">Felopater Remon</p>|
-                <p class="text-white mx-2">Abdulrahman Mahmoud</p>
-
-            </div>
-        </footer>
-    }
+        {
+            <footer class="text-center bg-dark text-white">
+                <p>&copy; 2025 ChatLink. All rights reserved.</p>
+                <div class="d-flex justify-content-center">
+                    <p class="text-white mx-2">Felopater Remon</p>|
+                    <p class="text-white mx-2">Abdulrahman Mahmoud</p>
+                </div>
+            </footer>
+        }
     </div>
 
-   
-   
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -146,11 +156,10 @@
     <script src="~/js/jquery-3.7.1.js"></script>
     <script src="~/js/popper.min.js"></script>
     <script src="~/js/all.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 
     <script>
-                function startClock(timeZone) {
+        function startClock(timeZone) {
             const clockElement = document.getElementById("clock");
 
             function updateClock() {
@@ -184,14 +193,27 @@
             setInterval(updateClock, 1000);
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
+            document.addEventListener("DOMContentLoaded", function () {
             startClock('@ViewData["time"]');
         });
 
+        $(document).ready(function() {
+            $('a').on('click', function(e) {
+                var href = $(this).attr('href');
+                if (href && href !== "#") {
+                    e.preventDefault();
+                    $('#loading-overlay').fadeIn(300);
+                    setTimeout(function() {
+                        window.location.href = href;
+                    }, 1000); 
+                }
+            });
 
+            $(window).on('load', function() {
+                $('#loading-overlay').fadeOut(300); 
+            });
+        });
     </script>
-   
-
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
