@@ -75,9 +75,10 @@
                                 <img src="~/images/webchat-high-resolution-logo (1).png" alt="Logo Picture">
                             </div>
                         </div>
+
                         <div class="collapse navbar-collapse" id="navbarNav">
                             <ul class="navbar-nav">
-                                <li class="nav-item pe-2">
+                                <li class="nav-item pe-2 ps-2">
                                     <a class="nav-link active text-white" aria-current="page" asp-action="Index" asp-controller="Home">Home</a>
                                 </li>
                                 <li class="nav-item pe-2 ps-2">
@@ -107,7 +108,7 @@
                             </ul>
                         </div>
                         <div class="Profile">
-                            <div class="Profile ps-5 pe-5">
+                            <div class="Profile  pe-2">
                                 @if (ViewData["nickname"] != null)
                                 {
                                     <a class="nav-link text-white p-3" href="#">@ViewData["nickname"]</a>
@@ -124,7 +125,7 @@
                                 }
                             </div>
                         </div>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="box-shadow:none;">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                     </div>

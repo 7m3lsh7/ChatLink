@@ -3,12 +3,63 @@
     --background-color: #4f037b39;
 }
 
+/* Sidebar Menu for Mobile */
+@media (max-width: 991px) {
+    .navbar-collapse {
+        Z-INDEX: 2;
+        position: fixed;
+        top: 0;
+        left: -250px;
+        width: 250px;
+        height: 100vh;
+        background-color: var(--color);
+        box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2);
+        transition: left 0.4s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        padding-top: 60px;
+    }
+
+        .navbar-collapse.show {
+            left: 0;
+        }
+
+    .navbar-nav {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-item {
+        padding: 15px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .nav-link {
+        font-size: 18px;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+
+        .nav-link:hover {
+            padding-left: 15px;
+            color: #a8dadc !important;
+        }
+
+    .navbar-toggler {
+        border-color: none;
+        padding: 0.5rem;
+        background-color: var(--color);
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+        .navbar-toggler:focus {
+            outline: none;
+        }
+}
+
 .navbar-toggler {
-    border-color: none;
-    padding: 0.5rem;
-    background-color: var(--color);
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
 }
 
 .navbar-toggler-icon {
