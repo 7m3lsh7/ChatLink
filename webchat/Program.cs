@@ -48,6 +48,10 @@ app.UseRouting();
 app.UseAuthorization();
 app.MapHub<ChatHub>("/ChatHub");
 
+app.UseExceptionHandler("/Error/500");
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
+
 app.MapControllerRoute(
 	name: "default",
 	pattern: "{controller=Home}/{action=Cooky}/{id?}");

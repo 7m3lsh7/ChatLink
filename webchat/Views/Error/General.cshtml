@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "General error";
+}
+
+<div class="error-container">
+    <h1>500</h1>
+    <p>Sorry, a server error occurred while processing your request. Please try again later.</p>
+    <button class="btn" onclick="window.location.href='/'">Return to the home page</button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const particlesContainer = document.createElement('div');
+        particlesContainer.classList.add('particles');
+        document.body.appendChild(particlesContainer);
+
+        for (let i = 0; i < 100; i++) {
+            const particle = document.createElement('div');
+            particle.style.position = 'absolute';
+            particle.style.width = '10px';
+            particle.style.height = '10px';
+            particle.style.backgroundColor = '#ff6b6b';
+            particle.style.borderRadius = '50%';
+            particle.style.top = `${Math.random() * 100}vh`;
+            particle.style.left = `${Math.random() * 100}vw`;
+            particle.style.animation = `moveParticle ${Math.random() * 5 + 3}s linear infinite`;
+            particlesContainer.appendChild(particle);
+        }
+    });
+
+    // CSS for Particles Animation
+    const style = document.createElement('style');
+    style.innerHTML = `
+        @@keyframes moveParticle {
+            0% { transform: translateY(0) translateX(0); opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(-100vw); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
