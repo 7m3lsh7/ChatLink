@@ -119,6 +119,16 @@ a {
     justify-content: center;
     height: 600px;
 }
+@media (max-width: 991px) 
+{
+    .chat-messages {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        max-width: 400px;
+    }
+}
+
 
 .chat-messages {
     flex: 1;
