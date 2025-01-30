@@ -45,7 +45,6 @@
 }
 .row {
  
-  --bs-gutter-y: 0;
   display: flex;
   flex-wrap: wrap;
   margin-top: calc(var(--bs-gutter-y) * -1);
