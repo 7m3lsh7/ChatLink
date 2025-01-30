@@ -184,4 +184,37 @@ a {
             transform: scale(1.05);
         }
 
- 
+
+
+.custom-file-upload {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #6f42c1;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-align: center;
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.upload-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+    .upload-label i {
+        font-size: 20px;
+    }
+
+.custom-file-upload:hover {
+    background: #4f037b;
+    transform: scale(1.05);
+}
