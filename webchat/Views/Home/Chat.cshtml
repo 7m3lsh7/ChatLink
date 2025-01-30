@@ -88,8 +88,8 @@
                     <input id="receiverId" type="hidden" value="@ViewBag.ReceiverId" />
 
 
-                    <input id="messageInput" type="text" placeholder="Type a message">
-                    <button id="sendButton">Send</button>
+                <textarea id="messageInput" placeholder="Type a message"></textarea>
+                <button id="sendButton">Send</button>
                 </div>
             </div>
         
@@ -130,31 +130,52 @@
     }
 
     // Add event listener to send message when the send button is clicked
-    document.getElementById("sendButton").addEventListener("click", () => {
-        const receiverId = parseInt(document.getElementById("receiverId").value);  // Get receiver's ID
-        const message = document.getElementById("messageInput").value.trim();  // Get the message content
+       document.addEventListener("DOMContentLoaded", function () {
+        let messageInput = document.getElementById("messageInput");
+        let sendButton = document.getElementById("sendButton");
+        let chatContainer = document.getElementById("chatContainer");
 
-        if (message !== "") {  // Check if the message is not empty
-            const userId = parseInt(document.getElementById("userId").value);  // Get sender's ID
+        function sendMessage() {
+            const receiverId = parseInt(document.getElementById("receiverId").value);
+            const message = messageInput.value.trim();
 
-            // Invoke the 'SendMessage' method in the SignalR Hub
-            connection.invoke("SendMessage", userId, receiverId, message)
-                .then(() => {
-                    // If the message is sent, add it to the chat UI
-                    const msgDiv = document.createElement("div");
-                    msgDiv.className = "message sent";  // Apply 'sent' class to the message
-                    msgDiv.innerHTML = `<div class="bubble">${message}</div>`;  // Create a message bubble with the content
-                    document.getElementById("chatContainer").appendChild(msgDiv);  // Append the message to the chat container
+            if (message !== "") {
+                const userId = parseInt(document.getElementById("userId").value);
 
-                    // Clear the message input field
-                    document.getElementById("messageInput").value = "";
+                connection.invoke("SendMessage", userId, receiverId, message)
+                    .then(() => {
+                        const msgDiv = document.createElement("div");
+                        msgDiv.className = "message sent";
+                        msgDiv.innerHTML = `<div class="bubble">${message}</div>`;
+                        chatContainer.appendChild(msgDiv);
 
-                    // Scroll to the bottom of the chat to show the new message
-                    document.getElementById("chatContainer").scrollTop = document.getElementById("chatContainer").scrollHeight;
-                })
-                .catch(err => console.error(err));  // Log error if message sending fails
+                        messageInput.value = "";
+                        messageInput.style.height = "40px";  // إعادة ضبط حجم الإدخال
+
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
+                    })
+                    .catch(err => console.error(err));
+            }
         }
+
+        // إرسال عند الضغط على زر الإرسال
+        sendButton.addEventListener("click", sendMessage);
+
+        // إرسال عند الضغط على Enter وتجنب الإرسال عند Shift + Enter
+        messageInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // تعديل ارتفاع textarea تلقائيًا عند كتابة رسالة طويلة
+        messageInput.addEventListener("input", function () {
+            this.style.height = "40px";
+            this.style.height = Math.min(this.scrollHeight, 150) + "px";
+        });
     });
+
 
     // Handle receiving a new message via SignalR
     connection.on("ReceiveMessage", (senderId, message, senderName) => {

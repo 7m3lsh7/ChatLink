@@ -138,7 +138,7 @@ a {
         display: inline-block;
         padding: 15px 20px;
         border-radius: 20px;
-        max-width: 75%;
+        max-width: 50%;
         word-wrap: break-word;
     }
 
@@ -158,15 +158,20 @@ a {
     gap: 12px;
     background: var(--light-bg);
     border-radius: 15px;
+    align-items: center;
 }
 
-    .chat-input input {
+    .chat-input textarea {
         flex: 1;
         padding: 12px;
         border-radius: 10px;
         border: 2px solid var(--input-border-color);
         background-color: var(--input-bg);
         font-size: 16px;
+        resize: none; /* يمنع تعديل الحجم يدويًا */
+        min-height: 50px; /* الحد الأدنى للطول */
+        max-height: 100px; /* الحد الأقصى للطول */
+        overflow-y: auto; /* إضافة شريط تمرير عند الحاجة */
     }
 
     .chat-input button {
@@ -183,7 +188,6 @@ a {
             background-color: var(--secondary-color);
             transform: scale(1.05);
         }
-
 
 
 .custom-file-upload {

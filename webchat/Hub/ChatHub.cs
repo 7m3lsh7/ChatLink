@@ -106,13 +106,13 @@ public class ChatHub : Hub
                         - Sent At: {DateTime.Now.ToString("f")} 
 
                         To view and respond to the message, click the link below:
-                        [Go to Your Messages](https://yourchatlink.com/messages)
+                        [Go to Your Messages](https://chatlink.runasp.net/Home/Chat)
 
                         Don't miss out on the conversation! Stay connected and enjoy using ChatLink.
 
                         Best Regards,  
                         The ChatLink Team 🚀  
-                        https://yourchatlink.com
+                        https://chatlink.runasp.net/Home/Index
                     "; // Email body content
 
             // Retrieve SMTP settings from configuration
