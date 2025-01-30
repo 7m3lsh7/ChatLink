@@ -1,0 +1,205 @@
+﻿@{
+    ViewBag.Title = "Server error";
+}
+
+<div class="particles"></div>
+<div class="server-error-container">
+    <h1>500</h1>
+    <p>Sorry, a server error occurred while processing your request. Please try again later.</p>
+    <button class="btn" onclick="window.location.href='/'">Return to the home page</button>
+</div>
+
+<!-- Robot with Broken Arms and Question Marks -->
+<div class="robot" style="top: 20%; left: 10%;">
+    <div class="arm left"></div>
+    <div class="arm right"></div>
+    <div class="question top">?</div>
+    <div class="question left">?</div>
+    <div class="question right">?</div>
+</div>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #1e1e2f;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .server-error-container {
+        text-align: center;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        animation: fadeIn 1.5s ease-in-out;
+        position: relative;
+        z-index: 2;
+    }
+
+    h1 {
+        font-size: 6rem;
+        margin: 0;
+        color: #ff6b6b;
+        animation: glow 2s infinite alternate;
+    }
+
+    p {
+        font-size: 1.5rem;
+        margin: 20px 0;
+    }
+
+    .btn {
+        background-color: #ff6b6b;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 25px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn:hover {
+            background-color: #ff4757;
+        }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes glow {
+        0% {
+            text-shadow: 0 0 10px #ff6b6b, 0 0 20px #ff6b6b, 0 0 30px #ff6b6b;
+        }
+
+        100% {
+            text-shadow: 0 0 20px #ff6b6b, 0 0 30px #ff6b6b, 0 0 40px #ff6b6b;
+        }
+    }
+
+    .robot {
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        background: url('https://www.svgrepo.com/show/303206/robot-icon.svg') no-repeat center center/contain;
+        animation: float 6s infinite ease-in-out;
+    }
+
+        .robot .arm {
+            position: absolute;
+            width: 20px;
+            height: 60px;
+            background-color: #ff6b6b;
+            top: 50%;
+            left: 50%;
+            transform-origin: top center;
+            animation: moveArm 2s infinite ease-in-out;
+        }
+
+            .robot .arm.left {
+                transform: translate(-50%, -50%) rotate(-45deg);
+            }
+
+            .robot .arm.right {
+                transform: translate(-50%, -50%) rotate(45deg);
+            }
+
+        .robot .question {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #ff6b6b;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            animation: float 3s infinite ease-in-out;
+        }
+
+            .robot .question.top {
+                top: -40px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .robot .question.left {
+                top: 50%;
+                left: -40px;
+                transform: translateY(-50%);
+            }
+
+            .robot .question.right {
+                top: 50%;
+                right: -40px;
+                transform: translateY(-50%);
+            }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0) rotate(0deg);
+        }
+
+        50% {
+            transform: translateY(-20px) rotate(10deg);
+        }
+    }
+
+    @@keyframes moveArm {
+        0%, 100% {
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+
+        50% {
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+    }
+
+    .particles {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        background: url('https://www.transparenttextures.com/patterns/stardust.png');
+        animation: moveStars 100s linear infinite;
+    }
+
+    @@keyframes moveStars {
+        0% {
+            background-position: 0 0;
+        }
+
+        100% {
+            background-position: 1000px 1000px;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const robot = document.querySelector('.robot');
+        robot.addEventListener('mouseenter', () => {
+            robot.style.transform = 'scale(1.2)';
+        });
+        robot.addEventListener('mouseleave', () => {
+            robot.style.transform = 'scale(1)';
+        });
+    });
+</script>

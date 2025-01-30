@@ -1,0 +1,143 @@
+﻿@{
+    ViewBag.Title = "Page not found";
+}
+
+<div class="stars"></div>
+<div class="not-found-container">
+    <h1>404</h1>
+    <p>Sorry, the page you are looking for does not exist</p>
+    <button class="btn" onclick="window.location.href='/'">Return to the home page</button>
+</div>
+
+<div class="robot" style="top: 10%; left: 5%; animation-delay: 0s;"></div>
+<div class="robot" style="top: 20%; right: 10%; animation-delay: 2s;"></div>
+<div class="robot" style="bottom: 15%; left: 15%; animation-delay: 4s;"></div>
+<div class="robot" style="bottom: 5%; right: 20%; animation-delay: 6s;"></div>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #0f0f23;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .not-found-container {
+        text-align: center;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        animation: fadeIn 1.5s ease-in-out;
+        position: relative;
+        z-index: 2;
+    }
+
+    h1 {
+        font-size: 6rem;
+        margin: 0;
+        color: #ff6b6b;
+        animation: glow 2s infinite alternate;
+    }
+
+    p {
+        font-size: 1.5rem;
+        margin: 20px 0;
+    }
+
+    .btn {
+        background-color: #ff6b6b;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 25px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn:hover {
+            background-color: #ff4757;
+        }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes glow {
+        0% {
+            text-shadow: 0 0 10px #ff6b6b, 0 0 20px #ff6b6b, 0 0 30px #ff6b6b;
+        }
+
+        100% {
+            text-shadow: 0 0 20px #ff6b6b, 0 0 30px #ff6b6b, 0 0 40px #ff6b6b;
+        }
+    }
+
+    .robot {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background: url('https://www.svgrepo.com/show/303206/robot-icon.svg') no-repeat center center/contain;
+        animation: float 6s infinite ease-in-out;
+    }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0) rotate(0deg);
+        }
+
+        50% {
+            transform: translateY(-20px) rotate(10deg);
+        }
+    }
+
+    .stars {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        background: url('https://www.transparenttextures.com/patterns/stardust.png');
+        animation: moveStars 100s linear infinite;
+    }
+
+    @@keyframes moveStars {
+        0% {
+            background-position: 0 0;
+        }
+
+        100% {
+            background-position: 1000px 1000px;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const robots = document.querySelectorAll('.robot');
+        robots.forEach(robot => {
+            robot.addEventListener('mouseenter', () => {
+                robot.style.transform = 'scale(1.2)';
+            });
+            robot.addEventListener('mouseleave', () => {
+                robot.style.transform = 'scale(1)';
+            });
+        });
+    });
+</script>
