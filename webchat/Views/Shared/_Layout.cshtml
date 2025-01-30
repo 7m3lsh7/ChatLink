@@ -18,46 +18,12 @@
     @await Html.PartialAsync("_Favicons")
     <link rel="stylesheet" href="~/webchat.styles.css" asp-append-version="true" />
     <script src="~/js/time.js"></script>
-    <style>
-       
-        #loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #6f42c1;
-            z-index: 1000;
-            text-align: center;
-        }
 
-      
-        #loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1001;
-        }
-
-            #loading img {
-                width: 150px;
-                height: 150px;
-            }
-
-        #loading-text {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-top: 10px;
-            color: #333;
-        }
-    </style>
 </head>
 <body>
-  
+
     <div id="loading-overlay">
-     
+
         <div id="loading">
             <img src="~/favicon.svg" alt="Loading..." />
             <div id="loading-text">Loading...</div>
@@ -136,11 +102,14 @@
     <div>
         <main role="main">
             @RenderBody()
-            <div id="clock" style="font-size: 1rem; font-weight: bold; position: fixed; bottom: 10px; right: 10px; text-align: right; background: rgba(0, 0, 0, 0.8); color: white; padding: 10px; border-radius: 8px;"></div>
+            @if (ViewData["HideClock"] == null || !(bool)ViewData["HideClock"])
+            {
+                <div id="clock" style="font-size: 1rem; font-weight: bold; position: fixed; bottom: 10px; right: 10px; text-align: right; background: rgba(0, 0, 0, 0.8); color: white; padding: 10px; border-radius: 8px;"></div>
+            }
         </main>
         @if (ViewData["HideFooter"] == null || !(bool)ViewData["HideFooter"])
         {
-            <footer class="text-center bg-dark text-white">
+            <footer class="text-center bg-dark text-white" >
                 <p>&copy; 2025 ChatLink. All rights reserved.</p>
                 <div class="d-flex justify-content-center">
                     <p class="text-white mx-2">Felopater Remon</p>|
