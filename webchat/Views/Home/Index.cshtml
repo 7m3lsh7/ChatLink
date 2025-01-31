@@ -4,7 +4,7 @@
         Your browser does not support the video tag.
     </video>
     <div class="main-text">
-        <h1>Welcome to ChatLink</h1>
+        <h1 id="welcomeMessage"></h1>
         <h6>Your go-to platform for seamless communication with friends.</h6>
     </div>
     <div class="main-button">
@@ -103,6 +103,28 @@
     </div>
 </div>
 
+<!-- Video Section -->
+<div class="VideoSection py-5 position-relative">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="video-container">
+                    <video class="interactive-video" controls>
+                        <source src="~/images/ChatLinkVideo2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+            <div class="col-md-6 text-white">
+                <h2 class="neon-text">Discover ChatLink</h2>
+                <p class="lead">Watch our interactive video to explore the unique features of ChatLink.</p>
+                <p>Our platform is designed to revolutionize the way you communicate. From real-time messaging to advanced security, ChatLink offers everything you need to stay connected.</p>
+                <a href="#" class="btn btn-neon btn-lg mt-3">Get Started</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Global Coverage Section -->
 <div class="GlobalCoverage py-5">
     <div class="container">
@@ -171,62 +193,56 @@
             <div class="partners-track">
 
                 <div class="partner-logo">
-                    <img src="~/images/telecomegypt.png" alt="Telecom Egypt">
+                    <img src="~/images/eva_pharma-removebg-preview 1.png" alt="Telecom Egypt">
                 </div>
                 <div class="partner-logo">
-                    <img src="~/images/webchat-high-resolution-logo (1).png" alt="BICS">
+                    <img src="~/images/eva cosmetics 1.png" alt="BICS">
                 </div>
                 <div class="partner-logo">
-                    <img src="~/images/webchat-high-resolution-logo (1).png" alt="AMC">
+                    <img src="~/images/logo.png" alt="AMC">
                 </div>
                 <div class="partner-logo">
-                    <img src="~/images/webchat-high-resolution-logo (1).png" alt="Orange">
-                </div>
-                <div class="partner-logo">
-                    <img src="~/images/webchat-high-resolution-logo (1).png" alt="Bankai">
-                </div>
+                    <img src="~/images/USAID-Identity.svg.png" alt="Orange">
+                </div> 
                 <!-- تكرار الشعارات علشان الحركة تكون سلسة -->
                 <div class="partner-logo">
-                    <img src="~/images/webchat-high-resolution-logo (1).png" alt="Telecom Egypt">
+                    <img src="~/images/eva_pharma-removebg-preview 1.png" alt="Telecom Egypt">
                 </div>
                 <div class="partner-logo">
-                    <img src="~/images/webchat-high-resolution-logo (1).png" alt="BICS">
+                    <img src="~/images/eva cosmetics 1.png" alt="BICS">
                 </div>
                 <div class="partner-logo">
-                    <img src="~/images/webchat-high-resolution-logo (1).png" alt="AMC">
+                    <img src="~/images/logo.png" alt="AMC">
                 </div>
                 <div class="partner-logo">
-                    <img src="~/images/webchat-high-resolution-logo (1).png" alt="Orange">
-                </div>
-                <div class="partner-logo">
-                    <img src="~/images/webchat-high-resolution-logo (1).png" alt="Bankai">
+                    <img src="~/images/USAID-Identity.svg.png" alt="Orange">
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Join Us Section -->
 <div class="JoinUs py-5 position-relative">
     <!-- Background Video -->
     <video class="video-background" autoplay muted loop playsinline>
-        <source src="~/images/chatlink.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
     <div class="overlay"></div>
     <div class="container position-relative">
         <div class="row align-items-center">
             <div class="col-md-6 text-white">
-                <h2>Join Us at Capacity Middle East 2025 in UAE</h2>
+                <h2 class="neon-text">Join Us at Capacity Middle East 2025 in UAE</h2>
                 <p class="lead"><strong>Date:</strong> 4-6 February 2025</p>
                 <p class="lead"><strong>Location:</strong> Grand Hyatt Dubai Conference & Exhibition Centre, UAE</p>
                 <p>We are excited to share that Chat-Link Communication will be participating in Capacity Middle East 2025, MENA's largest digital infrastructure event! This landmark event will take place from 4-6 February 2025 (with a Pre-event day on 3 February) at the Grand Hyatt Dubai Conference & Exhibition Centre, UAE.</p>
                 <p>We look forward to engaging with global leaders in telecommunications and exploring opportunities in the ever-evolving digital landscape.</p>
                 <p><strong>Interested in a one-on-one discussion?</strong> Schedule a meeting with our representatives during the event to discuss how we can collaborate to drive your business forward.</p>
-                <a href="#" class="btn btn-primary btn-lg mt-3">Schedule a Meeting</a>
+                <a href="#" class="btn btn-neon btn-lg mt-3">Schedule a Meeting</a>
             </div>
             <div class="col-md-6">
-                <img src="~/images/doownload.webp" alt="Capacity Middle East 2025" class="img-fluid rounded shadow">
+                <div class="image-container">
+                    <img src="~/images/istockphoto-2148244386-612x612.jpg" alt="Capacity Middle East 2025" class="img-fluid rounded shadow hover-effect">
+                </div>
             </div>
         </div>
     </div>
@@ -242,6 +258,23 @@
 
 
    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        const welcomeMessage = document.getElementById("welcomeMessage");
+        const text = "Welcome to ChatLink";
+        let index = 0;
+
+        function typeWriter() {
+            if (index < text.length) {
+                welcomeMessage.innerHTML += text.charAt(index);
+                index++;
+                setTimeout(typeWriter, 100); // سرعة الكتابة (100 مللي ثانية)
+            }
+        }
+
+        typeWriter(); // بدء التأثير
+    });
+
+      
            // Scroll Animations for Features and Services
     document.addEventListener('scroll', function() {
         const elements = document.querySelectorAll('.Feature, .Service, .ImageTextSection');
@@ -322,12 +355,6 @@
         if (rect.top <= window.innerHeight / 1.5) {
             joinUsSection.classList.add('visible');
         }
-    });
-
-    // Ensure Join Us Section is visible on page load
-    window.addEventListener('load', function() {
-        const joinUsSection = document.querySelector('.JoinUs');
-        joinUsSection.classList.add('visible');
     });
 
    </script>

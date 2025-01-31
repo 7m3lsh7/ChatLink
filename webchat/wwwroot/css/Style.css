@@ -5,7 +5,7 @@
 }
 
 h2 {
-    color: rgb(150 45 247) !important
+    color: rgb(150 45 247) !important;
 }
 
 /* Sidebar Menu for Mobile */
@@ -84,9 +84,9 @@ h2 {
         width: 100%;
         height: 3px;
         border-color: none;
-        background-color: #fff; /* White color for the bars */
-        border-radius: 10px; /* Rounded edges for a modern look */
-        transition: all 0.3s ease; /* Smooth animations */
+        background-color: #fff; 
+        border-radius: 10px; 
+        transition: all 0.3s ease;
     }
 
 
@@ -152,7 +152,7 @@ h2 {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        z-index: -1; /* Place the video behind other content */
+        z-index: -1;
     }
 
     .Header .main-text {
@@ -160,8 +160,8 @@ h2 {
         flex-direction: column;
         align-items: center;
         padding: 50px;
-        color: #fff; /* Ensure text is readable on top of the video */
-        z-index: 1; /* Place the text on top of the video */
+        color: #fff; 
+        z-index: 1; 
     }
 
     .Header .main-button .button {
@@ -173,13 +173,14 @@ h2 {
         align-items: center;
         justify-content: center;
         display: flex;
-        z-index: 1; /* Place the button on top of the video */
+        z-index: 1; 
     }
 
 
 
 .w{
     width:370px
+
 
 }
 
@@ -190,10 +191,10 @@ h2 {
 }
 
 .Feature {
-    background: linear-gradient(135deg, #0d0d0e 0%, #9b30ff 50%, #6a0dad 100%); /* تدرج بنفسجي */
+    background: linear-gradient(135deg, #0d0d0e 0%, #9b30ff 50%, #6a0dad 100%);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(106, 13, 173, 0.5); /* ظل بنفسجي */
+    box-shadow: 0 4px 15px rgba(106, 13, 173, 0.5);
     transition: transform 0.6s ease, opacity 0.6s ease, box-shadow 0.3s ease;
     opacity: 0;
     transform: translateY(50px) rotate(10deg) scale(0.9);
@@ -208,32 +209,29 @@ h2 {
     .Feature h5 {
         font-size: 1.5rem;
         margin-bottom: 10px;
-        color: #ffffff; /* نص باللون الأبيض */
+        color: #ffffff; 
     }
 
     .Feature p {
         font-size: 1rem;
-        color: #f3e5ff; /* لون نص فاتح لتناسق أفضل مع الخلفية */
+        color: #f3e5ff;
         line-height: 1.6;
     }
 
-    /* تأثيرات Scroll */
     .Feature.visible {
         opacity: 1;
         transform: translateY(0) rotate(0deg) scale(1);
     }
 
-/* تأثيرات Hover */
 .card-hover:hover {
     transform: translateY(-10px) scale(1.05);
-    box-shadow: 0 8px 25px rgba(106, 13, 173, 0.7); /* ظل بنفسجي أقوى عند الـ Hover */
+    box-shadow: 0 8px 25px rgba(106, 13, 173, 0.7); 
 }
 
     .card-hover:hover img {
         transform: scale(1.1);
     }
 
-/* تأثير توهج متحرك */
 @keyframes glowing {
     0% {
         box-shadow: 0 0 10px rgba(106, 13, 173, 0.7);
@@ -265,10 +263,9 @@ h2 {
 
     .CallToAction h2 {
         font-weight: bold;
-        color: #ffffff; /* لون العنوان */
+        color: #ffffff; 
     }
 
-    /* زر الدعوة إلى الإجراء */
     .CallToAction .btn {
         background-color: #a8dadc;
         color: #457b9d;
@@ -284,7 +281,6 @@ h2 {
             color: #f1faee;
         }
 
-    /* الصورة مع تأثير التوهج */
     .CallToAction img {
         max-width: 100%;
         height: auto;
@@ -294,7 +290,6 @@ h2 {
         z-index: 2;
     }
 
-    /* الظل المتوهج تحت الصورة */
     .CallToAction .glow-effect {
         width: 80%;
         height: 20px;
@@ -309,7 +304,6 @@ h2 {
         animation: glowing 1.5s infinite alternate;
     }
 
-/* تأثير التوهج */
 @keyframes glowing {
     0% {
         opacity: 0.6;
@@ -414,7 +408,6 @@ footer a:hover {
     position: relative;
 }
 
-    /* تأثير الصورة */
     .ImageTextSection img {
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -425,13 +418,11 @@ footer a:hover {
         z-index: 2;
     }
 
-        /* عند التحريك فوق الصورة */
         .ImageTextSection img:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(106, 13, 173, 0.8); /* توهج بنفسجي عند التحريك */
+            box-shadow: 0 0 20px rgba(106, 13, 173, 0.8);
         }
 
-    /* تأثير التوهج أسفل الصورة */
     .ImageTextSection .glow-effect {
         width: 80%;
         height: 20px;
@@ -446,7 +437,6 @@ footer a:hover {
         animation: glowing 1.5s infinite alternate;
     }
 
-/* حركة التوهج */
 @keyframes glowing {
     0% {
         opacity: 0.6;
@@ -464,7 +454,6 @@ footer a:hover {
     }
 }
 
-/* تنسيق النصوص */
 .ImageTextSection h2 {
     font-size: 2.5rem;
     margin-bottom: 20px;
@@ -481,18 +470,17 @@ footer a:hover {
     color: #1d3557;
 }
 
-/* تنسيق الخدمات */
 .Services {
     padding: 50px 0;
-    background-color: #3b1868; /* تغيير لون الخلفية لتدرج أفتح */
+    background-color: #3b1868; 
 }
 
 .Service {
     background: #ccc;
     padding: 25px;
-    border-radius: 15px; /* زيادة التدوير لجعل الشكل أكثر نعومة */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(148, 0, 211, 0.2); /* إضافة ظل بنفسجي غامق */
-    transition: transform 0.6s ease, opacity 0.6s ease, box-shadow 0.4s ease, filter 0.3s ease; /* إضافة تأثير على الفلاتر */
+    border-radius: 15px; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(148, 0, 211, 0.2);
+    transition: transform 0.6s ease, opacity 0.6s ease, box-shadow 0.4s ease, filter 0.3s ease; 
     opacity: 0;
     transform: translateY(50px) rotate(10deg) scale(0.9);
 }
@@ -500,17 +488,17 @@ footer a:hover {
     .Service img {
         max-width: 100px;
         margin-bottom: 20px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease; /* إضافة تأثير على الظل */
-        border-radius: 50%; /* إضافة تدوير الصور */
-        box-shadow: 0 4px 8px rgba(148, 0, 211, 0.2); /* ظل بنفسجي خفيف تحت الصورة */
+        transition: transform 0.3s ease, box-shadow 0.3s ease; 
+        border-radius: 50%;
+        box-shadow: 0 4px 8px rgba(148, 0, 211, 0.2);
     }
 
     .Service h5 {
-        font-size: 1.8rem; /* تكبير حجم النص */
+        font-size: 1.8rem; 
         margin-bottom: 12px;
-        color: #2c3e50; /* استخدام لون أكثر عمقاً */
-        font-weight: bold; /* جعل الخط سميك */
-        text-transform: uppercase; /* كتابة العناوين بحروف كبيرة */
+        color: #2c3e50;
+        font-weight: bold;
+        text-transform: uppercase;
     }
 
     .Service p {
@@ -520,22 +508,20 @@ footer a:hover {
         font-weight: 400;
     }
 
-    /* تأثيرات Scroll */
     .Service.visible {
         opacity: 1;
         transform: translateY(0) rotate(0deg) scale(1);
     }
 
-/* تأثيرات Hover */
 .card-hover:hover {
-    transform: translateY(-12px) scale(1.08); /* تأثير أكبر أثناء المرور */
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 15px 35px rgba(148, 0, 211, 0.5); /* زيادة كثافة الظل البنفسجي */
-    filter: brightness(1.1); /* إضافة تأثير إضاءة عند المرور */
+    transform: translateY(-12px) scale(1.08);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 15px 35px rgba(148, 0, 211, 0.5);
+    filter: brightness(1.1);
 }
 
     .card-hover:hover img {
-        transform: scale(1.15); /* تكبير الصورة عند المرور */
-        box-shadow: 0 8px 16px rgba(148, 0, 211, 0.5); /* ظل بنفسجي أقوى تحت الصورة عند المرور */
+        transform: scale(1.15);
+        box-shadow: 0 8px 16px rgba(148, 0, 211, 0.5); 
     }
 
 
@@ -594,41 +580,63 @@ footer a:hover {
         transform: translateY(0);
     }
 
-/* تأثيرات Hover */
 .card-hover:hover {
     transform: translateY(-10px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+
+
+
 /* تنسيق Partners Section */
 .Partners {
     padding: 80px 0;
-    background-color: #1d3557; /* خلفية داكنة */
+    background-color: #cbc5c5;
     overflow: hidden;
-    border-top: 5px solid #feb47b; /* حدود بلون مميز */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* تأثير الظل لإضافة عمق */
+    border-top: 5px solid #972ef6;
+    box-shadow: 0 4px 8px rgba(255, 111, 97, 0.4);
 }
 
     .Partners h2 {
-        font-size: 3rem; /* تكبير الحجم */
+        font-size: 3rem; 
         margin-bottom: 3rem;
-        color: #fff;
+        color: #ff6f61;
         text-align: center;
         text-transform: uppercase;
         letter-spacing: 2px;
         font-weight: 600;
+        text-shadow: 0 0 10px rgba(255, 111, 97, 0.8), 0 0 20px rgba(255, 111, 97, 0.6);
     }
 
-/* تنسيق الشريط المتحرك */
+.Partners {
+    padding: 80px 0;
+    background-color: #cbc5c5;
+    overflow: hidden;
+    border-top: 5px solid #962df7;
+    box-shadow: 0 4px 8px rgba(255, 111, 97, 0.4);
+}
+
+    .Partners h2 {
+        font-size: 3rem;
+        margin-bottom: 3rem;
+        color: #ff6f61;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 600;
+        text-shadow: 0 0 10px rgba(255, 111, 97, 0.8), 0 0 20px rgba(255, 111, 97, 0.6); 
+    }
+
 .partners-slider {
-    width: 100%;
+    max-width: 90%; 
+    margin: 0 auto;
     overflow: hidden;
     position: relative;
 }
 
 .partners-track {
     display: flex;
-    animation: scroll 12s ease-in-out infinite; /* جعل الحركة أسرع وأكثر سلاسة */
+    animation: scroll 12s ease-in-out infinite; 
 }
 
 .partner-logo {
@@ -637,42 +645,42 @@ footer a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.3s ease; /* تأثير حركة سلس */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
     .partner-logo img {
-        max-width: 180px; /* زيادة حجم الصور */
+        max-width: 180px; 
         height: auto;
-        filter: grayscale(100%);
-        transition: filter 0.3s ease, transform 0.3s ease; /* إضافة تأثير تكبير للصورة */
+        transition: transform 0.3s ease, box-shadow 0.3s ease; 
     }
 
-        .partner-logo img:hover {
-            filter: grayscale(0%);
-            transform: scale(1.1); /* تكبير الصورة عند المرور */
-        }
+    .partner-logo:hover img {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(138, 43, 226, 0.8); 
+    }
 
-/* تأثيرات الحركة */
 @keyframes scroll {
     0% {
-        transform: translateX(100%); /* بداية الحركة من الجهة اليمنى */
+        transform: translateX(100%); 
     }
 
     50% {
-        transform: translateX(0); /* الوصول إلى المنتصف */
+        transform: translateX(0); 
     }
-
     100% {
-        transform: translateX(-100%); /* الرجوع إلى الجهة اليسرى بعد المرور */
+        transform: translateX(-100%); 
     }
 }
 
+
+
 /* تنسيق Join Us Section */
 .JoinUs {
-    padding: 100px 0;
+    padding: 150px 0;
     position: relative;
     overflow: hidden;
     color: white;
+    background: linear-gradient(135deg, #1a1a1a, #000000);
 }
 
     .JoinUs .video-background {
@@ -683,6 +691,7 @@ footer a:hover {
         height: 100%;
         object-fit: cover;
         z-index: -1;
+        opacity: 0.3; 
     }
 
     .JoinUs .overlay {
@@ -691,7 +700,7 @@ footer a:hover {
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.6);
+        background: #495057;
         z-index: 0;
     }
 
@@ -700,42 +709,230 @@ footer a:hover {
         z-index: 1;
     }
 
-    .JoinUs h2 {
-        font-size: 2.5rem;
-        margin-bottom: 1.5rem;
-        color: white;
-    }
-
-    .JoinUs p {
-        font-size: 1.1rem;
-        line-height: 1.6;
-        margin-bottom: 1rem;
-    }
-
-    .JoinUs .lead {
-        font-size: 1.2rem;
+    .JoinUs h2.neon-text {
+        font-size: 3rem;
         font-weight: bold;
-        color: #a8dadc;
+        margin-bottom: 1.5rem;
+        color: #fff;
+        text-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea, 0 0 40px #00ffea;
+        animation: neon-glow 1.5s infinite alternate;
     }
 
-    .JoinUs img {
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease;
+@keyframes neon-glow {
+    from {
+        text-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea, 0 0 40px #00ffea;
     }
 
-        .JoinUs img:hover {
-            transform: scale(1.05);
+    to {
+        text-shadow: 0 0 20px #00ffea, 0 0 40px #00ffea, 0 0 80px #00ffea;
+    }
+}
+
+.JoinUs p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    color: #e0e0e0;
+}
+
+.JoinUs .lead {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #00ffea;
+}
+
+.JoinUs .image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 255, 234, 0.5);
+}
+
+.JoinUs img.hover-effect {
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+    .JoinUs img.hover-effect:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 40px rgba(0, 255, 234, 0.8);
+    }
+
+.JoinUs .btn-neon {
+    background-color: transparent;
+    border: 2px solid #00ffea;
+    color: #00ffea;
+    padding: 10px 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .JoinUs .btn-neon::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300%;
+        height: 300%;
+        background: radial-gradient(circle, rgba(0, 255, 234, 0.3), transparent);
+        transform: translate(-50%, -50%) scale(0);
+        transition: transform 0.5s ease;
+        z-index: 0;
+    }
+
+    .JoinUs .btn-neon:hover {
+        background-color: #00ffea;
+        color: #000;
+        box-shadow: 0 0 20px rgba(0, 255, 234, 0.8);
+    }
+
+        .JoinUs .btn-neon:hover::before {
+            transform: translate(-50%, -50%) scale(1);
         }
 
-    .JoinUs .btn-primary {
-        background-color: #4a90e2;
-        border: none;
-        padding: 10px 30px;
-        font-size: 1.2rem;
-        transition: background-color 0.3s ease;
+#welcomeMessage {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ffffff; 
+    overflow: hidden;
+    border-right: 0.15em solid blueviolet;
+    white-space: nowrap;
+    margin: 0 auto;
+    letter-spacing: 0.15em;
+    animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite, color-change 3.5s linear infinite;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+}
+
+@keyframes typing {
+    from {
+        width: 0;
     }
 
-        .JoinUs .btn-primary:hover {
-            background-color: #357abd;
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes blink-caret {
+    from, to {
+        border-color: transparent;
+    }
+
+    50% {
+        border-color: blueviolet;
+    }
+}
+
+@keyframes color-change {
+    0% {
+        color:blueviolet;
+    }
+
+    50% {
+        color:aliceblue;
+    }
+
+    100% {
+        color:blueviolet;
+    }
+}
+
+/* تنسيق Video Section */
+.VideoSection {
+    padding: 150px 0;
+    position: relative;
+    overflow: hidden;
+    color: white;
+    background: linear-gradient(135deg, #1a1a1a, #000000);
+}
+
+    .VideoSection .video-container {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+        transform: perspective(1000px) rotateY(10deg);
+        transition: transform 0.5s ease, box-shadow 0.5s ease;
+    }
+
+        .VideoSection .video-container:hover {
+            transform: perspective(1000px) rotateY(0deg);
+            box-shadow: 0 0 50px rgba(138, 43, 226, 0.8); 
+        }
+
+    .VideoSection .interactive-video {
+        width: 100%;
+        border-radius: 20px;
+        display: block;
+        position: relative;
+        z-index: 2;
+    }
+
+    .VideoSection h2.neon-text {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        color: #fff;
+        text-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2, 0 0 40px #8a2be2;
+        animation: neon-glow 1.5s infinite alternate;
+    }
+
+@keyframes neon-glow {
+    from {
+        text-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2, 0 0 40px #8a2be2;
+    }
+
+    to {
+        text-shadow: 0 0 20px #8a2be2, 0 0 40px #8a2be2, 0 0 80px #8a2be2;
+    }
+}
+
+.VideoSection p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    color: #e0e0e0;
+}
+
+.VideoSection .lead {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #8a2be2;
+}
+
+.VideoSection .btn-neon {
+    background-color: transparent;
+    border: 2px solid #8a2be2;
+    color: #8a2be2;
+    padding: 10px 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .VideoSection .btn-neon::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300%;
+        height: 300%;
+        background: radial-gradient(circle, rgba(138, 43, 226, 0.3), transparent);
+        transform: translate(-50%, -50%) scale(0);
+        transition: transform 0.5s ease;
+        z-index: 0;
+    }
+
+    .VideoSection .btn-neon:hover {
+        background-color: #8a2be2;
+        color: #000;
+        box-shadow: 0 0 20px rgba(138, 43, 226, 0.8);
+    }
+
+        .VideoSection .btn-neon:hover::before {
+            transform: translate(-50%, -50%) scale(1);
         }
