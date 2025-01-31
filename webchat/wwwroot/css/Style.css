@@ -1,6 +1,11 @@
-﻿:root {
+﻿
+:root {
     --color: #3B1868;
     --background-color: #4f037b39;
+}
+
+h2 {
+    color: rgb(150 45 247) !important
 }
 
 /* Sidebar Menu for Mobile */
@@ -83,7 +88,6 @@
         border-radius: 10px; /* Rounded edges for a modern look */
         transition: all 0.3s ease; /* Smooth animations */
     }
-
 
 
 .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
@@ -179,56 +183,158 @@
 
 }
 
-/* Features Section */
-.Features h2 {
-    color: #1d3557;
-    font-weight: bold;
+
+/* تنسيق الكروت */
+.Features {
+    padding: 50px 0;
 }
 
-.Features img {
-    width:  300px;
-    height: 300px;
-    border-radius:20%
-}
-
-.Features h5 {
-    font-weight: bold;
-    color: #457b9d;
-}
 .Feature {
-    background-color: #ab9dcb;
+    background: linear-gradient(135deg, #0d0d0e 0%, #9b30ff 50%, #6a0dad 100%); /* تدرج بنفسجي */
     padding: 20px;
-    border-radius: 5%;
-    height: 450px
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(106, 13, 173, 0.5); /* ظل بنفسجي */
+    transition: transform 0.6s ease, opacity 0.6s ease, box-shadow 0.3s ease;
+    opacity: 0;
+    transform: translateY(50px) rotate(10deg) scale(0.9);
 }
+
+    .Feature img {
+        max-width: 100px;
+        margin-bottom: 15px;
+        transition: transform 0.3s ease;
+    }
+
+    .Feature h5 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: #ffffff; /* نص باللون الأبيض */
+    }
+
+    .Feature p {
+        font-size: 1rem;
+        color: #f3e5ff; /* لون نص فاتح لتناسق أفضل مع الخلفية */
+        line-height: 1.6;
+    }
+
+    /* تأثيرات Scroll */
+    .Feature.visible {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg) scale(1);
+    }
+
+/* تأثيرات Hover */
+.card-hover:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(106, 13, 173, 0.7); /* ظل بنفسجي أقوى عند الـ Hover */
+}
+
+    .card-hover:hover img {
+        transform: scale(1.1);
+    }
+
+/* تأثير توهج متحرك */
+@keyframes glowing {
+    0% {
+        box-shadow: 0 0 10px rgba(106, 13, 173, 0.7);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(106, 13, 173, 1);
+    }
+
+    100% {
+        box-shadow: 0 0 10px rgba(106, 13, 173, 0.7);
+    }
+}
+
+.Feature:hover {
+    animation: glowing 1.5s infinite alternate;
+}
+
+
+
+
 /* Call to Action */
 .CallToAction {
     background-color: var(--color);
-}
-.CallToAction h2 {
-    font-weight: bold;
-}
-
-.CallToAction .btn {
-    background-color: #a8dadc;
-    color: #457b9d;
-    border-radius: 30px;
-    transition: all 0.3s ease;
+    text-align: center;
+    padding: 50px 20px;
+    position: relative;
 }
 
-    .CallToAction .btn:hover {
-        background-color: #1d3557;
-        color: #f1faee;
+    .CallToAction h2 {
+        font-weight: bold;
+        color: #ffffff; /* لون العنوان */
     }
+
+    /* زر الدعوة إلى الإجراء */
+    .CallToAction .btn {
+        background-color: #a8dadc;
+        color: #457b9d;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+        padding: 12px 25px;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+        .CallToAction .btn:hover {
+            background-color: #1d3557;
+            color: #f1faee;
+        }
+
+    /* الصورة مع تأثير التوهج */
+    .CallToAction img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto 20px;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* الظل المتوهج تحت الصورة */
+    .CallToAction .glow-effect {
+        width: 80%;
+        height: 20px;
+        background: rgba(106, 13, 173, 0.7);
+        filter: blur(15px);
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1;
+        border-radius: 50%;
+        animation: glowing 1.5s infinite alternate;
+    }
+
+/* تأثير التوهج */
+@keyframes glowing {
+    0% {
+        opacity: 0.6;
+        box-shadow: 0 0 15px rgba(106, 13, 173, 0.6);
+    }
+
+    50% {
+        opacity: 1;
+        box-shadow: 0 0 25px rgba(106, 13, 173, 1);
+    }
+
+    100% {
+        opacity: 0.6;
+        box-shadow: 0 0 15px rgba(106, 13, 173, 0.6);
+    }
+}
+
+
+
 
 /* Footer */
 
 footer a:hover {
     text-decoration: underline;
 }
-
-
-
 
 /* Loading Overlay */
 #loading-overlay {
@@ -300,3 +406,336 @@ footer a:hover {
         opacity: 1;
     }
 }
+
+.ImageTextSection {
+    padding: 50px 0;
+    background-color: azure;
+    text-align: center;
+    position: relative;
+}
+
+    /* تأثير الصورة */
+    .ImageTextSection img {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.5s ease-in-out;
+        display: block;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+
+        /* عند التحريك فوق الصورة */
+        .ImageTextSection img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(106, 13, 173, 0.8); /* توهج بنفسجي عند التحريك */
+        }
+
+    /* تأثير التوهج أسفل الصورة */
+    .ImageTextSection .glow-effect {
+        width: 80%;
+        height: 20px;
+        background: rgba(106, 13, 173, 0.7);
+        filter: blur(15px);
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1;
+        border-radius: 50%;
+        animation: glowing 1.5s infinite alternate;
+    }
+
+/* حركة التوهج */
+@keyframes glowing {
+    0% {
+        opacity: 0.6;
+        box-shadow: 0 0 15px rgba(106, 13, 173, 0.6);
+    }
+
+    50% {
+        opacity: 1;
+        box-shadow: 0 0 25px rgba(106, 13, 173, 1);
+    }
+
+    100% {
+        opacity: 0.6;
+        box-shadow: 0 0 15px rgba(106, 13, 173, 0.6);
+    }
+}
+
+/* تنسيق النصوص */
+.ImageTextSection h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #1d3557;
+}
+
+.ImageTextSection p {
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+.ImageTextSection strong {
+    color: #1d3557;
+}
+
+/* تنسيق الخدمات */
+.Services {
+    padding: 50px 0;
+    background-color: #3b1868; /* تغيير لون الخلفية لتدرج أفتح */
+}
+
+.Service {
+    background: #ccc;
+    padding: 25px;
+    border-radius: 15px; /* زيادة التدوير لجعل الشكل أكثر نعومة */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(148, 0, 211, 0.2); /* إضافة ظل بنفسجي غامق */
+    transition: transform 0.6s ease, opacity 0.6s ease, box-shadow 0.4s ease, filter 0.3s ease; /* إضافة تأثير على الفلاتر */
+    opacity: 0;
+    transform: translateY(50px) rotate(10deg) scale(0.9);
+}
+
+    .Service img {
+        max-width: 100px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease; /* إضافة تأثير على الظل */
+        border-radius: 50%; /* إضافة تدوير الصور */
+        box-shadow: 0 4px 8px rgba(148, 0, 211, 0.2); /* ظل بنفسجي خفيف تحت الصورة */
+    }
+
+    .Service h5 {
+        font-size: 1.8rem; /* تكبير حجم النص */
+        margin-bottom: 12px;
+        color: #2c3e50; /* استخدام لون أكثر عمقاً */
+        font-weight: bold; /* جعل الخط سميك */
+        text-transform: uppercase; /* كتابة العناوين بحروف كبيرة */
+    }
+
+    .Service p {
+        font-size: 1rem;
+        color: #7f8c8d;
+        line-height: 1.6;
+        font-weight: 400;
+    }
+
+    /* تأثيرات Scroll */
+    .Service.visible {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg) scale(1);
+    }
+
+/* تأثيرات Hover */
+.card-hover:hover {
+    transform: translateY(-12px) scale(1.08); /* تأثير أكبر أثناء المرور */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 15px 35px rgba(148, 0, 211, 0.5); /* زيادة كثافة الظل البنفسجي */
+    filter: brightness(1.1); /* إضافة تأثير إضاءة عند المرور */
+}
+
+    .card-hover:hover img {
+        transform: scale(1.15); /* تكبير الصورة عند المرور */
+        box-shadow: 0 8px 16px rgba(148, 0, 211, 0.5); /* ظل بنفسجي أقوى تحت الصورة عند المرور */
+    }
+
+
+
+
+
+/* تنسيق Global Coverage */
+.GlobalCoverage {
+    padding: 50px 0;
+    background-color: #0f0035;
+}
+
+    .GlobalCoverage h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: #1d3557;
+    }
+
+    .GlobalCoverage p {
+        font-size: 1.1rem;
+        color: #555;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+.CoverageCard {
+    background: #cccccc;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    opacity: 0;
+    transform: translateY(50px);
+}
+
+    .CoverageCard h5 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        color: #457b9d;
+    }
+
+    .CoverageCard ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+        .CoverageCard ul li {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+    /* تأثيرات Scroll */
+    .CoverageCard.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+/* تأثيرات Hover */
+.card-hover:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* تنسيق Partners Section */
+.Partners {
+    padding: 80px 0;
+    background-color: #1d3557; /* خلفية داكنة */
+    overflow: hidden;
+    border-top: 5px solid #feb47b; /* حدود بلون مميز */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* تأثير الظل لإضافة عمق */
+}
+
+    .Partners h2 {
+        font-size: 3rem; /* تكبير الحجم */
+        margin-bottom: 3rem;
+        color: #fff;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 600;
+    }
+
+/* تنسيق الشريط المتحرك */
+.partners-slider {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.partners-track {
+    display: flex;
+    animation: scroll 12s ease-in-out infinite; /* جعل الحركة أسرع وأكثر سلاسة */
+}
+
+.partner-logo {
+    flex: 0 0 auto;
+    margin: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease; /* تأثير حركة سلس */
+}
+
+    .partner-logo img {
+        max-width: 180px; /* زيادة حجم الصور */
+        height: auto;
+        filter: grayscale(100%);
+        transition: filter 0.3s ease, transform 0.3s ease; /* إضافة تأثير تكبير للصورة */
+    }
+
+        .partner-logo img:hover {
+            filter: grayscale(0%);
+            transform: scale(1.1); /* تكبير الصورة عند المرور */
+        }
+
+/* تأثيرات الحركة */
+@keyframes scroll {
+    0% {
+        transform: translateX(100%); /* بداية الحركة من الجهة اليمنى */
+    }
+
+    50% {
+        transform: translateX(0); /* الوصول إلى المنتصف */
+    }
+
+    100% {
+        transform: translateX(-100%); /* الرجوع إلى الجهة اليسرى بعد المرور */
+    }
+}
+
+/* تنسيق Join Us Section */
+.JoinUs {
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+    color: white;
+}
+
+    .JoinUs .video-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+    }
+
+    .JoinUs .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 0;
+    }
+
+    .JoinUs .container {
+        position: relative;
+        z-index: 1;
+    }
+
+    .JoinUs h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        color: white;
+    }
+
+    .JoinUs p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .JoinUs .lead {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #a8dadc;
+    }
+
+    .JoinUs img {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+        .JoinUs img:hover {
+            transform: scale(1.05);
+        }
+
+    .JoinUs .btn-primary {
+        background-color: #4a90e2;
+        border: none;
+        padding: 10px 30px;
+        font-size: 1.2rem;
+        transition: background-color 0.3s ease;
+    }
+
+        .JoinUs .btn-primary:hover {
+            background-color: #357abd;
+        }
