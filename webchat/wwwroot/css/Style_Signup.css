@@ -1,5 +1,66 @@
-﻿
- 
+﻿.form-control, select {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #720b8b;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box; 
+}
+
+@media (max-width: 767px) {
+    .form-control, select {
+        font-size: 1rem;
+        padding: 12px; 
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .form-control, select {
+        font-size: 1rem; 
+        padding: 12px; 
+    }
+}
+
+@media (min-width: 1024px) {
+    .form-control, select {
+        font-size: 1.1rem; 
+        padding: 15px;
+        width: 100%;
+        max-width: 600px; 
+    }
+}
+
+select.form-control {
+    width: 100% !important; 
+}
+
+.col-md-6 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-label {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+select.form-control {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    box-sizing: border-box; 
+}
+
 .welcome-section {
     background-image: url('../images/Screenshot .png');
     background-size: cover;
@@ -13,7 +74,6 @@
     text-align: center;
     padding: 20px;
     position: relative;
-   
 }
 
     .welcome-section h1 {
@@ -32,8 +92,6 @@
         width: 700px;
     }
 
- 
-
 .login-section {
     flex: 1;
     display: flex;
@@ -51,32 +109,13 @@
 
     .login-section form {
         width: 100%;
-        max-width: 400px;
-    }
-
-.form-control {
-    background-color: #333;
-    color: #fff;
-    border: 1px solid #720b8b;
-}
-
-    .form-control:focus {
-        background-color: #333;
-        color: #fff;
-        border-color: #6c63ff;
-        box-shadow: none;
-    }
-
-    .form-control::placeholder {
-        color: #6c6161;
+        max-width: 600px; 
     }
 
 .btn-login {
     background-color: #9440b7;
     border: none;
 }
-
-    
 
 .signup-link {
     color: #6c63ff;
