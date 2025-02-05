@@ -248,7 +248,9 @@ namespace webchat.Controllers
             }
 
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword); // Hashing new password before saving
+
             user.ResetPasswordExpiry = null;
+            user.IsPasswordChanged = true; // Update the IsPasswordChanged field
             user.LastPasswordChangeDate = DateTime.Now;
             _chatDbcontect.SaveChanges();
 
