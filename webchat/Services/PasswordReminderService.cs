@@ -1,9 +1,8 @@
-﻿using BCrypt.Net;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using webchat.data;
 using webchat.Models;
 
@@ -19,55 +18,56 @@ public class PasswordReminderService
     public async Task SendPasswordReminderEmails()
     {
         var usersToNotify = _chatDbContext.users
-            .AsNoTracking()
-            .Where(u => u.LastPasswordChangeDate < DateTime.Now.AddMonths(-3)) // على سبيل المثال، أكثر من 3 أشهر
+            .AsEnumerable() 
+            .Where(u => u.LastPasswordChangeDate < DateTime.Now.AddMonths(-3))
             .ToList();
 
         foreach (var user in usersToNotify)
         {
-            string subject = "تذكير بتحديث كلمة المرور";
-            string websiteLink = "https://chatlink.runasp.net/"; // رابط موقعك
+            string subject = "Reminder to update your password";
             string body = $@"
-                <html>
-                <body>
-                    <h1>مرحبًا {user.Username}!</h1>
-                    <p>لاحظنا أنك لم تقم بتحديث كلمة المرور الخاصة بك منذ فترة. من أجل الحفاظ على أمان حسابك، ننصحك بتحديث كلمة المرور في أقرب وقت ممكن.</p>
-                    <p>يمكنك تسجيل الدخول وتحديث كلمة المرور من خلال الرابط التالي:</p>
-                    <p><a href='{websiteLink}'>{websiteLink}</a></p>
-                    <p>إذا كانت لديك أي أسئلة، فلا تتردد في التواصل معنا.</p>
-                    <p>مع خالص التقدير،<br/>فريق الدعم</p>
-                </body>
-                </html>";
+            <html>
+           <body>
+                  <h1>Dear, {user.Username}!</h1>
+                  <p>We hope you're doing well. Our security protocols have flagged that it has been over 3 months since your last password update. To ensure the continued safety of your account and to safeguard against potential security risks, we highly recommend updating your password at your earliest convenience.</p>
+                  <p>To make the process as seamless as possible, simply log in to your account and update your password via the following link:</p>
+                  <p><a href='https://chatlink.runasp.net/'>Click here to update your password</a></p>
+                  <p>If you have any questions or require assistance, our dedicated support team is always here to help. Feel free to reach out via email or connect with us through the live chat on our platform.</p>
+                  <p>Thank you for choosing <strong>ChatLink</strong>. We're committed to your security and ensuring the best experience possible.</p>
+                  <p>Warm regards,<br/>
+                  The ChatLink Team</p>
+           </body>
+            </html>";
 
-            // تحقق من إذا كانت كلمة المرور مشفرة باستخدام bcrypt
-            if (!IsPasswordHashed(user.PasswordHash))
-            {
-                // إذا كانت كلمة المرور غير مشفرة، أرسل له رسالة لتحديث كلمة المرور
-                string reminderBody = $@"
-                    <html>
-                    <body>
-                        <h1>مرحبًا {user.Username}!</h1>
-                        <p>لاحظنا أن كلمة المرور الخاصة بك غير مشفرة بشكل آمن. من أجل الحفاظ على أمان حسابك، ننصحك بتغيير كلمة المرور إلى كلمة مرور مشفرة باستخدام معيار bcrypt.</p>
-                        <p>يمكنك تسجيل الدخول وتحديث كلمة المرور من خلال الرابط التالي:</p>
-                        <p><a href='{websiteLink}'>{websiteLink}</a></p>
-                        <p>إذا كانت لديك أي أسئلة، فلا تتردد في التواصل معنا.</p>
-                        <p>مع خالص التقدير،<br/>فريق الدعم</p>
-                    </body>
-                    </html>";
-                await SendEmail(user.Email, "تنبيه: كلمة المرور غير مشفرة", reminderBody);
-            }
-            else
-            {
-                // إذا كانت كلمة المرور مشفرة، أرسل له رسالة التذكير العادية
-                await SendEmail(user.Email, subject, body);
-            }
+            await SendEmail(user.Email, subject, body);
+        }
+
+        var usersToNotifyForHashing = _chatDbContext.users
+            .AsEnumerable() 
+            .Where(u => !IsPasswordHashed(u.PasswordHash)) 
+            .ToList();
+
+        foreach (var user in usersToNotifyForHashing)
+        {
+            string reminderBody = $@"
+            <html>
+         <body>
+             <h1>Hello {user.Username}!</h1>
+             <p>Your account security is our top priority. We've noticed that your password is not securely hashed according to modern security standards. To ensure your account remains safe from potential threats, we strongly recommend updating your password to one that is hashed using the advanced bcrypt standard.</p>
+             <p>You can log in and update your password through the following link:</p>
+             <p><a href='https://chatlink.runasp.net/'>Click here to update your password</a></p>
+             <p>If you have any questions, feel free to reach out to us.</p>
+             <p>Best regards,<br/>The ChatLink Team</p>
+       </body>
+            </html>";
+
+            await SendEmail(user.Email, "Warning: The password is not encrypted⚠️", reminderBody);
         }
     }
 
     private bool IsPasswordHashed(string password)
     {
-        // تحقق من إذا كانت كلمة المرور تبدأ بـ "$2a$" وهو التنسيق الشائع لـ bcrypt
-        return password.StartsWith("$2a$");
+        return password.StartsWith("$2a$") || password.StartsWith("$2b$") || password.StartsWith("$2y$");
     }
 
     private async Task SendEmail(string toEmail, string subject, string body)

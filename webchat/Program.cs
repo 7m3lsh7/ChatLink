@@ -9,8 +9,11 @@ builder.Services.AddDbContext<ChatDbcontect>(options => options.UseSqlServer
 (builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<PasswordReminderService>();
+
 builder.Services.AddHostedService<PasswordReminderBackgroundService>();
+
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddScoped<DbInitializer>();
 
 

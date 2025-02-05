@@ -15,7 +15,9 @@ namespace webchat.Controllers
         }
 
         [Route("Error/404")]
+#pragma warning disable CS0114 // Member hides inherited member; missing override keyword
         public IActionResult NotFound()
+#pragma warning restore CS0114 // Member hides inherited member; missing override keyword
         {
             ViewData["HideNavbar"] = true;
             ViewData["HideFooter"] = true;

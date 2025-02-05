@@ -17,7 +17,6 @@ namespace webchat.Controllers
     {
         private readonly ChatDbcontect _chatDbcontect;
         private readonly IConfiguration _configuration;
-        private object _chatDbContext;
 
         public LoginController(ChatDbcontect chatDbcontect, IConfiguration configuration)
         {
@@ -41,7 +40,6 @@ namespace webchat.Controllers
             }
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Check(User user)
@@ -57,22 +55,31 @@ namespace webchat.Controllers
 
             var dbUser = await _chatDbcontect.users.FirstOrDefaultAsync(u => u.Email == user.Email);
 
-            if (dbUser == null || !BCrypt.Net.BCrypt.Verify(user.PasswordHash, dbUser.PasswordHash))
+            if (dbUser == null)
             {
                 ViewBag.Message = "Incorrect email or password.";
                 return View("Index");
             }
 
-            if (!Regex.IsMatch(user.PasswordHash, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{9,}$"))
+            bool isPasswordValid = false;
+
+            if (dbUser.PasswordHash.StartsWith("$2a$") || dbUser.PasswordHash.StartsWith("$2b$") || dbUser.PasswordHash.StartsWith("$2y$"))
             {
-                ViewBag.Message = "Password must include both letters and numbers and be at least 9 characters long.";
+                isPasswordValid = BCrypt.Net.BCrypt.Verify(user.PasswordHash, dbUser.PasswordHash);
+            }
+            else
+            {
+                isPasswordValid = user.PasswordHash == dbUser.PasswordHash;
+            }
+
+            if (!isPasswordValid)
+            {
+                ViewBag.Message = "Incorrect email or password.";
                 return View("Index");
             }
 
-            // Check if the user needs to change the password
             if (dbUser.IsPasswordChanged == false)
             {
-                // Redirect to the page where the user can change the password
                 return RedirectToAction("ChangePassword", "Login", new { userId = dbUser.Id });
             }
 
@@ -321,6 +328,8 @@ namespace webchat.Controllers
 
         public async Task<IActionResult> ChangePassword(int userId)
         {
+            ViewData["HideNavbar"] = true;
+            ViewData["HideFooter"] = true;
             var user = await _chatDbcontect.users.FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null)
             {
@@ -342,8 +351,7 @@ namespace webchat.Controllers
                 return View("Index");
             }
 
-            // Validate old password
-            if (!BCrypt.Net.BCrypt.Verify(oldPassword, user.PasswordHash))
+            if (oldPassword != user.PasswordHash)
             {
                 ViewBag.Message = "Old password is incorrect.";
                 return View(user);

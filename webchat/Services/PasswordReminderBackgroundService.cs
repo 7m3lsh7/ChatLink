@@ -16,12 +16,19 @@ public class PasswordReminderBackgroundService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            using (var scope = _services.CreateScope())
+            try
             {
-                var passwordReminderService = scope.ServiceProvider.GetRequiredService<PasswordReminderService>();
-                await passwordReminderService.SendPasswordReminderEmails();
+                using (var scope = _services.CreateScope())
+                {
+                    var passwordReminderService = scope.ServiceProvider.GetRequiredService<PasswordReminderService>();
+                    await passwordReminderService.SendPasswordReminderEmails();
+                }
             }
-            // انتظر لمدة يوم قبل إعادة المحاولة
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in PasswordReminderBackgroundService: {ex.Message}");
+            }
+
             await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
         }
     }
