@@ -8,6 +8,7 @@ using webchat.Models;
 using Microsoft.AspNetCore.Http;
 using System.Net.Mail;
 using AspNetCore.ReCaptcha;
+using BCrypt.Net;
 
 namespace webchat.Controllers
 {
@@ -44,7 +45,7 @@ namespace webchat.Controllers
                 MailMessage mail = new MailMessage("ChatLink.eg@gmail.com", toEmail);
                 mail.Subject = subject;
                 mail.Body = htmlBody;
-                mail.IsBodyHtml = true; 
+                mail.IsBodyHtml = true;
 
                 SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
                 smtp.Credentials = new System.Net.NetworkCredential("ChatLink.eg@gmail.com", "ffhm glyt bcup ddke");
@@ -77,7 +78,7 @@ namespace webchat.Controllers
                 MailMessage mail = new MailMessage("ChatLink.eg@gmail.com", toEmail);
                 mail.Subject = subject;
                 mail.Body = body;
-                mail.IsBodyHtml = true; 
+                mail.IsBodyHtml = true;
 
                 SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
                 smtp.Credentials = new System.Net.NetworkCredential("ChatLink.eg@gmail.com", "ffhm glyt bcup ddke");
@@ -107,6 +108,9 @@ namespace webchat.Controllers
                 ModelState.AddModelError("Email", "This email is already registered.");
                 return View("Index");
             }
+
+            // Hash the password using BCrypt
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
 
             var verificationCode = GenerateVerificationCode();
             user.VerificationCode = verificationCode;
@@ -158,6 +162,8 @@ namespace webchat.Controllers
             user.IsAdmin = "false";
             user.ResetPasswordToken = "";
             user.ResetPasswordExpiry = null;
+            user.IsPasswordChanged = true;
+            user.LastPasswordChangeDate = DateTime.Now;
 
             if (ProfilePicture != null && ProfilePicture.Length > 0)
             {
@@ -222,7 +228,6 @@ namespace webchat.Controllers
                 Response.Cookies.Append("UserId", userStep2.Id.ToString(), cookieOptions);
                 Response.Cookies.Append("Username", userStep2.Username, cookieOptions);
 
-                
                 SendWelcomeEmail(userStep2.Email, userStep2.Username);
 
                 return RedirectToAction("Cooky", "Home");

@@ -8,6 +8,12 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddDbContext<ChatDbcontect>(options => options.UseSqlServer
 (builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<PasswordReminderService>();
+builder.Services.AddHostedService<PasswordReminderBackgroundService>();
+builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<DbInitializer>();
+
+
 builder.Services.AddReCaptcha(builder.Configuration.GetSection("ReCaptcha"));
 
 builder.Services.AddSession(options =>
@@ -27,6 +33,12 @@ builder.Services.AddSignalR();
 
 builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+    dbInitializer.Initialize();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

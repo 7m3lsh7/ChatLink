@@ -9,6 +9,7 @@ using MimeKit;
 using System;
 using Microsoft.Extensions.Configuration;
 using System.Text.RegularExpressions;
+using BCrypt.Net;
 
 namespace webchat.Controllers
 {
@@ -16,6 +17,7 @@ namespace webchat.Controllers
     {
         private readonly ChatDbcontect _chatDbcontect;
         private readonly IConfiguration _configuration;
+        private object _chatDbContext;
 
         public LoginController(ChatDbcontect chatDbcontect, IConfiguration configuration)
         {
@@ -55,7 +57,7 @@ namespace webchat.Controllers
 
             var dbUser = await _chatDbcontect.users.FirstOrDefaultAsync(u => u.Email == user.Email);
 
-            if (dbUser == null || user.PasswordHash != dbUser.PasswordHash)
+            if (dbUser == null || !BCrypt.Net.BCrypt.Verify(user.PasswordHash, dbUser.PasswordHash))
             {
                 ViewBag.Message = "Incorrect email or password.";
                 return View("Index");
@@ -65,6 +67,13 @@ namespace webchat.Controllers
             {
                 ViewBag.Message = "Password must include both letters and numbers and be at least 9 characters long.";
                 return View("Index");
+            }
+
+            // Check if the user needs to change the password
+            if (dbUser.IsPasswordChanged == false)
+            {
+                // Redirect to the page where the user can change the password
+                return RedirectToAction("ChangePassword", "Login", new { userId = dbUser.Id });
             }
 
             var cookieOptions = new CookieOptions
@@ -84,6 +93,7 @@ namespace webchat.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
 
         private async Task SendLoginNotificationAsync(string email, string username)
         {
@@ -230,8 +240,9 @@ namespace webchat.Controllers
                 return RedirectToAction("ForgotPassword");
             }
 
-            user.PasswordHash = newPassword;
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword); // Hashing new password before saving
             user.ResetPasswordExpiry = null;
+            user.LastPasswordChangeDate = DateTime.Now;
             _chatDbcontect.SaveChanges();
 
             ViewBag.Message = "Password reset successfully.";
@@ -307,5 +318,65 @@ namespace webchat.Controllers
             }
             return RedirectToAction("ViewUser", "Login");
         }
-    }
+
+        public async Task<IActionResult> ChangePassword(int userId)
+        {
+            var user = await _chatDbcontect.users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+            {
+                ViewBag.Message = "User not found.";
+                return View("Index");
+            }
+
+            return View(user); 
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(int userId, string oldPassword, string newPassword, string confirmPassword)
+        {
+            var user = await _chatDbcontect.users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+            {
+                ViewBag.Message = "User not found.";
+                return View("Index");
+            }
+
+            // Validate old password
+            if (!BCrypt.Net.BCrypt.Verify(oldPassword, user.PasswordHash))
+            {
+                ViewBag.Message = "Old password is incorrect.";
+                return View(user);
+            }
+
+            // Validate new password and confirm password
+            if (newPassword != confirmPassword)
+            {
+                ViewBag.Message = "New password and confirmation do not match.";
+                return View(user);
+            }
+
+            // Validate password strength
+            if (!Regex.IsMatch(newPassword, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{9,}$"))
+            {
+                ViewBag.Message = "Password must include both letters and numbers and be at least 9 characters long.";
+                return View(user);
+            }
+
+            // Hash the new password
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(newPassword);
+
+            // Update the password in the database
+            user.PasswordHash = hashedPassword;
+            user.IsPasswordChanged = true; // Update the IsPasswordChanged field
+            user.LastPasswordChangeDate = DateTime.Now;
+            // Save changes to the database
+            _chatDbcontect.users.Update(user);
+            await _chatDbcontect.SaveChangesAsync();
+
+            ViewBag.Message = "Password updated successfully.";
+            return RedirectToAction("Index", "Home");
+        }
+}
+
 }
