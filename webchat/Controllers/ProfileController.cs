@@ -4,6 +4,7 @@ using webchat.data;
 using webchat.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace webchat.Controllers
 {
@@ -161,6 +162,70 @@ namespace webchat.Controllers
                 return RedirectToAction("Index");
             }
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            ViewData["HideNavbar"] = true;
+            ViewData["HideFooter"] = true;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(string oldPassword, string newPassword, string confirmPassword)
+        {
+            ViewData["HideNavbar"] = true;
+            ViewData["HideFooter"] = true;
+
+            var userId = int.Parse(Request.Cookies["UserId"]);
+            var user = await _chatDbcontect.users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            bool isOldPasswordValid = false;
+
+            if (user.PasswordHash.StartsWith("$2a$") || user.PasswordHash.StartsWith("$2b$") || user.PasswordHash.StartsWith("$2y$"))
+            {
+                isOldPasswordValid = BCrypt.Net.BCrypt.Verify(oldPassword, user.PasswordHash);
+            }
+            else
+            {
+                isOldPasswordValid = oldPassword == user.PasswordHash;
+            }
+
+            if (!isOldPasswordValid)
+            {
+                ViewBag.Message = "Old password is incorrect.";
+                return View();
+            }
+
+            if (newPassword != confirmPassword)
+            {
+                ViewBag.Message = "New password and confirmation do not match.";
+                return View();
+            }
+
+            if (!Regex.IsMatch(newPassword, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{9,}$"))
+            {
+                ViewBag.Message = "Password must include both letters and numbers and be at least 9 characters long.";
+                return View();
+            }
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            user.IsPasswordChanged = true;
+            user.LastPasswordChangeDate = DateTime.Now; 
+
+            _chatDbcontect.users.Update(user);
+            await _chatDbcontect.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Password updated successfully.";
+            return RedirectToAction("Index", "Home");
         }
     }
 }

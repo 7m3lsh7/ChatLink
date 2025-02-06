@@ -89,6 +89,9 @@
                         }
                     </p>
                     <a class="btn btn-primary mb-3" href="@Url.Action("AddEmail", "Profile", new { id = Model.Id })">Add Your New Email</a>
+                    <a class="btn btn-warning mb-3" href="@Url.Action("ChangePassword", "Profile", new { id = Model.Id })">
+                        <i class="fas fa-lock"></i> Change Password
+                    </a>
                 </div>
 
             </form>

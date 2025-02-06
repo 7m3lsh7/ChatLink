@@ -78,11 +78,6 @@ namespace webchat.Controllers
                 return View("Index");
             }
 
-            if (dbUser.IsPasswordChanged == false)
-            {
-                return RedirectToAction("ChangePassword", "Login", new { userId = dbUser.Id });
-            }
-
             var cookieOptions = new CookieOptions
             {
                 Expires = DateTime.Now.AddDays(7),
@@ -326,66 +321,6 @@ namespace webchat.Controllers
                 _chatDbcontect.SaveChanges();
             }
             return RedirectToAction("ViewUser", "Login");
-        }
-
-        public async Task<IActionResult> ChangePassword(int userId)
-        {
-            ViewData["HideNavbar"] = true;
-            ViewData["HideFooter"] = true;
-            var user = await _chatDbcontect.users.FirstOrDefaultAsync(u => u.Id == userId);
-            if (user == null)
-            {
-                ViewBag.Message = "User not found.";
-                return View("Index");
-            }
-
-            return View(user); 
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword(int userId, string oldPassword, string newPassword, string confirmPassword)
-        {
-            var user = await _chatDbcontect.users.FirstOrDefaultAsync(u => u.Id == userId);
-            if (user == null)
-            {
-                ViewBag.Message = "User not found.";
-                return View("Index");
-            }
-
-            if (oldPassword != user.PasswordHash)
-            {
-                ViewBag.Message = "Old password is incorrect.";
-                return View(user);
-            }
-
-            // Validate new password and confirm password
-            if (newPassword != confirmPassword)
-            {
-                ViewBag.Message = "New password and confirmation do not match.";
-                return View(user);
-            }
-
-            // Validate password strength
-            if (!Regex.IsMatch(newPassword, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{9,}$"))
-            {
-                ViewBag.Message = "Password must include both letters and numbers and be at least 9 characters long.";
-                return View(user);
-            }
-
-            // Hash the new password
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(newPassword);
-
-            // Update the password in the database
-            user.PasswordHash = hashedPassword;
-            user.IsPasswordChanged = true; // Update the IsPasswordChanged field
-            user.LastPasswordChangeDate = DateTime.Now;
-            // Save changes to the database
-            _chatDbcontect.users.Update(user);
-            await _chatDbcontect.SaveChangesAsync();
-
-            ViewBag.Message = "Password updated successfully.";
-            return RedirectToAction("Index", "Home");
         }
 }
 
