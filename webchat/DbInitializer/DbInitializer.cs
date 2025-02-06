@@ -11,22 +11,19 @@ public class DbInitializer
         _chatDbContext = chatDbContext;
     }
 
-    // هذه الدالة ستقوم بتحديث المستخدمين القدامى الذين لم يغيروا كلمة المرور
     public void Initialize()
     {
-        // تحديث المستخدمين الذين لم يتم تغيير كلمة المرور لديهم
         var usersToUpdate = _chatDbContext.users 
             .Where(u => u.IsPasswordChanged == false && u.LastPasswordChangeDate == null)
             .ToList();
 
         foreach (var user in usersToUpdate)
         {
-            user.IsPasswordChanged = false; // تعيين IsPasswordChanged لـ false للمستخدمين القدامى
-            user.LastPasswordChangeDate = null; // تعيين LastPasswordChangeDate إلى null للمستخدمين القدامى
+            user.IsPasswordChanged = false; 
+            user.LastPasswordChangeDate = null;
             _chatDbContext.users.Update(user);
         }
 
-        // حفظ التحديثات في قاعدة البيانات
         _chatDbContext.SaveChanges();
     }
 }
