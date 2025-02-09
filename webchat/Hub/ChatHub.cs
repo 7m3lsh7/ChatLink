@@ -21,38 +21,41 @@ public class ChatHub : Hub
     private static Dictionary<int, string> _userConnections = new Dictionary<int, string>();
 
     // Method to handle sending a message from the sender to the receiver
-    public async Task SendMessage(int SenderId, int ReceiverId, string Content)
+    public async Task SendMessage(int SenderId, string Content)
     {
-        // Creating a new Chat message object to store in the database
+        var receiverId = Context.GetHttpContext()?.Session.GetInt32("ReceiverId"); 
+
+        if (receiverId == null)
+        {
+            await Clients.User(SenderId.ToString()).SendAsync("ErrorMessage", "Receiver not found.");
+            return;
+        }
+
         var newMessage = new Chat
         {
             SenderId = SenderId,
-            ReceiverId = ReceiverId,
+            ReceiverId = receiverId.Value,
             Content = Content,
-            Timestamp = DateTime.UtcNow  // Set the timestamp of when the message was sent
+            Timestamp = DateTime.UtcNow
         };
 
-        // Add the new message to the database
         _context.chats.Add(newMessage);
-        await _context.SaveChangesAsync();  // Save changes to the database
+        await _context.SaveChangesAsync();
 
-        // Check if the receiver is currently online (has an active connection)
-        var connectionId = _userConnections.ContainsKey(ReceiverId) ? _userConnections[ReceiverId] : null;
+        var connectionId = _userConnections.ContainsKey(receiverId.Value) ? _userConnections[receiverId.Value] : null;
 
         if (connectionId != null)
         {
-            // If the receiver is online, send the message to them via SignalR
             await Clients.Client(connectionId).SendAsync("ReceiveMessage", SenderId, Content);
         }
         else
         {
-            // If the receiver is offline, send an email notification
-            await SendEmailNotification(ReceiverId, Content);
+            await SendEmailNotification(receiverId.Value, Content);
         }
 
-        // Inform the sender that their message was successfully sent
         await Clients.User(SenderId.ToString()).SendAsync("MessageSent", Content);
     }
+
 
     // Override method that is called when a user connects to the SignalR hub
     public override Task OnConnectedAsync()

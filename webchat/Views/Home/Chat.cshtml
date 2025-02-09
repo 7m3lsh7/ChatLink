@@ -13,8 +13,11 @@
                 {
                     foreach (var user in users)
                     {
+                        <form id="chatForm-@user.Id" action="@Url.Action("chat", "Home")" method="post" style="display: none;">
+                            <input type="hidden" name="receiverId" value="@user.Id" />
+                        </form>
                         <!-- الرابط يغلف كامل العنصر لتمكين النقر في أي مكان -->
-                        <a href="@Url.Action("chat", "Home", new { receiverId = user.Id })" class="message-link">
+                        <a href="#" class="message-link" onclick="document.getElementById('chatForm-@user.Id').submit(); return false;">
                             <div class="message-item">
                                 <img src="@user.ProfilePicture" alt="User">
                                 <div class="text-white">
@@ -27,14 +30,13 @@
                                         .OrderByDescending(m => m.Timestamp)
                                         .FirstOrDefault();
 
-                                        if (lastMessage != null)
-                                        {
-                                            <div class="message-content">@lastMessage.Content</div>
-                                        }
-                                        else
-                                        {
-                                            <div>No messages yet</div>
-                                        }
+                                       
+                                            if (lastMessage != null)
+                                            {
+                                                <div class="message-content">@lastMessage.Content</div>
+                                            }
+                                       
+                                       
                                     }
                                 </div>
                             </div>
@@ -88,8 +90,8 @@
                     <input id="receiverId" type="hidden" value="@ViewBag.ReceiverId" />
 
 
-                <textarea id="messageInput" placeholder="Type a message"></textarea>
-                <button id="sendButton">Send</button>
+                    <textarea id="messageInput" placeholder="Type a message"></textarea>
+                    <button id="sendButton">Send</button>
                 </div>
             </div>
         

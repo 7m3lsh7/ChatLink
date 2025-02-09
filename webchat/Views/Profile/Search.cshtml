@@ -16,7 +16,9 @@
             {
                 <li class="user-item">
                     <span class="user-name">@user.Username</span>
-                    <a href="/Home/Chat?receiverId=@user.Id" class="chat-link">Start Chat</a>
+                            <form action="/Home/Chat" method="POST"><input type="hidden" name="receiverId" value="@user.Id"><button class="chat-link" type="submit">Start Chat</button></form>
+
+                    @* <a href="/Home/Chat?receiverId=@user.Id" class="chat-link">Start Chat</a> *@
                 </li>
             }
         }

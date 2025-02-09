@@ -63,13 +63,13 @@ namespace webchat.Controllers
         }
 
         // Action method to handle the chat page between users
-        public IActionResult Chat(int receiverId)
+        public IActionResult Chat( int receiverId)
         {
             ViewData["HideFooter"] = true;
             ViewData["HideClock"] = true;
             ViewBag.ReceiverId = receiverId;
                  
-            
+                HttpContext.Session.SetInt32("ReceiverId", receiverId); 
             var userIdCookie = Request.Cookies["UserId"];
             ViewData["UserID"] = userIdCookie;
 
@@ -96,7 +96,7 @@ namespace webchat.Controllers
                         .Where(c => c.SenderId == userId || c.ReceiverId == userId)
                         .OrderByDescending(c => c.Timestamp)
                         .ToList();
-
+                    ViewData["AllMessages"] =allMessages  ;
                     var uniqueUsers = allMessages
                         .Select(m => m.SenderId == userId ? m.ReceiverId : m.SenderId)
                         .Distinct()
