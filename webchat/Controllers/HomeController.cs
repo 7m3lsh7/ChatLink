@@ -69,8 +69,7 @@ namespace webchat.Controllers
             ViewData["HideClock"] = true;
             ViewBag.ReceiverId = receiverId;
                  
-                HttpContext.Session.SetInt32("ReceiverId", receiverId); 
-            var userIdCookie = Request.Cookies["UserId"];
+             var userIdCookie = Request.Cookies["UserId"];
             ViewData["UserID"] = userIdCookie;
 
             if (!string.IsNullOrEmpty(userIdCookie) && int.TryParse(userIdCookie, out int userId))

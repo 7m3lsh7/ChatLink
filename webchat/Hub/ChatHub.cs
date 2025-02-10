@@ -21,20 +21,15 @@ public class ChatHub : Hub
     private static Dictionary<int, string> _userConnections = new Dictionary<int, string>();
 
     // Method to handle sending a message from the sender to the receiver
-    public async Task SendMessage(int SenderId, string Content)
+    public async Task SendMessage(int SenderId,int receiverId, string Content)
     {
-        var receiverId = Context.GetHttpContext()?.Session.GetInt32("ReceiverId"); 
 
-        if (receiverId == null)
-        {
-            await Clients.User(SenderId.ToString()).SendAsync("ErrorMessage", "Receiver not found.");
-            return;
-        }
+     
 
         var newMessage = new Chat
         {
             SenderId = SenderId,
-            ReceiverId = receiverId.Value,
+            ReceiverId = receiverId,
             Content = Content,
             Timestamp = DateTime.UtcNow
         };
@@ -42,7 +37,7 @@ public class ChatHub : Hub
         _context.chats.Add(newMessage);
         await _context.SaveChangesAsync();
 
-        var connectionId = _userConnections.ContainsKey(receiverId.Value) ? _userConnections[receiverId.Value] : null;
+        var connectionId = _userConnections.ContainsKey(receiverId) ? _userConnections[receiverId] : null;
 
         if (connectionId != null)
         {
@@ -50,7 +45,7 @@ public class ChatHub : Hub
         }
         else
         {
-            await SendEmailNotification(receiverId.Value, Content);
+            await SendEmailNotification(receiverId, Content);
         }
 
         await Clients.User(SenderId.ToString()).SendAsync("MessageSent", Content);
