@@ -65,7 +65,7 @@ app.MapHub<ChatHub>("/ChatHub");
 
 app.UseExceptionHandler("/Error/500");
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
-app.UseHsts();
+
 
 
 app.MapControllerRoute(
