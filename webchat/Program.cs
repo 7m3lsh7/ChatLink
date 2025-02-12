@@ -16,6 +16,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<DbInitializer>();
 
+builder.Services.AddDataProtection();
 
 builder.Services.AddReCaptcha(builder.Configuration.GetSection("ReCaptcha"));
 
@@ -30,6 +31,8 @@ builder.Services.AddHttpsRedirection(options =>
 {
     options.HttpsPort = 443;  
 });
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();

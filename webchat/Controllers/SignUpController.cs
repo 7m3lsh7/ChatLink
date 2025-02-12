@@ -9,16 +9,20 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Mail;
 using AspNetCore.ReCaptcha;
 using BCrypt.Net;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace webchat.Controllers
 {
     public class SignUpController : Controller
     {
         private readonly ChatDbcontect _chatDbContext;
+        private readonly IDataProtector _protector;
 
-        public SignUpController(ChatDbcontect chatDbContext)
+
+        public SignUpController(ChatDbcontect chatDbContext, IDataProtectionProvider provider)
         {
             _chatDbContext = chatDbContext;
+            _protector = provider.CreateProtector("CookieProtection");
         }
 
         private string GenerateVerificationCode()
@@ -192,7 +196,6 @@ namespace webchat.Controllers
             ViewData["HideFooter"] = true;
             return View();
         }
-
         [HttpPost]
         [ValidateReCaptcha]
         public IActionResult VerifyEmail(string code)
@@ -225,8 +228,11 @@ namespace webchat.Controllers
                     IsEssential = true
                 };
 
-                Response.Cookies.Append("UserId", userStep2.Id.ToString(), cookieOptions);
-                Response.Cookies.Append("Username", userStep2.Username, cookieOptions);
+                var encryptedUserId = _protector.Protect(userStep2.Id.ToString());
+                var encryptedUsername = _protector.Protect(userStep2.Username);
+
+                Response.Cookies.Append("p9q8r7s6_t34w2x1", encryptedUserId, cookieOptions);
+                Response.Cookies.Append("Zebra77", encryptedUsername, cookieOptions);
 
                 SendWelcomeEmail(userStep2.Email, userStep2.Username);
 

@@ -3,43 +3,62 @@ using webchat.data;
 using webchat.Models;
 using System.Net.Mail;
 using System.Net;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace webchat.Controllers
 {
     public class ContactUs : Controller
     {
         private readonly ChatDbcontect _chatDbcontect;
+        private readonly IDataProtector _protector;
 
-        public ContactUs(ChatDbcontect chatDbcontect)
+
+        public ContactUs(ChatDbcontect chatDbcontect, IDataProtectionProvider provider)
         {
             _chatDbcontect = chatDbcontect;
+            _protector = provider.CreateProtector("CookieProtection");
+
         }
 
         public IActionResult Index()
         {
             HttpContext.Session.SetString("ContactUs", "Index");
 
-            var userIdCookie = Request.Cookies["UserId"];
-            ViewData["UserID"] = userIdCookie;
+            var cookieName = "p9q8r7s6_t34w2x1";
 
-            if (userIdCookie != null)
+            var encryptedUserId = Request.Cookies[cookieName];
+            ViewData["UserID"] = encryptedUserId;
+
+            if (!string.IsNullOrEmpty(encryptedUserId))
             {
-                var userId = int.Parse(userIdCookie);
-
-                var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
-
-                if (user != null)
+                try
                 {
-                    ViewData["time"] = user.TimeZone;
-                    ViewData["nickname"] = user.NickName;
-                    ViewData["Photo"] = user.ProfilePicture;
+                    var protector = _protector.CreateProtector("UserIdProtector");
+                    var decryptedUserId = protector.Unprotect(encryptedUserId);
 
-                    return View(new ContactModel());
+                    if (int.TryParse(decryptedUserId, out int userId))
+                    {
+                        var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
+
+                        if (user != null)
+                        {
+                            ViewData["time"] = user.TimeZone;
+                            ViewData["nickname"] = user.NickName;
+                            ViewData["Photo"] = user.ProfilePicture;
+
+                            return View(new ContactModel());
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error decrypting UserId cookie: {ex.Message}");
                 }
             }
 
             return RedirectToAction("Index", "Login");
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -47,19 +66,33 @@ namespace webchat.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var userIdCookie = Request.Cookies["UserId"];
-                ViewData["UserID"] = userIdCookie;
+                var cookieName = "p9q8r7s6_t34w2x1";
 
-                if (userIdCookie != null)
+                var encryptedUserId = Request.Cookies[cookieName];
+                ViewData["UserID"] = encryptedUserId;
+
+                if (!string.IsNullOrEmpty(encryptedUserId))
                 {
-                    var userId = int.Parse(userIdCookie);
-                    var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
-
-                    if (user != null)
+                    try
                     {
-                        ViewData["time"] = user.TimeZone;
-                        ViewData["nickname"] = user.NickName;
-                        ViewData["Photo"] = user.ProfilePicture;
+                        var protector = _protector.CreateProtector("UserIdProtector");
+                        var decryptedUserId = protector.Unprotect(encryptedUserId);
+
+                        if (int.TryParse(decryptedUserId, out int userId))
+                        {
+                            var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
+
+                            if (user != null)
+                            {
+                                ViewData["time"] = user.TimeZone;
+                                ViewData["nickname"] = user.NickName;
+                                ViewData["Photo"] = user.ProfilePicture;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error decrypting UserId cookie: {ex.Message}");
                     }
                 }
 
@@ -73,6 +106,7 @@ namespace webchat.Controllers
 
             return RedirectToAction("ThankYou");
         }
+
 
         public IActionResult ThankYou()
         {

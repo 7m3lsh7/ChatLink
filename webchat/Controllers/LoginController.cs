@@ -10,6 +10,7 @@ using System;
 using Microsoft.Extensions.Configuration;
 using System.Text.RegularExpressions;
 using BCrypt.Net;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace webchat.Controllers
 {
@@ -17,11 +18,14 @@ namespace webchat.Controllers
     {
         private readonly ChatDbcontect _chatDbcontect;
         private readonly IConfiguration _configuration;
+        private readonly IDataProtector _protector;
 
-        public LoginController(ChatDbcontect chatDbcontect, IConfiguration configuration)
+
+        public LoginController(ChatDbcontect chatDbcontect, IConfiguration configuration,IDataProtectionProvider provider)
         {
             _chatDbcontect = chatDbcontect;
             _configuration = configuration;
+            _protector = provider.CreateProtector("CookieProtection");
         }
 
         public IActionResult Index()
@@ -29,8 +33,26 @@ namespace webchat.Controllers
             ViewData["HideNavbar"] = true;
             ViewData["HideFooter"] = true;
 
-            var userIdCookie = Request.Cookies["UserId"];
-            if (!string.IsNullOrEmpty(userIdCookie) && int.TryParse(userIdCookie, out int userId))
+            var userIdCookieName = "p9q8r7s6_t34w2x1";
+
+            var encryptedUserId = Request.Cookies[userIdCookieName];
+
+            string decryptedUserId = null;
+
+            try
+            {
+                var protector = _protector.CreateProtector("UserIdProtector");
+                if (!string.IsNullOrEmpty(encryptedUserId))
+                {
+                    decryptedUserId = protector.Unprotect(encryptedUserId);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error decrypting UserId cookie: {ex.Message}");
+            }
+
+            if (!string.IsNullOrEmpty(decryptedUserId) && int.TryParse(decryptedUserId, out int userId))
             {
                 var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
                 if (user != null)
@@ -38,8 +60,14 @@ namespace webchat.Controllers
                     return RedirectToAction("Index", "Home");
                 }
             }
+            else
+            {
+                Console.WriteLine($"Invalid or missing UserId cookie: {decryptedUserId}");
+            }
+
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Check(User user)
@@ -78,23 +106,35 @@ namespace webchat.Controllers
                 return View("Index");
             }
 
+            var userIdProtector = _protector.CreateProtector("UserIdProtector");
+            var isAdminProtector = _protector.CreateProtector("IsAdminProtector");
+
+            var encryptedUserId = userIdProtector.Protect(dbUser.Id.ToString());
+            var encryptedIsAdmin = isAdminProtector.Protect(dbUser.IsAdmin.ToString());
+
+            var userIdCookieName = "p9q8r7s6_t34w2x1";
+            var isAdminCookieName = "m3n2b1_a0q9w8";
+
             var cookieOptions = new CookieOptions
             {
                 Expires = DateTime.Now.AddDays(7),
                 HttpOnly = true
             };
 
-            Response.Cookies.Append("UserId", dbUser.Id.ToString(), cookieOptions);
-            Response.Cookies.Append("IsAdmin", dbUser.IsAdmin.ToString(), new CookieOptions
+            Response.Cookies.Append(userIdCookieName, encryptedUserId, cookieOptions);
+            Response.Cookies.Append(isAdminCookieName, encryptedIsAdmin, new CookieOptions
             {
                 HttpOnly = true,
-                Expires = DateTimeOffset.Now.AddHours(1)
+                Secure = true, 
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTimeOffset.Now.AddHours(1),
             });
 
             await SendLoginNotificationAsync(dbUser.Email, dbUser.Username);
 
             return RedirectToAction("Index", "Home");
         }
+
 
 
         private async Task SendLoginNotificationAsync(string email, string username)
@@ -242,10 +282,10 @@ namespace webchat.Controllers
                 return RedirectToAction("ForgotPassword");
             }
 
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword); // Hashing new password before saving
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword); 
 
             user.ResetPasswordExpiry = null;
-            user.IsPasswordChanged = true; // Update the IsPasswordChanged field
+            user.IsPasswordChanged = true;
             user.LastPasswordChangeDate = DateTime.Now;
             _chatDbcontect.SaveChanges();
 
@@ -277,26 +317,39 @@ namespace webchat.Controllers
             }
         }
 
-        public IActionResult ViewUser()
+         public IActionResult ViewUser()
         {
-            var userIdCookie = Request.Cookies["UserId"];
-            ViewData["UserID"] = userIdCookie;
+            var cookieName = "p9q8r7s6_t34w2x1";
+            var encryptedUserId = Request.Cookies[cookieName];
 
-            if (!string.IsNullOrEmpty(userIdCookie) && int.TryParse(userIdCookie, out int userId))
+            if (!string.IsNullOrEmpty(encryptedUserId))
             {
-                var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
-
-                if (user != null)
+                try
                 {
-                    ViewData["time"] = user.TimeZone;
-                    ViewData["nickname"] = user.NickName;
-                    ViewData["Photo"] = user.ProfilePicture;
-                    ViewData["Admin"] = user.IsAdmin;
+                    var protector = _protector.CreateProtector("UserIdProtector");
+                    var decryptedUserId = protector.Unprotect(encryptedUserId);
+
+                    if (int.TryParse(decryptedUserId, out int userId))
+                    {
+                        var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
+
+                        if (user != null)
+                        {
+                            ViewData["time"] = user.TimeZone;
+                            ViewData["nickname"] = user.NickName;
+                            ViewData["Photo"] = user.ProfilePicture;
+                            ViewData["Admin"] = user.IsAdmin;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error decrypting UserId cookie: {ex.Message}");
                 }
             }
             else
             {
-                Console.WriteLine($"Invalid or missing UserId cookie: {userIdCookie}");
+                Console.WriteLine($"Invalid or missing UserId cookie: {encryptedUserId}");
             }
 
             var isAdminCookie = Request.Cookies["IsAdmin"];
@@ -311,6 +364,7 @@ namespace webchat.Controllers
             var response = _chatDbcontect.users.ToList();
             return View(response);
         }
+
 
         public IActionResult Delete(int id)
         {
