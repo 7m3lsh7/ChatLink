@@ -1,6 +1,6 @@
 # ChatLink
 
-![ChatLink Logo] (https://chatlink.runasp.net/images/webchat-high-resolution-logo%20(1).png)
+![ChatLink Logo](https://chatlink.runasp.net/images/webchat-high-resolution-logo%20(1).png)
 
 ## 🚀 About the Project
 ChatLink is a modern real-time messaging platform similar to WhatsApp, built with **ASP.NET Core** and **SQL Server**. It allows users to send instant messages, share images and files, and ensures high-level security for user accounts.
