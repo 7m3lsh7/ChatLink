@@ -32,7 +32,7 @@ cd m3lsh
 
 ## 👥 Contributors
 - **[Felopater Remon]** 
-- **[Abdulrhman Mahmod]** 
+- **[Abdulrahman Mahmoud]** 
 
 
 ## 📷 Screenshots
