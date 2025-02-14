@@ -317,10 +317,13 @@ namespace webchat.Controllers
             }
         }
 
-         public IActionResult ViewUser()
+        public IActionResult ViewUser()
         {
-            var cookieName = "p9q8r7s6_t34w2x1";
-            var encryptedUserId = Request.Cookies[cookieName];
+            var userIdCookieName = "p9q8r7s6_t34w2x1";
+            var isAdminCookieName = "m3n2b1_a0q9w8";
+
+            var encryptedUserId = Request.Cookies[userIdCookieName];
+            var encryptedIsAdmin = Request.Cookies[isAdminCookieName];
 
             if (!string.IsNullOrEmpty(encryptedUserId))
             {
@@ -352,20 +355,36 @@ namespace webchat.Controllers
                 Console.WriteLine($"Invalid or missing UserId cookie: {encryptedUserId}");
             }
 
-            var isAdminCookie = Request.Cookies["IsAdmin"];
-            if (string.IsNullOrEmpty(isAdminCookie) ||
-                !isAdminCookie.Trim().Equals("true", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(encryptedIsAdmin))
+            {
+                try
+                {
+                    var isAdminProtector = _protector.CreateProtector("IsAdminProtector");
+                    var decryptedIsAdmin = isAdminProtector.Unprotect(encryptedIsAdmin);
+
+                    if (decryptedIsAdmin.Equals("True", StringComparison.OrdinalIgnoreCase))
+                    {
+                        ViewData["IsAdmin"] = "True";
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Login");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error decrypting IsAdmin cookie: {ex.Message}");
+                    return RedirectToAction("Index", "Login");
+                }
+            }
+            else
             {
                 return RedirectToAction("Index", "Login");
             }
 
-            ViewData["IsAdmin"] = isAdminCookie;
-
             var response = _chatDbcontect.users.ToList();
             return View(response);
         }
-
-
         public IActionResult Delete(int id)
         {
             var user = _chatDbcontect.users.Find(id);
