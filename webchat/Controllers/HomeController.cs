@@ -12,8 +12,7 @@ namespace webchat.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly IDataProtector _protector;
 
-        public HomeController(ChatDbcontect chatDbcontect ,IDataProtectionProvider provider)
-        public HomeController(ChatDbcontect chatDbcontect , IWebHostEnvironment env)
+        public HomeController(ChatDbcontect chatDbcontect , IWebHostEnvironment env, IDataProtectionProvider provider)
         {
             _chatDbcontect = chatDbcontect;
             _env = env;
