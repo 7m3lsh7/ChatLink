@@ -13,7 +13,52 @@
     --input-border-color: #BDBDBD;
     --color: #3B1868;
 }
- 
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: -300px; /* يبدأ خارج الشاشة */
+    background: linear-gradient(135deg, #ff6f61, #ff3c3c);
+    color: white;
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.5s ease-in-out forwards, fadeOut 0.5s ease-out 3s forwards;
+}
+
+    .notification i {
+        font-size: 22px;
+    }
+
+@keyframes slideIn {
+    from {
+        right: -300px;
+        opacity: 0;
+    }
+
+    to {
+        right: 20px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        right: 20px;
+        opacity: 1;
+    }
+
+    to {
+        right: -300px;
+        opacity: 0;
+    }
+}
+
 body {
     background: var(--background-gradient);
      color: #FFF;

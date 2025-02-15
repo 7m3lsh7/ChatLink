@@ -27,8 +27,6 @@ public class ChatHub : Hub
         {
             Console.WriteLine($"[INFO] SendMessage received - SenderId: {SenderId}, ReceiverId: {ReceiverId}, Content: '{Content}', MessageType: '{messageType}'");
 
-            Console.WriteLine($"[INFO] SendMessage called with SenderId: {SenderId}, ReceiverId: {ReceiverId}, Content: {Content}, MessageType: {messageType}");
-
             var newMessage = new Chat
             {
                 SenderId = SenderId,
@@ -48,6 +46,7 @@ public class ChatHub : Hub
             {
                 Console.WriteLine($"[INFO] Sending message to receiver {ReceiverId}");
                 await Clients.Client(connectionId).SendAsync("ReceiveMessage", SenderId, Content, messageType);
+                await Clients.Client(connectionId).SendAsync("ReceiveNotification", SenderId, "New message received");
                 Console.WriteLine("[INFO] Message sent to receiver successfully.");
             }
             else
@@ -66,11 +65,6 @@ public class ChatHub : Hub
             throw;
         }
     }
-
-
-
-    // Override method that is called when a user connects to the SignalR hub
-
 
     public override Task OnConnectedAsync()
     {
@@ -100,14 +94,12 @@ public class ChatHub : Hub
         return base.OnDisconnectedAsync(exception);
     }
 
-    // Method to send an email notification to the receiver if they are offline
     private async Task SendEmailNotification(int receiverId, string message)
     {
         try
         {
-            // Get the receiver's email from the database based on their user ID
             var receiverEmail = GetUserEmail(receiverId);
-            var subject = "📩 You have a new message waiting for you!"; // Email subject
+            var subject = "📩 You have a new message waiting for you!";
             var body = $@"
                         Hello,
 
@@ -125,9 +117,8 @@ public class ChatHub : Hub
                         Best Regards,  
                         The ChatLink Team 🚀  
                         https://chatlink.runasp.net/Home/Index
-                    "; // Email body content
+                    ";
 
-            // Retrieve SMTP settings from configuration
             var smtpHost = _configuration["SmtpSettings:Host"];
             var smtpPort = int.Parse(_configuration["SmtpSettings:Port"]);
             var smtpUserName = _configuration["SmtpSettings:UserName"];
@@ -135,7 +126,6 @@ public class ChatHub : Hub
             var smtpFrom = _configuration["SmtpSettings:From"];
             var enableSsl = bool.Parse(_configuration["SmtpSettings:EnableSsl"]);
 
-            // Configure the SMTP client to send the email
             var smtpClient = new SmtpClient(smtpHost)
             {
                 Port = smtpPort,
@@ -143,35 +133,28 @@ public class ChatHub : Hub
                 EnableSsl = enableSsl
             };
 
-            // Create and configure the email message
             var mailMessage = new MailMessage
             {
                 From = new MailAddress(smtpFrom),
                 Subject = subject,
                 Body = body,
-                IsBodyHtml = false  // Set to false for plain text email
+                IsBodyHtml = false
             };
 
-            mailMessage.To.Add(receiverEmail);  // Add the receiver's email address
+            mailMessage.To.Add(receiverEmail);
 
-            // Send the email asynchronously
             await smtpClient.SendMailAsync(mailMessage);
-
-            Console.WriteLine("Email sent successfully");  // Log successful email sending
+            Console.WriteLine("Email sent successfully");
         }
         catch (Exception ex)
         {
-            // Log any error that occurs while sending the email
             Console.WriteLine($"Error sending email: {ex.Message}");
         }
     }
 
-    // Method to retrieve the email address of a user based on their userId
     private string GetUserEmail(int userId)
     {
-        var user = _context.users.FirstOrDefault(u => u.Id == userId);  // Find the user by their ID
-
-        // Return the user's email if found, or a default email if not found
+        var user = _context.users.FirstOrDefault(u => u.Id == userId);
         return user?.Email ?? "default@example.com";
     }
 }

@@ -291,32 +291,57 @@
         return relativePath;
     }
 
-    connection.on("ReceiveMessage", (senderId, message, messageType) => {
+      connection.on("ReceiveMessage", (senderId, message, messageType) => {
         const currentReceiverId = parseInt(document.getElementById("receiverId").value);
+        let chatContainer = document.getElementById("chatContainer");
 
-        if (senderId === currentReceiverId) {
-            let messageDiv = document.createElement("div");
-            messageDiv.className = "message received";
+        let messageDiv = document.createElement("div");
+        messageDiv.className = "message received";
+        let messageUrl = getFullUrl(message);
 
-            let messageUrl = getFullUrl(message);
-
-            if (messageType === "file") {
-                if (messageUrl.match(/\.(jpeg|jpg|gif|png|bmp|webp)$/i)) {
-                    messageDiv.innerHTML = `<a href="${messageUrl}" target="_blank">
-                                                <img src="${messageUrl}" class="chat-image" alt="Received Image"
-                                                     style="width: 200px; height: auto; border-radius: 8px;"/>
-                                            </a>`;
-                } else {
-                    messageDiv.innerHTML = `<a href="${messageUrl}" target="_blank" class="chat-file">📂 Download File</a>`;
-                }
+        if (messageType === "file") {
+            if (messageUrl.match(/\.(jpeg|jpg|gif|png|bmp|webp)$/i)) {
+                messageDiv.innerHTML = `<a href="${messageUrl}" target="_blank">
+                                            <img src="${messageUrl}" class="chat-image" alt="Received Image"
+                                                 style="width: 200px; height: auto; border-radius: 8px;"/>
+                                        </a>`;
             } else {
-                messageDiv.innerHTML = `<div class="bubble">${message}</div>`;
+                messageDiv.innerHTML = `<a href="${messageUrl}" target="_blank" class="chat-file">📂 Download File</a>`;
             }
+        } else {
+            messageDiv.innerHTML = `<div class="bubble">${message}</div>`;
+        }
 
-            document.getElementById("chatContainer").appendChild(messageDiv);
-            document.getElementById("chatContainer").scrollTop = document.getElementById("chatContainer").scrollHeight;
+        // تحقق مما إذا كان المستخدم داخل المحادثة الحالية
+        if (senderId === currentReceiverId) {
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        } else {
+            // 🔔 عرض إشعار جديد
+            showNotification("New message received!", message);
+            playNotificationSound(); // تشغيل صوت الإشعار
         }
     });
+
+    function showNotification(title, message) {
+      let notification = document.createElement("div");
+        notification.classList.add("notification");
+
+        // أيقونة الجرس مع النص
+        notification.innerHTML = `<i class="fas fa-bell"></i> <span>${title}: ${message}</span>`;
+
+        document.body.appendChild(notification);
+
+        // إزالة الإشعار بعد 3.5 ثواني
+        setTimeout(() => {
+            notification.remove();
+        }, 50500); 
+    }
+
+        function playNotificationSound() {
+        let audio = new Audio('https://audio-previews.elements.envatousercontent.com/files/148785970/preview.mp3'); 
+        audio.play();
+    }
 
 
     // Function to open the chat with a selected sender by redirecting to the chat page
