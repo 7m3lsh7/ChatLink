@@ -1,4 +1,38 @@
 ﻿@model User
+@functions {
+    public bool IsImage(string content)
+    {
+        if (string.IsNullOrEmpty(content))
+            return false;
+
+        string lowerContent = content.ToLower();
+        return lowerContent.EndsWith(".jpg") || lowerContent.EndsWith(".jpeg") ||
+               lowerContent.EndsWith(".png") || lowerContent.EndsWith(".gif") ||
+               lowerContent.EndsWith(".bmp") || lowerContent.EndsWith(".webp");
+    }
+    public bool IsFile(string content)
+    {
+        if (string.IsNullOrEmpty(content))
+            return false;
+
+        string lowerContent = content.ToLower();
+        return lowerContent.EndsWith(".pdf") || lowerContent.EndsWith(".doc") ||
+               lowerContent.EndsWith(".docx") || lowerContent.EndsWith(".xls") ||
+               lowerContent.EndsWith(".xlsx") || lowerContent.EndsWith(".ppt") ||
+               lowerContent.EndsWith(".pptx") || lowerContent.EndsWith(".zip") ||
+               lowerContent.EndsWith(".rar") || lowerContent.EndsWith(".txt");
+    }
+    public bool IsVideo(string content)
+    {
+        if (string.IsNullOrEmpty(content))
+            return false;
+
+        string lowerContent = content.ToLower();
+        return lowerContent.EndsWith(".mp4") || lowerContent.EndsWith(".webm") ||
+               lowerContent.EndsWith(".ogg") || lowerContent.EndsWith(".avi") ||
+               lowerContent.EndsWith(".mov") || lowerContent.EndsWith(".mkv");
+    }
+}
 <link rel="stylesheet" href="~/css/Chat.css" asp-append-version="true" />
 
 <div class="row" style="--bs-gutter-x:0px!important">
@@ -79,16 +113,47 @@
                         foreach (var chat in Content)
                         {
                             <div class="message @(chat.SenderId == ViewBag.SenderId ? "sent" : "received")">
-                                <div class="bubble">@chat.Content</div><br />
-                                <p class="message-timestamp ">@chat.Timestamp.ToString("HH:mm")</p>
+                                @if (IsImage(chat.Content)) // التحقق مما إذا كانت الرسالة صورة
+                                {
+                                    <div class="bubble">
+                                        <img src="@chat.Content" alt="Image" class="chat-image" />
+                                    </div>
+                                }
+                            else if (IsFile(chat.Content)) // إذا كان ملفًا
+                            {
+                                <div class="bubble">
+                                    <a href="@chat.Content" download class="file-link">
+                                        <i class="fa fa-file"></i> Download File
+                                    </a>
+                                </div>
+                            }
+                            else if (IsVideo(chat.Content)) // إذا كان فيديو
+                            {
+                                <div class="bubble">
+                                    <video controls class="chat-video">
+                                        <source src="@chat.Content" type="video/mp4">
+                                        <source src="@chat.Content" type="video/webm">
+                                        <source src="@chat.Content" type="video/ogg">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            }
+                                else
+                                {
+                                    <div class="bubble">@chat.Content</div>
+                                }
+                                <p class="message-timestamp">@chat.Timestamp.ToString("HH:mm")</p>
                             </div>
 
                         }
                     }
+
                 </div>
                 <div class="chat-input">
                     <input id="receiverId" type="hidden" value="@ViewBag.ReceiverId" />
 
+                <label for="fileInput" class="file-label">📎</label>
+                <input type="file" id="fileInput" style="display: none;" />
 
                     <textarea id="messageInput" placeholder="Type a message"></textarea>
                     <button id="sendButton">Send</button>
@@ -137,28 +202,45 @@
         let sendButton = document.getElementById("sendButton");
         let chatContainer = document.getElementById("chatContainer");
 
-        function sendMessage() {
-            const receiverId = parseInt(document.getElementById("receiverId").value);
-            const message = messageInput.value.trim();
+           function sendMessage(content = null, messageType = "text") {
+        console.log("Sending:", content, messageType); // ✅ التأكد من القيم المرسلة
 
-            if (message !== "") {
-                const userId = parseInt(document.getElementById("userId").value);
+        const receiverId = parseInt(document.getElementById("receiverId").value);
+        const userId = parseInt(document.getElementById("userId").value);
+        const messageInput = document.getElementById("messageInput");
 
-                connection.invoke("SendMessage", userId, receiverId, message)
-                    .then(() => {
-                        const msgDiv = document.createElement("div");
-                        msgDiv.className = "message sent";
-                        msgDiv.innerHTML = `<div class="bubble">${message}</div>`;
-                        chatContainer.appendChild(msgDiv);
+        // إذا لم يكن هناك محتوى مُمرر، يتم أخذ النص من input
+        const messageContent = content ? content : messageInput.value.trim();
 
-                        messageInput.value = "";
-                        messageInput.style.height = "40px";  // إعادة ضبط حجم الإدخال
+        if (messageContent !== "") {
+            connection.invoke("SendMessage", userId, receiverId, messageContent, messageType)
+                .then(() => {
+                    let msgDiv = document.createElement("div");
+                    msgDiv.className = "message sent";
 
-                        chatContainer.scrollTop = chatContainer.scrollHeight;
-                    })
-                    .catch(err => console.error(err));
-            }
+                    if (messageType === "file") {
+                        if (messageContent.match(/\.(jpeg|jpg|gif|png|bmp|webp)$/i)) {
+                            msgDiv.innerHTML = `<a href="${messageContent}" target="_blank">
+                                                    <img src="${messageContent}" class="chat-image" alt="Sent Image"
+                                                         style="width: 200px; height: auto; border-radius: 8px;"/>
+                                                </a>`;
+                        } else {
+                            msgDiv.innerHTML = `<a href="${messageContent}" target="_blank" class="chat-file">📂 Download File</a>`;
+                        }
+                    } else {
+                        msgDiv.innerHTML = `<div class="bubble">${messageContent}</div>`;
+                    }
+
+                    document.getElementById("chatContainer").appendChild(msgDiv);
+                    messageInput.value = "";
+                    messageInput.style.height = "40px";
+                    document.getElementById("chatContainer").scrollTop = document.getElementById("chatContainer").scrollHeight;
+                })
+                .catch(err => console.error("Error sending message:", err));
         }
+    }
+
+    window.sendMessage = sendMessage;
 
         // إرسال عند الضغط على زر الإرسال
         sendButton.addEventListener("click", sendMessage);
@@ -176,25 +258,66 @@
             this.style.height = "40px";
             this.style.height = Math.min(this.scrollHeight, 150) + "px";
         });
+
+
+    });
+
+          document.getElementById("fileInput").addEventListener("change", function () {
+        let file = this.files[0];
+        if (file) {
+            let formData = new FormData();
+            formData.append("file", file);
+
+            fetch("/Home/UploadFile", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.text())
+            .then(fileUrl => {
+                if (fileUrl) {
+                    sendMessage(getFullUrl(fileUrl), "file");
+                }
+            })
+            .catch(error => console.error("Error uploading file:", error));
+        }
     });
 
 
-    // Handle receiving a new message via SignalR
-    connection.on("ReceiveMessage", (senderId, message, senderName) => {
-        const messageDiv = document.createElement("div");
-        messageDiv.className = "message received";  // Apply 'received' class to the incoming message
-        messageDiv.innerHTML = `
-            <div class="bubble">${message}</div>  
-            <p class="message-timestamp">${new Date().toLocaleTimeString()}</p>  
-        `;
-        document.getElementById("chatContainer").appendChild(messageDiv);  // Append the received message to the chat container
+        // Handle receiving a new message via SignalR
+           function getFullUrl(relativePath) {
+        if (!relativePath.startsWith("http")) {
+            return window.location.origin + relativePath;
+        }
+        return relativePath;
+    }
 
-        // Scroll to the bottom of the chat to show the new message
-        document.getElementById("chatContainer").scrollTop = document.getElementById("chatContainer").scrollHeight;
+    connection.on("ReceiveMessage", (senderId, message, messageType) => {
+        const currentReceiverId = parseInt(document.getElementById("receiverId").value);
 
-        // Show a notification when a new message is received
-        document.getElementById("notification").style.display = "block";
+        if (senderId === currentReceiverId) {
+            let messageDiv = document.createElement("div");
+            messageDiv.className = "message received";
+
+            let messageUrl = getFullUrl(message);
+
+            if (messageType === "file") {
+                if (messageUrl.match(/\.(jpeg|jpg|gif|png|bmp|webp)$/i)) {
+                    messageDiv.innerHTML = `<a href="${messageUrl}" target="_blank">
+                                                <img src="${messageUrl}" class="chat-image" alt="Received Image"
+                                                     style="width: 200px; height: auto; border-radius: 8px;"/>
+                                            </a>`;
+                } else {
+                    messageDiv.innerHTML = `<a href="${messageUrl}" target="_blank" class="chat-file">📂 Download File</a>`;
+                }
+            } else {
+                messageDiv.innerHTML = `<div class="bubble">${message}</div>`;
+            }
+
+            document.getElementById("chatContainer").appendChild(messageDiv);
+            document.getElementById("chatContainer").scrollTop = document.getElementById("chatContainer").scrollHeight;
+        }
     });
+
 
     // Function to open the chat with a selected sender by redirecting to the chat page
     function openChatWithSender(senderId) {

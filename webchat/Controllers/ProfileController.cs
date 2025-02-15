@@ -19,6 +19,8 @@ namespace webchat.Controllers
 
         public IActionResult Index()
         {
+            var isAdminCookie = Request.Cookies["IsAdmin"];
+            ViewData["IsAdmin"] = isAdminCookie;
             HttpContext.Session.SetString("Profile", "Index");
 
             var userIdCookie = Request.Cookies["UserId"];

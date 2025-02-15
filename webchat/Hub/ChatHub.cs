@@ -4,6 +4,7 @@ using System.Net;
 using webchat.data;
 using webchat.Models;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Concurrent;
 
 public class ChatHub : Hub
 {
@@ -18,71 +19,84 @@ public class ChatHub : Hub
     }
 
     // A static dictionary to keep track of user connections (userId and connectionId)
-    private static Dictionary<int, string> _userConnections = new Dictionary<int, string>();
+    private static ConcurrentDictionary<int, string> _userConnections = new ConcurrentDictionary<int, string>();
 
-    // Method to handle sending a message from the sender to the receiver
-    public async Task SendMessage(int SenderId,int ReceiverId, string Content)
+    public async Task SendMessage(int SenderId, int ReceiverId, string Content, string messageType)
     {
-
-     
-
-        var newMessage = new Chat
+        try
         {
-            SenderId = SenderId,
-            ReceiverId = ReceiverId,
-            Content = Content,
-            Timestamp = DateTime.UtcNow
-        };
+            Console.WriteLine($"[INFO] SendMessage received - SenderId: {SenderId}, ReceiverId: {ReceiverId}, Content: '{Content}', MessageType: '{messageType}'");
 
-        _context.chats.Add(newMessage);
-        await _context.SaveChangesAsync();
+            Console.WriteLine($"[INFO] SendMessage called with SenderId: {SenderId}, ReceiverId: {ReceiverId}, Content: {Content}, MessageType: {messageType}");
 
-        var connectionId = _userConnections.ContainsKey(ReceiverId) ? _userConnections[ReceiverId] : null;
+            var newMessage = new Chat
+            {
+                SenderId = SenderId,
+                ReceiverId = ReceiverId,
+                Content = Content,
+                MessageType = messageType,
+                Timestamp = DateTime.UtcNow
+            };
 
-        if (connectionId != null)
-        {
-            await Clients.Client(connectionId).SendAsync("ReceiveMessage", SenderId, Content);
+            _context.chats.Add(newMessage);
+            await _context.SaveChangesAsync();
+            Console.WriteLine("[INFO] Message saved in DB successfully.");
+
+            var connectionId = _userConnections.ContainsKey(ReceiverId) ? _userConnections[ReceiverId] : null;
+
+            if (connectionId != null)
+            {
+                Console.WriteLine($"[INFO] Sending message to receiver {ReceiverId}");
+                await Clients.Client(connectionId).SendAsync("ReceiveMessage", SenderId, Content, messageType);
+                Console.WriteLine("[INFO] Message sent to receiver successfully.");
+            }
+            else
+            {
+                Console.WriteLine($"[WARNING] Receiver {ReceiverId} is offline, sending email notification.");
+                await SendEmailNotification(ReceiverId, Content);
+            }
+
+            await Clients.User(SenderId.ToString()).SendAsync("MessageSent", Content);
+            Console.WriteLine("[INFO] MessageSent event triggered for sender.");
         }
-        else
+        catch (Exception ex)
         {
-            await SendEmailNotification(ReceiverId, Content);
+            Console.WriteLine($"[ERROR] Failed to send message: {ex.Message}");
+            Console.WriteLine($"[STACK TRACE] {ex.StackTrace}");
+            throw;
         }
-
-        await Clients.User(SenderId.ToString()).SendAsync("MessageSent", Content);
     }
+
 
 
     // Override method that is called when a user connects to the SignalR hub
+
+
     public override Task OnConnectedAsync()
     {
-        var userId = Context.GetHttpContext()?.Request.Cookies["UserId"];  // Retrieve the user's ID from cookies
+        var userId = Context.GetHttpContext()?.Request.Cookies["UserId"];
 
-        if (!string.IsNullOrEmpty(userId))
+        if (!string.IsNullOrEmpty(userId) && int.TryParse(userId, out int userIdInt))
         {
-            // Add the user to the online connections tracking dictionary
-            _userConnections[int.Parse(userId)] = Context.ConnectionId;
-            Groups.AddToGroupAsync(Context.ConnectionId, userId);  // Add user to a SignalR group for receiving messages
+            _userConnections[userIdInt] = Context.ConnectionId;
+            Groups.AddToGroupAsync(Context.ConnectionId, userId);
+            Clients.Others.SendAsync("UserOnline", userIdInt);
         }
 
-        // Notify other connected users that this user is now online
-        Clients.Others.SendAsync("UserOnline", userId);
         return base.OnConnectedAsync();
     }
 
-    // Override method that is called when a user disconnects from the SignalR hub
     public override Task OnDisconnectedAsync(Exception? exception)
     {
-        var userId = Context.GetHttpContext()?.Request.Cookies["UserId"];  // Retrieve the user's ID from cookies
+        var userId = Context.GetHttpContext()?.Request.Cookies["UserId"];
 
-        if (!string.IsNullOrEmpty(userId))
+        if (!string.IsNullOrEmpty(userId) && int.TryParse(userId, out int userIdInt))
         {
-            // Remove the user from the online connections tracking dictionary
-            _userConnections.Remove(int.Parse(userId));
-            Groups.RemoveFromGroupAsync(Context.ConnectionId, userId);  // Remove user from the SignalR group
+            _userConnections.TryRemove(userIdInt, out _);
+            Groups.RemoveFromGroupAsync(Context.ConnectionId, userId);
+            Clients.Others.SendAsync("UserOffline", userIdInt);
         }
 
-        // Notify other connected users that this user is now offline
-        Clients.Others.SendAsync("UserOffline", userId);
         return base.OnDisconnectedAsync(exception);
     }
 

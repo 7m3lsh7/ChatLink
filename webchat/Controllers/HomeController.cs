@@ -8,10 +8,12 @@ namespace webchat.Controllers
     public class HomeController : Controller
     {
         private readonly ChatDbcontect _chatDbcontect;
+        private readonly IWebHostEnvironment _env;
 
-        public HomeController(ChatDbcontect chatDbcontect)
+        public HomeController(ChatDbcontect chatDbcontect , IWebHostEnvironment env)
         {
             _chatDbcontect = chatDbcontect;
+            _env = env;
         }
 
         // Action method to handle checking if the user is authenticated via cookie
@@ -110,6 +112,14 @@ namespace webchat.Controllers
                                     (c.SenderId == receiverId && c.ReceiverId == userId))
                         .OrderBy(c => c.Timestamp)
                         .ToList();
+
+                    foreach (var chat in messages)
+                    {
+                        if (chat.MessageType == "file" && !chat.Content.StartsWith("http"))
+                        {
+                            chat.Content = $"{Request.Scheme}://{Request.Host}{chat.Content}";
+                        }
+                    }
                     ViewData["Messages"] = messages;
 
                     return View(user);
@@ -122,5 +132,28 @@ namespace webchat.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadFile(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded.");
+
+            string uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            string fileUrl = "/uploads/" + uniqueFileName;
+            return Ok(fileUrl);
+        }
     }
+
 }

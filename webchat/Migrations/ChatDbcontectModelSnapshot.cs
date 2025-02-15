@@ -37,6 +37,10 @@ namespace webchat.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
+                    b.Property<string>("MessageType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ReceiverId")
                         .HasColumnType("int");
 
