@@ -5,16 +5,20 @@ using webchat.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace webchat.Controllers
 {
     public class ProfileController : Controller
     {
         private readonly ChatDbcontect _chatDbcontect;
+        private readonly IDataProtector _protector;
 
-        public ProfileController(ChatDbcontect chatDbcontect)
+
+        public ProfileController(ChatDbcontect chatDbcontect, IDataProtectionProvider provider)
         {
             _chatDbcontect = chatDbcontect;
+            _protector = provider.CreateProtector("CookieProtection");
         }
 
         public IActionResult Index()
@@ -23,26 +27,44 @@ namespace webchat.Controllers
             ViewData["IsAdmin"] = isAdminCookie;
             HttpContext.Session.SetString("Profile", "Index");
 
-            var userIdCookie = Request.Cookies["UserId"];
-            ViewData["UserID"] = userIdCookie;
+            var cookieName = "p9q8r7s6_t34w2x1";
 
-            if (userIdCookie != null)
+            var encryptedUserId = Request.Cookies[cookieName];
+
+            if (!string.IsNullOrEmpty(encryptedUserId))
             {
-                var userId = int.Parse(userIdCookie);
-                var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
-
-                if (user != null)
+                try
                 {
-                    ViewData["time"] = user.TimeZone;
-                    ViewData["nickname"] = user.NickName;
-                    ViewData["Photo"] = user.ProfilePicture;
+                    var protector = _protector.CreateProtector("UserIdProtector");
+                    var decryptedUserId = protector.Unprotect(encryptedUserId);
 
-                    return View(user);
+                    if (int.TryParse(decryptedUserId, out int userId))
+                    {
+                        var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
+
+                        if (user != null)
+                        {
+                            ViewData["time"] = user.TimeZone;
+                            ViewData["nickname"] = user.NickName;
+                            ViewData["Photo"] = user.ProfilePicture;
+
+                            return View(user);
+                        }
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error decrypting UserId cookie: {ex.Message}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Invalid or missing UserId cookie: {encryptedUserId}");
             }
 
             return RedirectToAction("Index", "Login");
         }
+
 
         [HttpPost]
         public IActionResult Edit(User user, int id, IFormFile ProfilePicture)
@@ -108,19 +130,38 @@ namespace webchat.Controllers
         [HttpGet]
         public IActionResult Search(string username)
         {
-            var userIdCookie = Request.Cookies["UserId"];
-            ViewData["UserID"] = userIdCookie;
+            var cookieName = "p9q8r7s6_t34w2x1";
 
-            if (userIdCookie != null)
+            var encryptedUserId = Request.Cookies[cookieName];
+            ViewData["UserID"] = encryptedUserId;
+
+            if (!string.IsNullOrEmpty(encryptedUserId))
             {
-                var userId = int.Parse(userIdCookie);
-                var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
-                if (user != null)
+                try
                 {
-                    ViewData["nickname"] = user.NickName;
-                    ViewData["Photo"] = user.ProfilePicture;
-                    ViewData["time"] = user.TimeZone;
+                    var protector = _protector.CreateProtector("UserIdProtector");
+                    var decryptedUserId = protector.Unprotect(encryptedUserId);
+
+                    if (int.TryParse(decryptedUserId, out int userId))
+                    {
+                        var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
+
+                        if (user != null)
+                        {
+                            ViewData["nickname"] = user.NickName;
+                            ViewData["Photo"] = user.ProfilePicture;
+                            ViewData["time"] = user.TimeZone;
+                        }
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error decrypting UserId cookie: {ex.Message}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Invalid or missing UserId cookie: {encryptedUserId}");
             }
 
             var users = string.IsNullOrEmpty(username)
@@ -133,26 +174,44 @@ namespace webchat.Controllers
         [HttpPost]
         public IActionResult DeleteAccount([FromBody] DeleteAccountModel model)
         {
-            
-            var userIdCookie = Request.Cookies["UserId"];
-            if (userIdCookie == null) return Unauthorized();
+            var cookieName = "p9q8r7s6_t34w2x1";
 
-            var userId = int.Parse(userIdCookie);
-            var user = _chatDbcontect.users.Find(userId);
-            if (user == null) return NotFound();
+            var encryptedUserId = Request.Cookies[cookieName];
+            if (string.IsNullOrEmpty(encryptedUserId))
+                return Unauthorized();
 
-            if (user.PasswordHash != model.Password)
-                return BadRequest(new { success = false, message = "Incorrect password." });
+            try
+            {
+                var protector = _protector.CreateProtector("UserIdProtector");
+                var decryptedUserId = protector.Unprotect(encryptedUserId);
 
-            _chatDbcontect.users.Remove(user);
-            _chatDbcontect.SaveChanges();
+                if (int.TryParse(decryptedUserId, out int userId))
+                {
+                    var user = _chatDbcontect.users.Find(userId);
+                    if (user == null) return NotFound();
 
-            Response.Cookies.Delete("UserId");
+                    if (user.PasswordHash != model.Password)
+                        return BadRequest(new { success = false, message = "Incorrect password." });
 
-            HttpContext.Session.SetString("Profile", "Deleted");
+                    _chatDbcontect.users.Remove(user);
+                    _chatDbcontect.SaveChanges();
 
-            return Json(new { success = true, redirectUrl = Url.Action("Deleted", "Profile") });
+                    Response.Cookies.Delete(cookieName);
+
+                    HttpContext.Session.SetString("Profile", "Deleted");
+
+                    return Json(new { success = true, redirectUrl = Url.Action("Deleted", "Profile") });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error decrypting UserId cookie: {ex.Message}");
+                return Unauthorized();
+            }
+
+            return Unauthorized();
         }
+
 
         public IActionResult Deleted()
         {
@@ -181,53 +240,80 @@ namespace webchat.Controllers
             ViewData["HideNavbar"] = true;
             ViewData["HideFooter"] = true;
 
-            var userId = int.Parse(Request.Cookies["UserId"]);
-            var user = await _chatDbcontect.users.FirstOrDefaultAsync(u => u.Id == userId);
+            var cookieName = "p9q8r7s6_t34w2x1";
 
-            if (user == null)
+            var encryptedUserId = Request.Cookies[cookieName];
+            if (string.IsNullOrEmpty(encryptedUserId))
             {
-                TempData["ErrorMessage"] = "User not found.";
+                TempData["ErrorMessage"] = "Unauthorized access.";
                 return RedirectToAction("Index", "Home");
             }
 
-            bool isOldPasswordValid = false;
-
-            if (user.PasswordHash.StartsWith("$2a$") || user.PasswordHash.StartsWith("$2b$") || user.PasswordHash.StartsWith("$2y$"))
+            try
             {
-                isOldPasswordValid = BCrypt.Net.BCrypt.Verify(oldPassword, user.PasswordHash);
+                var protector = _protector.CreateProtector("UserIdProtector");
+                var decryptedUserId = protector.Unprotect(encryptedUserId);
+
+                if (int.TryParse(decryptedUserId, out int userId))
+                {
+                    var user = await _chatDbcontect.users.FirstOrDefaultAsync(u => u.Id == userId);
+
+                    if (user == null)
+                    {
+                        TempData["ErrorMessage"] = "User not found.";
+                        return RedirectToAction("Index", "Home");
+                    }
+
+                    bool isOldPasswordValid = false;
+
+                    if (user.PasswordHash.StartsWith("$2a$") || user.PasswordHash.StartsWith("$2b$") || user.PasswordHash.StartsWith("$2y$"))
+                    {
+                        isOldPasswordValid = BCrypt.Net.BCrypt.Verify(oldPassword, user.PasswordHash);
+                    }
+                    else
+                    {
+                        isOldPasswordValid = oldPassword == user.PasswordHash;
+                    }
+
+                    if (!isOldPasswordValid)
+                    {
+                        ViewBag.Message = "Old password is incorrect.";
+                        return View();
+                    }
+
+                    if (newPassword != confirmPassword)
+                    {
+                        ViewBag.Message = "New password and confirmation do not match.";
+                        return View();
+                    }
+
+                    if (!Regex.IsMatch(newPassword, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{9,}$"))
+                    {
+                        ViewBag.Message = "Password must include both letters and numbers and be at least 9 characters long.";
+                        return View();
+                    }
+
+                    user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+                    user.IsPasswordChanged = true;
+                    user.LastPasswordChangeDate = DateTime.Now;
+
+                    _chatDbcontect.users.Update(user);
+                    await _chatDbcontect.SaveChangesAsync();
+
+                    TempData["SuccessMessage"] = "Password updated successfully.";
+                    return RedirectToAction("Index", "Home");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                isOldPasswordValid = oldPassword == user.PasswordHash;
+                Console.WriteLine($"Error decrypting UserId cookie: {ex.Message}");
+                TempData["ErrorMessage"] = "Unauthorized access.";
+                return RedirectToAction("Index", "Home");
             }
 
-            if (!isOldPasswordValid)
-            {
-                ViewBag.Message = "Old password is incorrect.";
-                return View();
-            }
-
-            if (newPassword != confirmPassword)
-            {
-                ViewBag.Message = "New password and confirmation do not match.";
-                return View();
-            }
-
-            if (!Regex.IsMatch(newPassword, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{9,}$"))
-            {
-                ViewBag.Message = "Password must include both letters and numbers and be at least 9 characters long.";
-                return View();
-            }
-
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
-            user.IsPasswordChanged = true;
-            user.LastPasswordChangeDate = DateTime.Now; 
-
-            _chatDbcontect.users.Update(user);
-            await _chatDbcontect.SaveChangesAsync();
-
-            TempData["SuccessMessage"] = "Password updated successfully.";
+            TempData["ErrorMessage"] = "Unauthorized access.";
             return RedirectToAction("Index", "Home");
         }
+
     }
 }

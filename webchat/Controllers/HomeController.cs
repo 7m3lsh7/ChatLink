@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using webchat.data;
 using webchat.Models;
@@ -9,30 +10,49 @@ namespace webchat.Controllers
     {
         private readonly ChatDbcontect _chatDbcontect;
         private readonly IWebHostEnvironment _env;
+        private readonly IDataProtector _protector;
 
+        public HomeController(ChatDbcontect chatDbcontect ,IDataProtectionProvider provider)
         public HomeController(ChatDbcontect chatDbcontect , IWebHostEnvironment env)
         {
             _chatDbcontect = chatDbcontect;
             _env = env;
+            _protector = provider.CreateProtector("CookieProtection");
         }
 
         // Action method to handle checking if the user is authenticated via cookie
         public IActionResult Cooky()
         {
-            var userIdCookie = Request.Cookies["UserId"];
-            if (!string.IsNullOrEmpty(userIdCookie) && int.TryParse(userIdCookie, out int userId))
-            {
-                var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
+            var cookieName = "p9q8r7s6_t34w2x1";
+            
+            var encryptedUserId = Request.Cookies[cookieName];
 
-                if (user != null)
+            if (!string.IsNullOrEmpty(encryptedUserId))
+            {
+                try
                 {
-                    return RedirectToAction("Index");
+                    // فك تشفير الكوكيز
+                    var protector = _protector.CreateProtector("UserIdProtector");
+                    var decryptedUserId = protector.Unprotect(encryptedUserId);
+
+                    if (int.TryParse(decryptedUserId, out int userId))
+                    {
+                        var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
+
+                        if (user != null)
+                        {
+                            return RedirectToAction("Index");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error decrypting UserId cookie: {ex.Message}");
                 }
             }
             else
             {
-                // Log the error for debugging purposes
-                Console.WriteLine($"Invalid or missing UserId cookie: {userIdCookie}");
+                Console.WriteLine($"Invalid or missing UserId cookie: {encryptedUserId}");
             }
 
             return RedirectToAction("Index");
@@ -41,11 +61,36 @@ namespace webchat.Controllers
         // Action method to display the home page
         public IActionResult Index()
         {
-            var userIdCookie = Request.Cookies["UserId"];
-            ViewData["UserID"] = userIdCookie;
-            var isAdminCookie = Request.Cookies["IsAdmin"];
-            ViewData["IsAdmin"] = isAdminCookie;
-            if (!string.IsNullOrEmpty(userIdCookie) && int.TryParse(userIdCookie, out int userId))
+            var userIdCookieName = "p9q8r7s6_t34w2x1";
+            var isAdminCookieName = "m3n2b1_a0q9w8";
+
+            var encryptedUserId = Request.Cookies[userIdCookieName];
+            var encryptedIsAdmin = Request.Cookies[isAdminCookieName];
+
+            string decryptedUserId = null;
+            string decryptedIsAdmin = null;
+
+            try
+            {
+                var protector = _protector.CreateProtector("UserIdProtector");
+                if (!string.IsNullOrEmpty(encryptedUserId))
+                {
+                    decryptedUserId = protector.Unprotect(encryptedUserId);
+                    ViewData["UserID"] = decryptedUserId;
+                }
+
+                if (!string.IsNullOrEmpty(encryptedIsAdmin))
+                {
+                    decryptedIsAdmin = protector.Unprotect(encryptedIsAdmin);
+                    ViewData["IsAdmin"] = decryptedIsAdmin;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error decrypting cookies: {ex.Message}");
+            }
+
+            if (!string.IsNullOrEmpty(decryptedUserId) && int.TryParse(decryptedUserId, out int userId))
             {
                 var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
 
@@ -58,23 +103,40 @@ namespace webchat.Controllers
             }
             else
             {
-                Console.WriteLine($"Invalid or missing UserId cookie: {userIdCookie}");
+                Console.WriteLine($"Invalid or missing UserId cookie: {decryptedUserId}");
             }
 
             return View();
         }
 
-        // Action method to handle the chat page between users
-        public IActionResult Chat( int receiverId)
+
+        public IActionResult Chat(int receiverId)
         {
             ViewData["HideFooter"] = true;
             ViewData["HideClock"] = true;
             ViewBag.ReceiverId = receiverId;
-                 
-             var userIdCookie = Request.Cookies["UserId"];
-            ViewData["UserID"] = userIdCookie;
 
-            if (!string.IsNullOrEmpty(userIdCookie) && int.TryParse(userIdCookie, out int userId))
+            var userIdCookieName = "p9q8r7s6_t34w2x1";
+
+            var encryptedUserId = Request.Cookies[userIdCookieName];
+
+            string decryptedUserId = null;
+
+            try
+            {
+                var protector = _protector.CreateProtector("UserIdProtector");
+                if (!string.IsNullOrEmpty(encryptedUserId))
+                {
+                    decryptedUserId = protector.Unprotect(encryptedUserId);
+                    ViewData["UserID"] = decryptedUserId;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error decrypting UserId cookie: {ex.Message}");
+            }
+
+            if (!string.IsNullOrEmpty(decryptedUserId) && int.TryParse(decryptedUserId, out int userId))
             {
                 var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
                 ViewBag.SenderId = userId;
@@ -97,7 +159,8 @@ namespace webchat.Controllers
                         .Where(c => c.SenderId == userId || c.ReceiverId == userId)
                         .OrderByDescending(c => c.Timestamp)
                         .ToList();
-                    ViewData["AllMessages"] =allMessages  ;
+                    ViewData["AllMessages"] = allMessages;
+
                     var uniqueUsers = allMessages
                         .Select(m => m.SenderId == userId ? m.ReceiverId : m.SenderId)
                         .Distinct()
@@ -127,7 +190,7 @@ namespace webchat.Controllers
             }
             else
             {
-                Console.WriteLine($"Invalid or missing UserId cookie: {userIdCookie}");
+                Console.WriteLine($"Invalid or missing UserId cookie: {decryptedUserId}");
             }
 
             return RedirectToAction("Index", "Home");
