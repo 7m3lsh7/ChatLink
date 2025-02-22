@@ -22,8 +22,8 @@ namespace webchat.Controllers
         // Action method to handle checking if the user is authenticated via cookie
         public IActionResult Cooky()
         {
-            var cookieName = "p9q8r7s6_t34w2x1";
-            
+            var cookieName = "UserIdCookie";
+
             var encryptedUserId = Request.Cookies[cookieName];
 
             if (!string.IsNullOrEmpty(encryptedUserId))
@@ -39,6 +39,9 @@ namespace webchat.Controllers
 
                         if (user != null)
                         {
+                            HttpContext.Session.SetInt32("UserId", user.Id);
+                            HttpContext.Session.SetString("Username", user.Username);
+
                             return RedirectToAction("Index");
                         }
                     }
@@ -55,6 +58,7 @@ namespace webchat.Controllers
 
             return RedirectToAction("Index");
         }
+
 
         // Action method to display the home page
         public IActionResult Index()
@@ -106,7 +110,6 @@ namespace webchat.Controllers
 
             return View();
         }
-
 
         public IActionResult Chat(int receiverId)
         {

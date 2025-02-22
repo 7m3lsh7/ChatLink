@@ -225,14 +225,18 @@ namespace webchat.Controllers
                 var cookieOptions = new CookieOptions
                 {
                     Expires = DateTime.Now.AddDays(30),
+                    HttpOnly = true,
+                    Secure = true,
                     IsEssential = true
                 };
 
-                var encryptedUserId = _protector.Protect(userStep2.Id.ToString());
-                var encryptedUsername = _protector.Protect(userStep2.Username);
+                var protector = _protector.CreateProtector("UserIdProtector");
 
-                Response.Cookies.Append("p9q8r7s6_t34w2x1", encryptedUserId, cookieOptions);
-                Response.Cookies.Append("Zebra77", encryptedUsername, cookieOptions);
+                var encryptedUserId = protector.Protect(userStep2.Id.ToString());
+                var encryptedUsername = protector.Protect(userStep2.Username);
+
+                Response.Cookies.Append("UserIdCookie", encryptedUserId, cookieOptions);
+                Response.Cookies.Append("UsernameCookie", encryptedUsername, cookieOptions);
 
                 SendWelcomeEmail(userStep2.Email, userStep2.Username);
 
