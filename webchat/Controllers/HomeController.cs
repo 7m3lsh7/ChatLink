@@ -30,7 +30,6 @@ namespace webchat.Controllers
             {
                 try
                 {
-                    // فك تشفير الكوكيز
                     var protector = _protector.CreateProtector("UserIdProtector");
                     var decryptedUserId = protector.Unprotect(encryptedUserId);
 

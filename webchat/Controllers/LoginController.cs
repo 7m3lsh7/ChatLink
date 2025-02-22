@@ -117,25 +117,30 @@ namespace webchat.Controllers
 
             var cookieOptions = new CookieOptions
             {
-                Expires = DateTime.Now.AddDays(7),
-                HttpOnly = true
+                Expires = DateTimeOffset.Now.AddDays(7),
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict
             };
 
             Response.Cookies.Append(userIdCookieName, encryptedUserId, cookieOptions);
             Response.Cookies.Append(isAdminCookieName, encryptedIsAdmin, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true, 
-                SameSite = SameSiteMode.Lax,
-                Expires = DateTimeOffset.Now.AddHours(1),
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.Now.AddDays(7),
             });
 
             await SendLoginNotificationAsync(dbUser.Email, dbUser.Username);
 
+            if (bool.TryParse(dbUser.IsAdmin, out bool isAdmin) && isAdmin)
+            {
+                return RedirectToAction("ViewUser", "Login");
+            }
+
             return RedirectToAction("Index", "Home");
         }
-
-
 
         private async Task SendLoginNotificationAsync(string email, string username)
         {
@@ -325,66 +330,51 @@ namespace webchat.Controllers
             var encryptedUserId = Request.Cookies[userIdCookieName];
             var encryptedIsAdmin = Request.Cookies[isAdminCookieName];
 
-            if (!string.IsNullOrEmpty(encryptedUserId))
+            if (string.IsNullOrEmpty(encryptedUserId) || string.IsNullOrEmpty(encryptedIsAdmin))
             {
-                try
-                {
-                    var protector = _protector.CreateProtector("UserIdProtector");
-                    var decryptedUserId = protector.Unprotect(encryptedUserId);
-
-                    if (int.TryParse(decryptedUserId, out int userId))
-                    {
-                        var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
-
-                        if (user != null)
-                        {
-                            ViewData["time"] = user.TimeZone;
-                            ViewData["nickname"] = user.NickName;
-                            ViewData["Photo"] = user.ProfilePicture;
-                            ViewData["Admin"] = user.IsAdmin;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error decrypting UserId cookie: {ex.Message}");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"Invalid or missing UserId cookie: {encryptedUserId}");
+                return RedirectToAction("Index", "Login");
             }
 
-            if (!string.IsNullOrEmpty(encryptedIsAdmin))
+            try
             {
-                try
-                {
-                    var isAdminProtector = _protector.CreateProtector("IsAdminProtector");
-                    var decryptedIsAdmin = isAdminProtector.Unprotect(encryptedIsAdmin);
+                var protector = _protector.CreateProtector("UserIdProtector");
+                var decryptedUserId = protector.Unprotect(encryptedUserId);
 
-                    if (decryptedIsAdmin.Equals("True", StringComparison.OrdinalIgnoreCase))
-                    {
-                        ViewData["IsAdmin"] = "True";
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Login");
-                    }
-                }
-                catch (Exception ex)
+                var isAdminProtector = _protector.CreateProtector("IsAdminProtector");
+                var decryptedIsAdmin = isAdminProtector.Unprotect(encryptedIsAdmin);
+
+                if (!int.TryParse(decryptedUserId, out int userId))
                 {
-                    Console.WriteLine($"Error decrypting IsAdmin cookie: {ex.Message}");
+                    return RedirectToAction("Index", "Login");
+                }
+
+                var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
+
+                if (user == null)
+                {
+                    return RedirectToAction("Index", "Login");
+                }
+
+                ViewData["time"] = user.TimeZone;
+                ViewData["nickname"] = user.NickName;
+                ViewData["Photo"] = user.ProfilePicture;
+                ViewData["Admin"] = user.IsAdmin;
+
+                if (!bool.TryParse(decryptedIsAdmin, out bool isAdmin) || !isAdmin)
+                {
                     return RedirectToAction("Index", "Login");
                 }
             }
-            else
+            catch (Exception ex)
             {
+                Console.WriteLine($"Error decrypting cookies: {ex.Message}");
                 return RedirectToAction("Index", "Login");
             }
 
             var response = _chatDbcontect.users.ToList();
             return View(response);
         }
+
         public IActionResult Delete(int id)
         {
             var user = _chatDbcontect.users.Find(id);

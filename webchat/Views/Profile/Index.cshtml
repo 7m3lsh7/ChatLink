@@ -7,6 +7,10 @@
     <!-- Header -->
     <div class="profile-header">
         <h1>Welcome, @Model.NickName</h1>
+        @if (ViewData["IsAdmin"] != null && ViewData["IsAdmin"].ToString() == "true")
+        {
+            <a href="@Url.Action("Index", "Dashboard")" class="btn btn-primary mt-3">Go to Dashboard</a>
+        }
     </div>
 
     <div class="row">

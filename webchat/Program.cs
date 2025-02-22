@@ -1,4 +1,5 @@
 ﻿using AspNetCore.ReCaptcha;
+using AspNetCoreRateLimit;
 using Microsoft.EntityFrameworkCore;
 using webchat.data;
 
@@ -32,6 +33,26 @@ builder.Services.AddHttpsRedirection(options =>
     options.HttpsPort = 443;  
 });
 
+builder.Services.Configure<IpRateLimitOptions>(options =>
+{
+    options.GeneralRules = new List<RateLimitRule>
+    {
+        new RateLimitRule
+        {
+            Endpoint = "*",
+            Limit = 100,
+            Period = "10m"
+        }
+    };
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder => builder.WithOrigins("https://chatlink.runasp.net/")
+        .AllowAnyMethod()
+        .AllowAnyHeader());
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -58,10 +79,21 @@ else
 }
 
 
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Remove("Server");
+    context.Response.Headers.Remove("X-Powered-By");
+    await next();
+});
+
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
+app.UseIpRateLimiting();
+app.UseCors("CorsPolicy");
+
 
 app.UseAuthorization();
 app.MapHub<ChatHub>("/ChatHub");

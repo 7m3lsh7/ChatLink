@@ -23,13 +23,32 @@ namespace webchat.Controllers
 
         public IActionResult Index()
         {
-            var isAdminCookie = Request.Cookies["IsAdmin"];
-            ViewData["IsAdmin"] = isAdminCookie;
+            var isAdminCookieName = "m3n2b1_a0q9w8";
+            var userIdCookieName = "p9q8r7s6_t34w2x1";
+
+            var encryptedIsAdmin = Request.Cookies[isAdminCookieName];
+            var encryptedUserId = Request.Cookies[userIdCookieName];
+
             HttpContext.Session.SetString("Profile", "Index");
 
-            var cookieName = "p9q8r7s6_t34w2x1";
-
-            var encryptedUserId = Request.Cookies[cookieName];
+            if (!string.IsNullOrEmpty(encryptedIsAdmin))
+            {
+                try
+                {
+                    var isAdminProtector = _protector.CreateProtector("IsAdminProtector");
+                    var decryptedIsAdmin = isAdminProtector.Unprotect(encryptedIsAdmin);
+                    ViewData["IsAdmin"] = decryptedIsAdmin.Equals("True", StringComparison.OrdinalIgnoreCase) ? "True" : "False";
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error decrypting IsAdmin cookie: {ex.Message}");
+                    ViewData["IsAdmin"] = "False";  
+                }
+            }
+            else
+            {
+                ViewData["IsAdmin"] = "False";
+            }
 
             if (!string.IsNullOrEmpty(encryptedUserId))
             {
@@ -47,7 +66,6 @@ namespace webchat.Controllers
                             ViewData["time"] = user.TimeZone;
                             ViewData["nickname"] = user.NickName;
                             ViewData["Photo"] = user.ProfilePicture;
-
                             return View(user);
                         }
                     }
@@ -64,6 +82,7 @@ namespace webchat.Controllers
 
             return RedirectToAction("Index", "Login");
         }
+
 
 
         [HttpPost]
