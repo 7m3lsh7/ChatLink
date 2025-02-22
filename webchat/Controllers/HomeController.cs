@@ -22,7 +22,7 @@ namespace webchat.Controllers
         // Action method to handle checking if the user is authenticated via cookie
         public IActionResult Cooky()
         {
-            var cookieName = "UserIdCookie";
+            var cookieName = "p9q8r7s6_t34w2x1";
 
             var encryptedUserId = Request.Cookies[cookieName];
 
@@ -63,49 +63,59 @@ namespace webchat.Controllers
         // Action method to display the home page
         public IActionResult Index()
         {
-            var userIdCookieName = "p9q8r7s6_t34w2x1";
-            var isAdminCookieName = "m3n2b1_a0q9w8";
+            var userIdCookieName = "p9q8r7s6_t34w2x1"; // اسم كوكي ID المستخدم
+            var usernameCookieName = "UsernameCookie"; // اسم كوكي اسم المستخدم
 
             var encryptedUserId = Request.Cookies[userIdCookieName];
-            var encryptedIsAdmin = Request.Cookies[isAdminCookieName];
+            var encryptedUsername = Request.Cookies[usernameCookieName];
 
             string decryptedUserId = null;
-            string decryptedIsAdmin = null;
+            string decryptedUsername = null;
 
             try
             {
                 var protector = _protector.CreateProtector("UserIdProtector");
+
+                // فك تشفير UserId
                 if (!string.IsNullOrEmpty(encryptedUserId))
                 {
                     decryptedUserId = protector.Unprotect(encryptedUserId);
                     ViewData["UserID"] = decryptedUserId;
                 }
 
-                if (!string.IsNullOrEmpty(encryptedIsAdmin))
+                // فك تشفير Username
+                if (!string.IsNullOrEmpty(encryptedUsername))
                 {
-                    decryptedIsAdmin = protector.Unprotect(encryptedIsAdmin);
-                    ViewData["IsAdmin"] = decryptedIsAdmin;
+                    decryptedUsername = protector.Unprotect(encryptedUsername);
+                    ViewData["Username"] = decryptedUsername;
                 }
             }
             catch (Exception ex)
             {
+                // تسجيل الخطأ
                 Console.WriteLine($"Error decrypting cookies: {ex.Message}");
             }
 
+            // إذا كان UserId موجودًا وصحيحًا
             if (!string.IsNullOrEmpty(decryptedUserId) && int.TryParse(decryptedUserId, out int userId))
             {
                 var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
 
                 if (user != null)
                 {
+                    // تعيين بيانات المستخدم في ViewData
                     ViewData["time"] = user.TimeZone;
                     ViewData["nickname"] = user.NickName;
                     ViewData["Photo"] = user.ProfilePicture;
                 }
+                else
+                {
+                    Console.WriteLine("User not found in the database.");
+                }
             }
             else
             {
-                Console.WriteLine($"Invalid or missing UserId cookie: {decryptedUserId}");
+                Console.WriteLine("User is not logged in or cookies are invalid.");
             }
 
             return View();

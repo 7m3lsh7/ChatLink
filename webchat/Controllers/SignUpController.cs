@@ -215,7 +215,6 @@ namespace webchat.Controllers
             if (userStep2.VerificationCode == code && userStep2.VerificationCodeExpiry > DateTime.Now)
             {
                 userStep2.IsVerified = true;
-
                 _chatDbContext.users.Add(userStep2);
                 _chatDbContext.SaveChanges();
 
@@ -235,16 +234,17 @@ namespace webchat.Controllers
                 var encryptedUserId = protector.Protect(userStep2.Id.ToString());
                 var encryptedUsername = protector.Protect(userStep2.Username);
 
-                Response.Cookies.Append("UserIdCookie", encryptedUserId, cookieOptions);
+                Response.Cookies.Append("p9q8r7s6_t34w2x1", encryptedUserId, cookieOptions);
                 Response.Cookies.Append("UsernameCookie", encryptedUsername, cookieOptions);
 
                 SendWelcomeEmail(userStep2.Email, userStep2.Username);
 
-                return RedirectToAction("Cooky", "Home");
+                return RedirectToAction("Index", "Home");
             }
 
             ModelState.AddModelError("Code", "The code is incorrect or has expired.");
             return View();
         }
+
     }
 }

@@ -120,17 +120,11 @@ namespace webchat.Controllers
                 Expires = DateTimeOffset.Now.AddDays(7),
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict
+                SameSite = SameSiteMode.Lax
             };
 
             Response.Cookies.Append(userIdCookieName, encryptedUserId, cookieOptions);
-            Response.Cookies.Append(isAdminCookieName, encryptedIsAdmin, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTimeOffset.Now.AddDays(7),
-            });
+            Response.Cookies.Append(isAdminCookieName, encryptedIsAdmin, cookieOptions);
 
             await SendLoginNotificationAsync(dbUser.Email, dbUser.Username);
 
