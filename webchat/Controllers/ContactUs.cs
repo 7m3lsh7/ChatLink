@@ -58,7 +58,7 @@ namespace webchat.Controllers
                 }
             }
 
-            return RedirectToAction("Index", "Login");
+            return View(new ContactModel());
         }
 
 

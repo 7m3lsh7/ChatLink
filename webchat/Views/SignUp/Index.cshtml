@@ -13,7 +13,6 @@
         <h1>Sign up</h1>
         <p class="fs-5">Enter your account details</p>
 
-        <!-- عرض رسائل الخطأ -->
         <div id="error-message" class="alert alert-danger d-none" role="alert">
             Please fill out all required fields correctly!
         </div>
@@ -103,8 +102,10 @@
             <span>Do you have an account? </span>
             <a href="/login/index" class="signup-btn m-2">Login</a>
         </div>
+        <div class="text-center mt-3">
+            <a asp-action="Index" asp-controller="Home" class="text-muted">Back to Home</a>
+        </div>
     </div>
-
 </div>
 <script>
     document.getElementById('signup-form').addEventListener('submit', function (event) {
