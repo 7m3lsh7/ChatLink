@@ -63,8 +63,8 @@ namespace webchat.Controllers
         // Action method to display the home page
         public IActionResult Index()
         {
-            var userIdCookieName = "p9q8r7s6_t34w2x1"; // اسم كوكي ID المستخدم
-            var usernameCookieName = "UsernameCookie"; // اسم كوكي اسم المستخدم
+            var userIdCookieName = "p9q8r7s6_t34w2x1"; 
+            var usernameCookieName = "UsernameCookie"; 
 
             var encryptedUserId = Request.Cookies[userIdCookieName];
             var encryptedUsername = Request.Cookies[usernameCookieName];
@@ -76,14 +76,12 @@ namespace webchat.Controllers
             {
                 var protector = _protector.CreateProtector("UserIdProtector");
 
-                // فك تشفير UserId
                 if (!string.IsNullOrEmpty(encryptedUserId))
                 {
                     decryptedUserId = protector.Unprotect(encryptedUserId);
                     ViewData["UserID"] = decryptedUserId;
                 }
 
-                // فك تشفير Username
                 if (!string.IsNullOrEmpty(encryptedUsername))
                 {
                     decryptedUsername = protector.Unprotect(encryptedUsername);
@@ -92,18 +90,15 @@ namespace webchat.Controllers
             }
             catch (Exception ex)
             {
-                // تسجيل الخطأ
                 Console.WriteLine($"Error decrypting cookies: {ex.Message}");
             }
 
-            // إذا كان UserId موجودًا وصحيحًا
             if (!string.IsNullOrEmpty(decryptedUserId) && int.TryParse(decryptedUserId, out int userId))
             {
                 var user = _chatDbcontect.users.FirstOrDefault(u => u.Id == userId);
 
                 if (user != null)
                 {
-                    // تعيين بيانات المستخدم في ViewData
                     ViewData["time"] = user.TimeZone;
                     ViewData["nickname"] = user.NickName;
                     ViewData["Photo"] = user.ProfilePicture;

@@ -15,7 +15,6 @@ namespace webchat.Controllers
                 Expires = DateTime.Now.AddDays(-1)
             });
 
-            // إعادة توجيه للصفحة الرئيسية
             return RedirectToAction("Index", "Home");
         }
     }
