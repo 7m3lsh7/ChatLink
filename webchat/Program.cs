@@ -1,5 +1,4 @@
 ﻿using AspNetCore.ReCaptcha;
-using AspNetCoreRateLimit;
 using Microsoft.EntityFrameworkCore;
 using webchat.data;
 
@@ -33,18 +32,6 @@ builder.Services.AddHttpsRedirection(options =>
     options.HttpsPort = 443;  
 });
 
-builder.Services.Configure<IpRateLimitOptions>(options =>
-{
-    options.GeneralRules = new List<RateLimitRule>
-    {
-        new RateLimitRule
-        {
-            Endpoint = "*",
-            Limit = 100,
-            Period = "10m"
-        }
-    };
-});
 
 builder.Services.AddCors(options =>
 {
@@ -91,7 +78,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
-app.UseIpRateLimiting();
 app.UseCors("CorsPolicy");
 
 
