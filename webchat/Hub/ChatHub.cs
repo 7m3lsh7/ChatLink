@@ -5,17 +5,20 @@ using webchat.data;
 using webchat.Models;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Concurrent;
+using Microsoft.AspNetCore.DataProtection;
 
 public class ChatHub : Hub
 {
     private readonly ChatDbcontect _context;
     private readonly IConfiguration _configuration;
+    private readonly IDataProtector _protector;
 
-    // Constructor to inject dependencies such as database context and configuration settings
-    public ChatHub(ChatDbcontect context, IConfiguration configuration)
+    // Constructor to inject dependencies such as database context, configuration settings, and data protection provider
+    public ChatHub(ChatDbcontect context, IConfiguration configuration, IDataProtectionProvider provider)
     {
         _context = context;  // Assigning the database context for CRUD operations on chat data
         _configuration = configuration;  // Injecting configuration for SMTP settings
+        _protector = provider.CreateProtector("CookieProtection");  // Creating a data protector for cookie encryption
     }
 
     // A static dictionary to keep track of user connections (userId and connectionId)
@@ -68,13 +71,32 @@ public class ChatHub : Hub
 
     public override Task OnConnectedAsync()
     {
-        var userId = Context.GetHttpContext()?.Request.Cookies["UserId"];
+        var httpContext = Context.GetHttpContext();
 
-        if (!string.IsNullOrEmpty(userId) && int.TryParse(userId, out int userIdInt))
+        if (httpContext != null)
         {
-            _userConnections[userIdInt] = Context.ConnectionId;
-            Groups.AddToGroupAsync(Context.ConnectionId, userId);
-            Clients.Others.SendAsync("UserOnline", userIdInt);
+            var cookieName = "p9q8r7s6_t34w2x1";
+            var encryptedUserId = httpContext.Request.Cookies[cookieName];
+
+            if (!string.IsNullOrEmpty(encryptedUserId))
+            {
+                try
+                {
+                    var protector = _protector.CreateProtector("UserIdProtector");
+                    var decryptedUserId = protector.Unprotect(encryptedUserId);
+
+                    if (int.TryParse(decryptedUserId, out int userIdInt))
+                    {
+                        _userConnections[userIdInt] = Context.ConnectionId;
+                        Groups.AddToGroupAsync(Context.ConnectionId, userIdInt.ToString());
+                        Clients.Others.SendAsync("UserOnline", userIdInt);
+                    }
+                }
+                catch
+                {
+                    // Handle decryption error silently
+                }
+            }
         }
 
         return base.OnConnectedAsync();
@@ -82,13 +104,32 @@ public class ChatHub : Hub
 
     public override Task OnDisconnectedAsync(Exception? exception)
     {
-        var userId = Context.GetHttpContext()?.Request.Cookies["UserId"];
+        var httpContext = Context.GetHttpContext();
 
-        if (!string.IsNullOrEmpty(userId) && int.TryParse(userId, out int userIdInt))
+        if (httpContext != null)
         {
-            _userConnections.TryRemove(userIdInt, out _);
-            Groups.RemoveFromGroupAsync(Context.ConnectionId, userId);
-            Clients.Others.SendAsync("UserOffline", userIdInt);
+            var cookieName = "p9q8r7s6_t34w2x1";
+            var encryptedUserId = httpContext.Request.Cookies[cookieName];
+
+            if (!string.IsNullOrEmpty(encryptedUserId))
+            {
+                try
+                {
+                    var protector = _protector.CreateProtector("UserIdProtector");
+                    var decryptedUserId = protector.Unprotect(encryptedUserId);
+
+                    if (int.TryParse(decryptedUserId, out int userIdInt))
+                    {
+                        _userConnections.TryRemove(userIdInt, out _);
+                        Groups.RemoveFromGroupAsync(Context.ConnectionId, userIdInt.ToString());
+                        Clients.Others.SendAsync("UserOffline", userIdInt);
+                    }
+                }
+                catch
+                {
+                    // Handle decryption error silently
+                }
+            }
         }
 
         return base.OnDisconnectedAsync(exception);
