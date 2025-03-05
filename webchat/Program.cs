@@ -20,15 +20,20 @@ builder.Services.AddDataProtection();
 
 builder.Services.AddReCaptcha(builder.Configuration.GetSection("ReCaptcha"));
 
+builder.Services.AddDistributedSqlServerCache(options =>
+{
+    options.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    options.SchemaName = "dbo";
+    options.TableName = "SessionCache";
+});
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromDays(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-    options.Cookie.SameSite = SameSiteMode.Lax; 
+    options.Cookie.SameSite = SameSiteMode.Lax;
 });
-
-
 
 builder.Services.AddHttpsRedirection(options =>
 {
@@ -68,14 +73,27 @@ else
     app.UseHsts();
 }
 
-
 app.Use(async (context, next) =>
 {
-    context.Response.Headers.Remove("Server");
-    context.Response.Headers.Remove("X-Powered-By");
+    var cookieName = "p9q8r7s6_t34w2x1"; 
+
+    if (context.Request.Cookies[cookieName] != null)
+    {
+        var encryptedUserId = context.Request.Cookies[cookieName];
+
+        var updatedCookieOptions = new CookieOptions
+        {
+            Expires = DateTimeOffset.Now.AddDays(30), 
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Lax
+        };
+
+        context.Response.Cookies.Append(cookieName, encryptedUserId, updatedCookieOptions);
+    }
+
     await next();
 });
-
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
