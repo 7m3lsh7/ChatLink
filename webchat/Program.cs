@@ -21,20 +21,22 @@ builder.Services.AddDataProtection();
 builder.Services.AddReCaptcha(builder.Configuration.GetSection("ReCaptcha"));
 
 
-builder.Services.AddDistributedSqlServerCache(options =>
+builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    options.SchemaName = "dbo";
-    options.TableName = "SessionCache";
+    options.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
+    options.InstanceName = "Session_";
 });
+
 
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromDays(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.Cookie.SameSite = SameSiteMode.Lax;
 });
+
 
 builder.Services.AddHttpsRedirection(options =>
 {
