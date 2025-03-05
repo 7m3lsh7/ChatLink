@@ -20,6 +20,7 @@ builder.Services.AddDataProtection();
 
 builder.Services.AddReCaptcha(builder.Configuration.GetSection("ReCaptcha"));
 
+
 builder.Services.AddDistributedSqlServerCache(options =>
 {
     options.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -38,15 +39,6 @@ builder.Services.AddSession(options =>
 builder.Services.AddHttpsRedirection(options =>
 {
     options.HttpsPort = 443;  
-});
-
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("CorsPolicy",
-        builder => builder.WithOrigins("https://chatlink.runasp.net/")
-        .AllowAnyMethod()
-        .AllowAnyHeader());
 });
 
 // Add services to the container.
@@ -72,6 +64,13 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+app.Use(async (context, next) =>
+{
+context.Response.Headers.Remove("Server");
+context.Response.Headers.Remove("X-Powered-By");
+    await next();
+});
 
 app.Use(async (context, next) =>
 {
