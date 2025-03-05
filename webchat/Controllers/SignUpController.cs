@@ -223,10 +223,10 @@ namespace webchat.Controllers
 
                 var cookieOptions = new CookieOptions
                 {
-                    Expires = DateTime.Now.AddDays(30),
+                    Expires = DateTimeOffset.Now.AddDays(30),
                     HttpOnly = true,
                     Secure = true,
-                    IsEssential = true
+                    SameSite = SameSiteMode.Lax
                 };
 
                 var protector = _protector.CreateProtector("UserIdProtector");

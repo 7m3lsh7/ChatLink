@@ -117,12 +117,11 @@ namespace webchat.Controllers
 
             var cookieOptions = new CookieOptions
             {
-                Expires = DateTimeOffset.Now.AddDays(7),
+                Expires = DateTimeOffset.Now.AddDays(30),
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Lax
             };
-
             Response.Cookies.Append(userIdCookieName, encryptedUserId, cookieOptions);
             Response.Cookies.Append(isAdminCookieName, encryptedIsAdmin, cookieOptions);
 
