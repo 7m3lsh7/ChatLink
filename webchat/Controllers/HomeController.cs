@@ -42,15 +42,6 @@ namespace webchat.Controllers
                             HttpContext.Session.SetInt32("UserId", user.Id);
                             HttpContext.Session.SetString("Username", user.Username);
 
-                            var cookieOptions = new CookieOptions
-                            {
-                                Expires = DateTimeOffset.Now.AddDays(30),
-                                HttpOnly = true,
-                                Secure = true,
-                                SameSite = SameSiteMode.Lax
-                            };
-                            Response.Cookies.Append(cookieName, encryptedUserId, cookieOptions);
-
                             return RedirectToAction("Index");
                         }
                     }
